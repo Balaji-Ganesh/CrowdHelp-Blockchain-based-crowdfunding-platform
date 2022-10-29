@@ -68,7 +68,7 @@ function NavBar() {
             },
           }}
         >
-          BookStore
+          CrowdHelp
         </Typography>
         <StorefrontIcon
           sx={{
