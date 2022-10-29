@@ -74,7 +74,7 @@ const StyledStepper = styled(Stepper)(({ theme }) => ({
   padding: theme.spacing(3, 0, 5),
 }));
 
-function CreateCampaign() {
+function CreateCampaignWrapper() {
   const [activeStep, setActiveStep] = React.useState(0);
 
   const handleNext = () => {
@@ -139,4 +139,4 @@ function CreateCampaign() {
   );
 }
 
-export default CreateCampaign;
+export default CreateCampaignWrapper;

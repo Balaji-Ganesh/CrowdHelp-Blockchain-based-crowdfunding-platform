@@ -6,13 +6,14 @@ import "./App.css";
 import { Box } from "@mui/material";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
-import CreateCampaign from "./pages/CreateCampaignWrapper";
+import CreateCampaignWrapper from "./pages/CreateCampaignWrapper";
 import FillCampaignDetails from "./pages/FillCampaignDetails";
+import ReviewCampaignDetails from "./pages/ReviewCampaignDetails";
 
 function App() {
   return (
     <Box className="App">
-      <CreateCampaign />
+      <CreateCampaignWrapper />
     </Box>
   );
 }
