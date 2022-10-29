@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import React from "react";
 import FillCampaignDetails from "./FillCampaignDetails";
-import FillFundRaiserDetails from "./FillFundRaiserDetails";
+import SetMileStones from "./SetMileStones";
 import ReviewCampaignDetails from "./ReviewCampaignDetails";
 function Copyright() {
   return (
@@ -31,7 +31,7 @@ function Copyright() {
 
 const steps = [
   "Campaign Details",
-  "Fundraiser details",
+  // "Set Milestones", -- next iteration feature
   "Review campaign details",
 ];
 
@@ -39,9 +39,9 @@ function getStepContent(step) {
   switch (step) {
     case 0:
       return <FillCampaignDetails />;
+    // case 1:
+    //   return <SetMileStones />; -- next iteration feature
     case 1:
-      return <FillFundRaiserDetails />;
-    case 2:
       return <ReviewCampaignDetails />;
     default:
       throw new Error("Unknown step");
@@ -102,12 +102,15 @@ function CreateCampaign() {
             {activeStep == steps.length ? (
               <>
                 <Typography variant="h5" gutterBottom>
-                  Thank you for your order.
+                  Welcome to the community..!!
+                </Typography>
+                <Typography variant="subtitle3">
+                  Thanks for joining in our team to make this world a better place
+                  to live.
                 </Typography>
                 <Typography variant="subtitle1">
-                  Your order number is #2001539. We have emailed your order
-                  confirmation, and will send you an update when your order has
-                  shipped.
+                  Campaign has created successfully. An acknowledgement will be
+                  sent to your registered maill-id.
                 </Typography>
               </>
             ) : (
@@ -122,7 +125,9 @@ function CreateCampaign() {
                     color="primary"
                     onClick={handleNext}
                   >
-                    {activeStep === steps.length - 1 ? "Place order" : "Next"}
+                    {activeStep === steps.length - 1
+                      ? "Create Campaign"
+                      : "Next"}
                   </Button>
                 </div>
               </>
