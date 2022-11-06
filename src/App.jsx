@@ -14,7 +14,7 @@ import HomePage from "./pages/HomePage";
 function App() {
   return (
     <Box className="App">
-      <SignIn />
+      <HomePage />
     </Box>
   );
 }
