@@ -17,13 +17,17 @@ export default function Footer() {
       <CssBaseline />
       <Container component="main" sx={{ mt: 8, mb: 2 }} maxWidth="sm">
         <Typography variant="h2" component="h1" gutterBottom>
-          Sticky footer
+          Crowd Help
         </Typography>
         <Typography variant="h5" component="h2" gutterBottom>
-          {"Pin a footer to the bottom of the viewport."}
-          {"The footer will move as the main element of the page grows."}
+          {
+            "Worrying of funds to fulfill a noble cause? You've came to right place."
+          }
+          {"Get help from the community...!!"}
         </Typography>
-        <Typography variant="body1">Sticky footer placeholder.</Typography>
+        <Typography variant="body1">
+          Get funds for your cause with Blockchain security.
+        </Typography>
       </Container>
       <Box
         component="footer"

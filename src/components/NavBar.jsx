@@ -6,6 +6,8 @@ import {
   Badge,
   styled,
   Avatar,
+  Button,
+  Box,
   InputBase,
   Menu,
   MenuItem,
@@ -56,8 +58,9 @@ const UserProfile = styled("div")(({ theme }) => ({
 function NavBar() {
   const [profileMenuDisplayStatus, setProfileMenuDisplayStatus] =
     useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   return (
-    <AppBar position="sticky">
+    <AppBar position="sticky" sx={{ bgcolor: "#EFEFEF" }}>
       <StyledToolbar>
         <Typography
           variant="h6"
@@ -65,6 +68,7 @@ function NavBar() {
             display: {
               xs: "none",
               sm: "block",
+              color: "#717171",
             },
           }}
         >
@@ -81,28 +85,48 @@ function NavBar() {
         {/* <SearchBar>
           <InputBase placeholder="Search.." />
         </SearchBar> */}
-        <UserActions>
-          <Badge badgeContent={9} color="error">
-            <EmailIcon />
-          </Badge>
-          <Badge badgeContent={3} color="error">
-            <NotificationsIcon />
-          </Badge>
-          <Avatar
-            onClick={() => setProfileMenuDisplayStatus(true)}
-            sx={{ width: 30, height: 30 }}
-            alt="User"
-            src="https://cdn-icons-png.flaticon.com/512/4140/4140048.png"
-          />
+        {/* {isLoggedIn && ( */}
+
+        <UserActions >
+          <Box sx={{m: 0}}>
+            <Button
+              type="submit"
+              fullWidth
+              variant="outlined"
+              sx={{ mt: 3, mb: 2 }}
+            >
+              Create Campaign
+            </Button>
+          </Box>
+          {isLoggedIn ? (
+            <>
+              <Badge badgeContent={9} color="error">
+                <EmailIcon />
+              </Badge>
+              <Badge badgeContent={3} color="error">
+                <NotificationsIcon />
+              </Badge>
+              <Avatar
+                onClick={() => setProfileMenuDisplayStatus(true)}
+                sx={{ width: 30, height: 30 }}
+                alt="User"
+                src="https://cdn-icons-png.flaticon.com/512/4140/4140048.png"
+              />
+            </>
+          ) : (
+            <>
+              <Button
+                type="submit"
+                // fullWidth
+                variant="text"
+                // sx={{ mt: 3, mb: 2 }}
+              >
+                Sign In
+              </Button>
+            </>
+          )}
         </UserActions>
-        <UserProfile onClick={() => setProfileMenuDisplayStatus(true)}>
-          <Avatar
-            sx={{ width: 30, height: 30 }}
-            alt="User"
-            src="https://cdn-icons-png.flaticon.com/512/4140/4140048.png"
-          />
-          <Typography>John Doe</Typography>
-        </UserProfile>
+        {/*  */}
       </StyledToolbar>
       <Menu
         id="demo-positioned-menu"
