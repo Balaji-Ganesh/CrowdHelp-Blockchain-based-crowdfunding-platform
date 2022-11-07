@@ -15,20 +15,7 @@ export default function Footer() {
       }}
     >
       <CssBaseline />
-      <Container component="main" sx={{ mt: 8, mb: 2 }} maxWidth="sm">
-        <Typography variant="h2" component="h1" gutterBottom>
-          Crowd Help
-        </Typography>
-        <Typography variant="h5" component="h2" gutterBottom>
-          {
-            "Worrying of funds to fulfill a noble cause? You've came to right place."
-          }
-          {"Get help from the community...!!"}
-        </Typography>
-        <Typography variant="body1">
-          Get funds for your cause with Blockchain security.
-        </Typography>
-      </Container>
+
       <Box
         component="footer"
         sx={{
