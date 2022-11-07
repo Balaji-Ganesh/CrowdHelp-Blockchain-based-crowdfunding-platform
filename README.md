@@ -1,6 +1,6 @@
 # Index - _What's in this?_
 
--- [**Guidelines**](#guidelines)
+- [**Guidelines**](#guidelines)
   - [Packages Installed (purpose)](#packages-installed-purpose)
   - [How to run?](#how-to-run)
   - [How to make contributions?](#how-to-make-contributions)
