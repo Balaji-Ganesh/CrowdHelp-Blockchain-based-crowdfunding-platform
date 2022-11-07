@@ -1,6 +1,6 @@
 # Index - _What's in this?_
 
-- **Guidelines**
+-- [**Guidelines**](#guidelines)
   - [Packages Installed (purpose)](#packages-installed-purpose)
   - [How to run?](#how-to-run)
   - [How to make contributions?](#how-to-make-contributions)
@@ -13,8 +13,8 @@
   - Miscellaneous
     - [New feature Ideas](#feature-updations-ideas-idea-for-next-iterative-versions)
     - [Resources used](#resources-used-for-implementation)
-- **Work Division**
-  - [Milestones](#total-modules)
+- [**Work Division**](#work-division)
+  - [Milestones](#milestones-of-the-project---total-modules)
   - [Task Division](#tasks-division)
 
 # Guidelines
