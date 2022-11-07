@@ -72,14 +72,14 @@
 
 ## Milestones of the project _- Total Modules_
 
-1. Landing page, Login, Sign-in, Sign-up
+1. [ ] Landing page, Login, Sign-in, Sign-up
    - UI & back-end connection.
-2. Campaign Creation
-3. Funding Campaign
-4. Withdrawl of funds
+2. [ ] Campaign Creation
+3. [ ] Funding Campaign
+4. [ ] Withdrawl of funds
    - Withdraw request raise - by fundraiser
    - Withdraw request acceptance decision - by backer
-5. Ending campaign
+5. [ ] Ending campaign
    - Normal ending - _(i.e., ending after deadline)_
    - Ending in-between - _as next version feature_
 6. ### Blockchain smartcontract << -- **Core** of all
@@ -96,19 +96,19 @@
       - Ending campaigns
 - @BalajiGanesh - Campaigns and Smart contract
   1.  Creating campaigns _-- Need help of others_
-      - Taking details from fundraiser
-      - Taking milestones details
-      - Deploying in blockchain
+      - [ ] Taking details from fundraiser
+      - [ ] Taking milestones details
+      - [ ] Deploying in blockchain
   2.  Displaying campaigns
-      - Displaying _few_ active campaigns in homepage
-      - [separate] campaigns page - which lists all the active campaigns
-      - Viewing particular campaign - which shows the transactions, option to fund, option to raise withdraw request and milestones set.
+      - [ ] Displaying _few_ active campaigns in homepage
+      - [ ] [separate] campaigns page - which lists all the active campaigns
+      - [ ] Viewing particular campaign - which shows the transactions, option to fund, option to raise withdraw request and milestones set.
   3.  Funds withdraw _-- Need help of others_
-      - Taking withdraw request -
-      - Notifying the contributors, reg. withdraw request.
-      - Taking the acceptance decision of them.
-      - Approving withdraw request based on the count.
-      - Updating the acceptance % to fundraiser.
+      - [ ] Taking withdraw request -
+      - [ ] Notifying the contributors, reg. withdraw request.
+      - [ ] Taking the acceptance decision of them.
+      - [ ] Approving withdraw request based on the count.
+      - [ ] Updating the acceptance % to fundraiser.
   4.  Ending campaigns
       - How to sub-divide?
 - @Manan - Integration of whole application with Solidity and back-end
