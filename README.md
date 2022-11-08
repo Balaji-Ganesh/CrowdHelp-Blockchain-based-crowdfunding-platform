@@ -22,7 +22,8 @@
 ## Packages Installed (purpose)
 
 - Used [Vitejs](https://vitejs.dev/) toolkit to setup the project. **Not `create-react-app`**.
-
+- `firebase`
+- `axios` - to deal with the requests POST, GET...
 1. MUIv5: `yarn add @mui/material @emotion/react @emotion/styled` - to use the MUI5 components and designs
 2. MUI Icons: `yarn add @mui/icons-material` - for usage of MUI SVG icons
 

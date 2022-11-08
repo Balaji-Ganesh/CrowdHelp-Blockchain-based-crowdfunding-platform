@@ -1,4 +1,5 @@
 import * as React from "react";
+// UI imports..
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -12,6 +13,11 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+
+// service imports..
+import firebase from "firebase/compat/app";
+import "firebase/compat/auth";
+import { useEffect } from "react";
 
 function Copyright(props) {
   return (
@@ -34,9 +40,41 @@ function Copyright(props) {
 const theme = createTheme();
 
 export default function SignIn() {
+  // local attributes..
+  const [authState, setAuthState] = React.useState(
+    false || window.localStorage.getItem("authStatus") === "true"
+  );
+  const [token, setToken] = React.useState("");
+  // handle whenever refreshed..
+  useEffect(() => {
+    firebase.auth().onAuthStateChanged((userCredentials) => {
+      if (userCredentials) {
+        // if yes, keep logged in.
+        setAuthState(true);
+        window.localStorage.setItem("authStatus", "true"); // save in local storage.. can cut-off the delay
+        // get token..
+        userCredentials.getIdToken().then((token) => {
+          setToken(token);
+          // console.log(token);
+        });
+      }
+    });
+  }, []); // Don't worry..!! this takes few seconds to update.
+
+  // helpers..
+  const signInWithGoogle = () => {
+    firebase
+      .auth()
+      .signInWithPopup(new firebase.auth.GoogleAuthProvider())
+      .then((userCredentials) => {
+        console.log(userCredentials);
+      });
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
+
     console.log({
       email: data.get("email"),
       password: data.get("password"),
@@ -95,9 +133,18 @@ export default function SignIn() {
               type="submit"
               fullWidth
               variant="contained"
-              sx={{ mt: 3, mb: 2 }}
+              sx={{ mt: 3, mb: 0.5 }}
             >
               Sign In
+            </Button>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              onClick={signInWithGoogle}
+              sx={{ mt: 0.5, mb: 2 }}
+            >
+              Sign In with Google
             </Button>
             <Grid container>
               <Grid item xs>
@@ -115,6 +162,7 @@ export default function SignIn() {
         </Box>
         <Copyright sx={{ mt: 8, mb: 4 }} />
       </Container>
+      {authState && <Typography>Signed In</Typography>}
     </ThemeProvider>
   );
 }
