@@ -23,6 +23,7 @@ import { useEffect } from "react";
 import axios from "axios";
 import { useAuth } from "../contexts/AuthContext";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function Copyright(props) {
   return (
@@ -49,8 +50,10 @@ export default function SignUp() {
   // hooks..
   const [responseMsg, setResponseMsg] = React.useState(""); // to display error messages.
   const [showResponse, setShowResponse] = React.useState(false); // To know whether error occured. ⁉ why not use length of error message
-  const [responseSeverity, setResponseSeverity] = React.useState("");
+  const [responseSeverity, setResponseSeverity] = React.useState("error");
   const [isLoading, setIsLoading] = React.useState(false); // to prevent multiple submits while processing..
+
+  const navigate = useNavigate(); // for auto-navigation to home page.
 
   useEffect(() => {
     console.log("Sign up..");
@@ -85,11 +88,12 @@ export default function SignUp() {
       setShowResponse(true);
       setResponseMsg("Account created successfully.");
       setResponseSeverity("success");
+      navigate("/"); // auto-navigate to homepage (After successful sign-in)
       // console.log("Sign up success " + showResponse);
     } catch (error) {
       setShowResponse(true);
       setResponseSeverity("error");
-      setResponseMsg();
+      setResponseMsg(error.message);
       console.log(showResponse);
     }
     // after done with sign-up.
