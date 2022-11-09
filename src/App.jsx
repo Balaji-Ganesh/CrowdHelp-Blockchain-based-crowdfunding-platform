@@ -11,12 +11,20 @@ import FillCampaignDetails from "./pages/campaigns/FillCampaignDetails";
 import ReviewCampaignDetails from "./pages/campaigns/ReviewCampaignDetails";
 import HomePage from "./pages/HomePage";
 import ActiveCampaigns from "./pages/campaigns/ActiveCampaigns";
+import AuthProvider from "./contexts/AuthContext";
+
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 function App() {
   return (
-    <Box className="App">
-      <SignIn />
-    </Box>
+    <Router>
+      <AuthProvider>
+        <Routes>
+          <Route path="/sign-up" element={<SignUp />} />
+          <Route exact path="/" element={<HomePage />} />
+        </Routes>
+      </AuthProvider>
+    </Router>
   );
 }
 
