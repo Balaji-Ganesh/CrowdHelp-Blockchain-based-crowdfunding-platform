@@ -45,11 +45,17 @@ function Copyright(props) {
 const theme = createTheme();
 
 export default function SignUp() {
-  const { signup } = useAuth();
+  const { signUpWithEmailAndPassword } = useAuth();
   // hooks..
-  const [errorMsg, setErrorMsg] = React.useState(""); // to display error messages.
-  const [isError, setIsError] = React.useState(false); // To know whether error occured. ⁉ why not use length of error message
+  const [responseMsg, setResponseMsg] = React.useState(""); // to display error messages.
+  const [showResponse, setShowResponse] = React.useState(false); // To know whether error occured. ⁉ why not use length of error message
+  const [responseSeverity, setResponseSeverity] = React.useState("");
   const [isLoading, setIsLoading] = React.useState(false); // to prevent multiple submits while processing..
+
+  useEffect(() => {
+    console.log("Sign up..");
+  }, []); // update when response is to be displayed.
+
   // helpers..
   const handleSignUp = async (event) => {
     event.preventDefault(); // prevent from refreshing
@@ -64,28 +70,39 @@ export default function SignUp() {
     // do signup..
     // perform client-side validations..
     if (data.get("password") != data.get("confirm-password")) {
-      setErrorMsg(true);
-      return setErrorMsg("Passwords do not match"); // exit from function..--- 👁️‍🗨️ on this...
+      setShowResponse(true);
+      setResponseSeverity("error");
+      return setResponseMsg("Passwords do not match"); // exit from function..--- 👁️‍🗨️ on this...
     }
     // console.log("validation passed");
     try {
       // set the messages to default..
-      setIsError(false);
-      setErrorMsg("");
+      setShowResponse(false);
+      setResponseMsg("");
       setIsLoading(true);
-      await signup(data.get("email"), data.get("password"));
+      await signUpWithEmailAndPassword(data.get("email"), data.get("password"));
+      // console.log(data);
+      setShowResponse(true);
+      setResponseMsg("Account created successfully.");
+      setResponseSeverity("success");
+      // console.log("Sign up success " + showResponse);
     } catch (error) {
-      setIsError(true);
-      setErrorMsg("Failed to create account. Please try again.");
+      setShowResponse(true);
+      setResponseSeverity("error");
+      setResponseMsg();
+      console.log(showResponse);
     }
     // after done with sign-up.
     setIsLoading(false);
+    // setShowResponse(false);
+  };
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setShowResponse(false);
   };
 
-  function handleClose() {
-    console.log("close");
-    setErrorMsg("");
-  } // dummy..
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
@@ -112,27 +129,6 @@ export default function SignUp() {
             sx={{ mt: 3 }}
           >
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  autoComplete="given-name"
-                  name="firstName"
-                  required
-                  fullWidth
-                  id="firstName"
-                  label="First Name"
-                  autoFocus
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  fullWidth
-                  id="lastName"
-                  label="Last Name"
-                  name="lastName"
-                  autoComplete="family-name"
-                />
-              </Grid>
               <Grid item xs={12}>
                 <TextField
                   required
@@ -168,7 +164,7 @@ export default function SignUp() {
               <Grid item xs={12}>
                 <FormControlLabel
                   control={
-                    <Checkbox value="allowExtraEmails" color="primary" />
+                    <Checkbox value="termsAndConditionsAgree" color="primary" />
                   }
                   label="I agree to the terms and conditions."
                 />
@@ -185,7 +181,7 @@ export default function SignUp() {
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>
-                <Link href="#" variant="body2">
+                <Link href="/sign-in" variant="body2">
                   Already have an account? Sign in
                 </Link>
               </Grid>
@@ -193,17 +189,18 @@ export default function SignUp() {
           </Box>
         </Box>
         <Copyright sx={{ mt: 5 }} />
-      </Container>
 
-      <Snackbar
-        open={errorMsg != ""}
-        autoHideDuration={6000}
-        onClose={handleClose}
-      >
-        <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
-          {errorMsg}
-        </Alert>
-      </Snackbar>
+        <Snackbar
+          open={showResponse}
+          autoHideDuration={4000}
+          onClose={handleClose}
+          anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+        >
+          <Alert onClose={handleClose} severity={responseSeverity}>
+            {responseMsg}
+          </Alert>
+        </Snackbar>
+      </Container>
     </ThemeProvider>
   );
 }

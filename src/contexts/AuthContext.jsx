@@ -23,15 +23,15 @@ export function AuthProvider({ children }) {
   }, []);
 
   // helpers
-  function signup(email, password) {
-    console.log(`Signup called with ${email} & ${password}`);
+  function signUpWithEmailAndPassword(email, password) {
+    // console.log(`Signup called with ${email} & ${password}`);
     return auth.createUserWithEmailAndPassword(email, password); // this returns the promise, later based on its value Signup_Success or Failure will be taken care.
   }
 
   // context value thats going to be used in other pages..
   const value = {
     currentUserCredentials,
-    signup,
+    signUpWithEmailAndPassword,
   };
 
   return (

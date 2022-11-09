@@ -20,8 +20,8 @@ function App() {
     <Router>
       <AuthProvider>
         <Routes>
-          <Route path="/sign-up" element={<SignUp />} />
           <Route exact path="/" element={<HomePage />} />
+          <Route path="/sign-up" element={<SignUp />} />
         </Routes>
       </AuthProvider>
     </Router>
