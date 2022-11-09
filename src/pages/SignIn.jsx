@@ -4,8 +4,6 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
@@ -13,13 +11,15 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 
 // service imports..
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import { useEffect } from "react";
-import axios from "axios";
-import { LocalConvenienceStoreOutlined } from "@mui/icons-material";
+import { useAuth } from "../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 function Copyright(props) {
   return (
@@ -42,60 +42,59 @@ function Copyright(props) {
 const theme = createTheme();
 
 export default function SignIn() {
-  // local attributes..
-  const [authState, setAuthState] = React.useState(
-    false || window.localStorage.getItem("authStatus") === "true"
-  );
-  const [userToken, setUserToken] = React.useState("");
-  // handle whenever refreshed..
-  useEffect(() => {
-    firebase.auth().onAuthStateChanged((userCredentials) => {
-      if (userCredentials) {
-        // if yes, keep logged in.
-        setAuthState(true);
-        window.localStorage.setItem("authStatus", "true"); // save in local storage.. can cut-off the delay
-        // get userToken..
-        userCredentials.getIdToken().then((userToken) => {
-          setUserToken(userToken);
-          // console.log(userToken);
-        });
-      }
-    });
-  }, []); // Don't worry..!! this takes few seconds to update.
+  // context's..
+  const { signInWithEmailAndPassword, signInWithGooglePopup } = useAuth();
+  // hooks..
+  const [responseMsg, setResponseMsg] = React.useState(""); // to display error messages.
+  const [showResponse, setShowResponse] = React.useState(false); // To know whether error occured. ⁉ why not use length of error message
+  const [responseSeverity, setResponseSeverity] = React.useState("error");
+  const [isLoading, setIsLoading] = React.useState(false); // to prevent multiple submits while processing..
+
+  const navigate = useNavigate(); // for auto-navigation to home page.
 
   // helpers..
-  const fetchData = async (token) => {
-    const response = await axios.get("http://localhost:4000/api/data", {
-      headers: {
-        Authorization: "Bearer " + token,
-      },
-    });
-    console.log(response.data);
-  };
-
-  const signInWithGooglePopup = () => {
-    firebase
-      .auth()
-      .signInWithPopup(new firebase.auth.GoogleAuthProvider())
-      .then((userCredentials) => {
-        console.log(userCredentials);
-      });
-  };
-
-  const signInWithEmailAndPassword = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    firebase
-      .auth()
-      .signInWithEmailAndPassword(data.get("email", data.get("password")))
-      .then((userCredentials) => {
-        console.log(userCredentials);
-      });
+
     console.log({
       email: data.get("email"),
       password: data.get("password"),
     });
-    fetchData(userToken);
+
+    // do signin..
+    // perform client-side validations..
+    if (data.get("email") == "" || data.get("password") == "") {
+      setShowResponse(true);
+      setResponseSeverity("error");
+      return setResponseMsg("Fields cannot be empty"); // exit from function..--- 👁️‍🗨️ on this...
+    }
+    try {
+      // set the messages to default..
+      setShowResponse(false);
+      setResponseMsg("");
+      setIsLoading(true);
+      await signInWithEmailAndPassword(data.get("email"), data.get("password"));
+      // console.log(data);
+      setShowResponse(true);
+      setResponseMsg("Sign in success.");
+      setResponseSeverity("success");
+      // console.log("Sign up success " + showResponse);
+      navigate("/"); // auto-navigate to homepage (After successful sign-in)
+    } catch (error) {
+      setShowResponse(true);
+      setResponseSeverity("error");
+      setResponseMsg(error.message);
+      console.log(error);
+    } // after done with sign-in.
+    setIsLoading(false);
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setShowResponse(false);
   };
 
   return (
@@ -118,7 +117,7 @@ export default function SignIn() {
           </Typography>
           <Box
             component="form"
-            onSubmit={signInWithEmailAndPassword}
+            onSubmit={handleSubmit}
             noValidate
             sx={{ mt: 1 }}
           >
@@ -142,10 +141,7 @@ export default function SignIn() {
               id="password"
               autoComplete="current-password"
             />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            />
+
             <Button
               type="submit"
               fullWidth
@@ -170,7 +166,7 @@ export default function SignIn() {
                 </Link>
               </Grid>
               <Grid item>
-                <Link href="#" variant="body2">
+                <Link href="/sign-up" variant="body2">
                   {"Don't have an account? Sign Up"}
                 </Link>
               </Grid>
@@ -178,8 +174,17 @@ export default function SignIn() {
           </Box>
         </Box>
         <Copyright sx={{ mt: 8, mb: 4 }} />
+        <Snackbar
+          open={showResponse}
+          autoHideDuration={4000}
+          onClose={handleClose}
+          anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+        >
+          <Alert onClose={handleClose} severity={responseSeverity}>
+            {responseMsg}
+          </Alert>
+        </Snackbar>
       </Container>
-      {authState && <Typography>Signed In</Typography>}
     </ThemeProvider>
   );
 }

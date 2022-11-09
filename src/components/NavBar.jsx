@@ -18,6 +18,7 @@ import EmailIcon from "@mui/icons-material/Email";
 import BadgeUnstyled from "@mui/base/BadgeUnstyled";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 // Custom styling to components
 const StyledToolbar = styled(Toolbar)({
@@ -59,6 +60,8 @@ function NavBar() {
   const [profileMenuDisplayStatus, setProfileMenuDisplayStatus] =
     useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const navigate = useNavigate();
+
   return (
     <AppBar position="sticky" sx={{ bgcolor: "#EFEFEF" }}>
       <StyledToolbar>
@@ -87,8 +90,8 @@ function NavBar() {
         </SearchBar> */}
         {/* {isLoggedIn && ( */}
 
-        <UserActions >
-          <Box sx={{m: 0}}>
+        <UserActions>
+          <Box sx={{ m: 0 }}>
             <Button
               type="submit"
               fullWidth
@@ -120,6 +123,7 @@ function NavBar() {
                 // fullWidth
                 variant="text"
                 // sx={{ mt: 3, mb: 2 }}
+                onClick={() => navigate("/sign-in")}
               >
                 Sign In
               </Button>
