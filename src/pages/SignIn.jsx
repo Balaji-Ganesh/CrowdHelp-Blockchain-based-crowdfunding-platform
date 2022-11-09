@@ -18,6 +18,8 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import { useEffect } from "react";
+import axios from "axios";
+import { LocalConvenienceStoreOutlined } from "@mui/icons-material";
 
 function Copyright(props) {
   return (
@@ -44,7 +46,7 @@ export default function SignIn() {
   const [authState, setAuthState] = React.useState(
     false || window.localStorage.getItem("authStatus") === "true"
   );
-  const [token, setToken] = React.useState("");
+  const [userToken, setUserToken] = React.useState("");
   // handle whenever refreshed..
   useEffect(() => {
     firebase.auth().onAuthStateChanged((userCredentials) => {
@@ -52,17 +54,26 @@ export default function SignIn() {
         // if yes, keep logged in.
         setAuthState(true);
         window.localStorage.setItem("authStatus", "true"); // save in local storage.. can cut-off the delay
-        // get token..
-        userCredentials.getIdToken().then((token) => {
-          setToken(token);
-          // console.log(token);
+        // get userToken..
+        userCredentials.getIdToken().then((userToken) => {
+          setUserToken(userToken);
+          // console.log(userToken);
         });
       }
     });
   }, []); // Don't worry..!! this takes few seconds to update.
 
   // helpers..
-  const signInWithGoogle = () => {
+  const fetchData = async (token) => {
+    const response = await axios.get("http://localhost:4000/api/data", {
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+    });
+    console.log(response.data);
+  };
+
+  const signInWithGooglePopup = () => {
     firebase
       .auth()
       .signInWithPopup(new firebase.auth.GoogleAuthProvider())
@@ -71,14 +82,20 @@ export default function SignIn() {
       });
   };
 
-  const handleSubmit = (event) => {
+  const signInWithEmailAndPassword = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-
+    firebase
+      .auth()
+      .signInWithEmailAndPassword(data.get("email", data.get("password")))
+      .then((userCredentials) => {
+        console.log(userCredentials);
+      });
     console.log({
       email: data.get("email"),
       password: data.get("password"),
     });
+    fetchData(userToken);
   };
 
   return (
@@ -101,7 +118,7 @@ export default function SignIn() {
           </Typography>
           <Box
             component="form"
-            onSubmit={handleSubmit}
+            onSubmit={signInWithEmailAndPassword}
             noValidate
             sx={{ mt: 1 }}
           >
@@ -141,7 +158,7 @@ export default function SignIn() {
               type="submit"
               fullWidth
               variant="contained"
-              onClick={signInWithGoogle}
+              onClick={signInWithGooglePopup}
               sx={{ mt: 0.5, mb: 2 }}
             >
               Sign In with Google
