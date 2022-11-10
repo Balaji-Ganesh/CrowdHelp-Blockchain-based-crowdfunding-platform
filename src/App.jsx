@@ -12,8 +12,10 @@ import ReviewCampaignDetails from "./pages/campaigns/ReviewCampaignDetails";
 import HomePage from "./pages/HomePage";
 import ActiveCampaigns from "./pages/campaigns/ActiveCampaigns";
 import AuthProvider from "./contexts/AuthContext";
+import Profile from "./pages/Profile";
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import AuthProtectedRoute from "./components/AuthProtectedRoute";
 
 function App() {
   return (
@@ -23,6 +25,14 @@ function App() {
           <Route exact path="/" element={<HomePage />} />
           <Route path="/sign-up" element={<SignUp />} />
           <Route path="/sign-in" element={<SignIn />} />
+          <Route
+            path="/profile"
+            element={
+              <AuthProtectedRoute>
+                <Profile />
+              </AuthProtectedRoute>
+            }
+          />
         </Routes>
       </AuthProvider>
     </Router>
