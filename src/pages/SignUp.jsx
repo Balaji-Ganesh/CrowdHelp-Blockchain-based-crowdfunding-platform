@@ -47,7 +47,19 @@ const theme = createTheme();
 
 export default function SignUp() {
   const { signUpWithEmailAndPassword } = useAuth();
-  // hooks..
+  useEffect(() => {
+    console.log("Sign up..");
+  }, []); // update when response is to be displayed.
+  /*............................hooks............................*/
+  // for validations..
+  const [showPassword, setShowPassword] = React.useState(false);
+  const [formValues, setFormValues] = React.useState({
+    email: "",
+    password: "",
+  });
+  const [formErrors, setFormErrors] = React.useState({});
+
+  // for showing response...
   const [responseMsg, setResponseMsg] = React.useState(""); // to display error messages.
   const [showResponse, setShowResponse] = React.useState(false); // To know whether error occured. ⁉ why not use length of error message
   const [responseSeverity, setResponseSeverity] = React.useState("error");
@@ -55,9 +67,52 @@ export default function SignUp() {
 
   const navigate = useNavigate(); // for auto-navigation to home page.
 
+  /// helpers..
   useEffect(() => {
-    console.log("Sign up..");
-  }, []); // update when response is to be displayed.
+    console.log(formErrors);
+    if (Object.keys(formErrors).length === 0) {
+      console.log(formValues);
+    }
+  }, [formErrors]);
+  // validations..
+  const handleClickShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormValues({ ...formValues, [name]: value });
+  };
+
+  const validate = (values) => {
+    const errors = {};
+    console.info("Values received");
+    console.log(values.email);
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
+    if (values.email == undefined || values.email == "") {
+      errors.email = "Email is required!";
+    } else if (!regex.test(values.email)) {
+      errors.email = "Invalid email format!";
+    }
+    if (!values.password) {
+      errors.password = "Password is required";
+    } else if (values.password.length < 6) {
+      errors.password = "Password must be more than 6 characters";
+    } else if (values.password.length > 10) {
+      errors.password = "Password cannot exceed more than 10 characters";
+    }
+    if (!values.confirm_password) {
+      errors.confirmPassword = "Password is required";
+    } else if (values.password != values.confirm_password) {
+      errors.confirmPassword = "Passwords do not match.";
+    }
+    // console.error(errors);
+    return errors;
+  };
 
   // helpers..
   const handleSignUp = async (event) => {
@@ -72,33 +127,38 @@ export default function SignUp() {
 
     // do signup..
     // perform client-side validations..
-    if (data.get("password") != data.get("confirm-password")) {
-      setShowResponse(true);
-      setResponseSeverity("error");
-      return setResponseMsg("Passwords do not match"); // exit from function..--- 👁️‍🗨️ on this...
+    setFormErrors(validate(formValues)); // perform validation..
+    console.info("Errors received");
+    console.log(formErrors);
+    if (Object.keys(formErrors).length == 0) {
+      console.info("Validation passed");
+
+      try {
+        // set the messages to default..
+        setShowResponse(false);
+        setResponseMsg("");
+        setIsLoading(true);
+        await signUpWithEmailAndPassword(
+          data.get("email"),
+          data.get("password")
+        );
+        // console.log(data);
+        setShowResponse(true);
+        setResponseMsg("Account created successfully.");
+        setResponseSeverity("success");
+        navigate("/"); // auto-navigate to homepage (After successful sign-in)
+        // console.log("Sign up success " + showResponse);
+      } catch (error) {
+        setShowResponse(true);
+        setResponseSeverity("error");
+        setResponseMsg(error.message);
+        console.log(showResponse);
+      } finally {
+        // after done with sign-up.
+        setIsLoading(false);
+        // setShowResponse(false);
+      }
     }
-    // console.log("validation passed");
-    try {
-      // set the messages to default..
-      setShowResponse(false);
-      setResponseMsg("");
-      setIsLoading(true);
-      await signUpWithEmailAndPassword(data.get("email"), data.get("password"));
-      // console.log(data);
-      setShowResponse(true);
-      setResponseMsg("Account created successfully.");
-      setResponseSeverity("success");
-      navigate("/"); // auto-navigate to homepage (After successful sign-in)
-      // console.log("Sign up success " + showResponse);
-    } catch (error) {
-      setShowResponse(true);
-      setResponseSeverity("error");
-      setResponseMsg(error.message);
-      console.log(showResponse);
-    }
-    // after done with sign-up.
-    setIsLoading(false);
-    // setShowResponse(false);
   };
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -141,6 +201,10 @@ export default function SignUp() {
                   label="Email Address"
                   name="email"
                   autoComplete="email"
+                  variant="standard"
+                  onChange={handleChange}
+                  color={formErrors.email ? "error" : "primary"}
+                  helperText={formErrors.email}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -152,17 +216,25 @@ export default function SignUp() {
                   type="password"
                   id="password"
                   autoComplete="new-password"
+                  variant="standard"
+                  onChange={handleChange}
+                  color={formErrors.password ? "error" : "primary"}
+                  helperText={formErrors.password}
                 />
               </Grid>
               <Grid item xs={12}>
                 <TextField
                   required
                   fullWidth
-                  name="confirm-password"
+                  name="confirm_password"
                   label="Confirm Password"
                   type="password"
                   id="password"
                   autoComplete="new-password"
+                  variant="standard"
+                  onChange={handleChange}
+                  color={formErrors.confirmPassword ? "error" : "primary"}
+                  helperText={formErrors.confirmPassword}
                 />
               </Grid>
               <Grid item xs={12}>
