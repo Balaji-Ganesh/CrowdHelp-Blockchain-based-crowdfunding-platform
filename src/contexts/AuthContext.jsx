@@ -67,6 +67,14 @@ export function AuthProvider({ children }) {
     return promise;
   };
 
+  const updateEmail = (email) => {
+    return currentUserCredentials.updateEmail(email);
+  };
+
+  const updatePassword = (password) => {
+    return currentUserCredentials.updatePassword(password);
+  };
+
   // context value thats going to be used in other pages..
   const value = {
     currentUserCredentials,
@@ -75,6 +83,8 @@ export function AuthProvider({ children }) {
     signInWithEmailAndPassword,
     signout,
     resetPassword,
+    updateEmail,
+    updatePassword,
   };
 
   return (
