@@ -35,6 +35,14 @@ function App() {
               </AuthProtectedRoute>
             }
           />
+          <Route
+            path="/create-campaign"
+            element={
+              <AuthProtectedRoute>
+                <CreateCampaignWrapper />
+              </AuthProtectedRoute>
+            }
+          />
         </Routes>
       </AuthProvider>
     </Router>

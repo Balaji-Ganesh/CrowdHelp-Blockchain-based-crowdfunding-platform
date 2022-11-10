@@ -123,11 +123,12 @@ function NavBar() {
               fullWidth
               variant="outlined"
               sx={{ mt: 3, mb: 2 }}
+              onClick={() => navigate("/create-campaign")}
             >
               Create Campaign
             </Button>
           </Box>
-          {currentUserCredentials.email ? (
+          {currentUserCredentials ? (
             <>
               <Badge badgeContent={9} color="error">
                 <EmailIcon />
