@@ -125,30 +125,30 @@ export default function SignIn() {
     // Proceed next, only if passed.
     if (Object.keys(formErrors).length == 0) {
       console.info("Validation passed");
-      // try {
-      //   // set the messages to default..
-      //   setShowResponse(false);
-      //   setResponseMsg("");
-      //   setIsLoading(true);
-      //   await signInWithEmailAndPassword(
-      //     data.get("email"),
-      //     data.get("password")
-      //   );
-      //   // console.log(data);
-      //   setShowResponse(true);
-      //   setResponseMsg("Sign in success.");
-      //   setResponseSeverity("success");
-      //   // console.log("Sign up success " + showResponse);
-      //   navigate("/"); // auto-navigate to homepage (After successful sign-in)
-      // } catch (error) {
-      //   setShowResponse(true);
-      //   setResponseSeverity("error");
-      //   setResponseMsg(error.message);
-      //   console.log(error);
-      // } finally {
-      //   // after done with sign-in.
-      //   setIsLoading(false);
-      // }
+      try {
+        // set the messages to default..
+        setShowResponse(false);
+        setResponseMsg("");
+        setIsLoading(true);
+        await signInWithEmailAndPassword(
+          data.get("email"),
+          data.get("password")
+        );
+        // console.log(data);
+        setShowResponse(true);
+        setResponseMsg("Sign in success.");
+        setResponseSeverity("success");
+        // console.log("Sign up success " + showResponse);
+        navigate("/"); // auto-navigate to homepage (After successful sign-in)
+      } catch (error) {
+        setShowResponse(true);
+        setResponseSeverity("error");
+        setResponseMsg(error.message);
+        console.log(error);
+      } finally {
+        // after done with sign-in.
+        setIsLoading(false);
+      }
     }
   };
 
