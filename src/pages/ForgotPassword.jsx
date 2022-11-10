@@ -43,7 +43,7 @@ const theme = createTheme();
 
 export default function SignIn() {
   // context's..
-  const { signInWithEmailAndPassword, signInWithGooglePopup } = useAuth();
+  const { resetPassword } = useAuth();
   // hooks..
   const [responseMsg, setResponseMsg] = React.useState(""); // to display error messages.
   const [showResponse, setShowResponse] = React.useState(false); // To know whether error occured. ⁉ why not use length of error message
@@ -52,41 +52,37 @@ export default function SignIn() {
 
   const navigate = useNavigate(); // for auto-navigation to home page.
 
+  useEffect(() => {}, [showResponse]); // render on response to be shown or hidden
+
   // helpers..
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
 
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
-
-    // do signin..
+    // do password reset..
     // perform client-side validations..
-    if (data.get("email") == "" || data.get("password") == "") {
+    if (data.get("email") == "") {
       setShowResponse(true);
       setResponseSeverity("error");
-      return setResponseMsg("Fields cannot be empty"); // exit from function..--- 👁️‍🗨️ on this...
+      return setResponseMsg("Please enter your e-mail"); // exit from function..--- 👁️‍🗨️ on this...
     }
     try {
       // set the messages to default..
       setShowResponse(false);
       setResponseMsg("");
       setIsLoading(true);
-      await signInWithEmailAndPassword(data.get("email"), data.get("password"));
-      // console.log(data);
+      await resetPassword(data.get("email"));
+      console.log("Password reset message");
       setShowResponse(true);
-      setResponseMsg("Sign in success.");
+      setResponseMsg("Please check your e-mail for further instructions..");
       setResponseSeverity("success");
-      // console.log("Sign up success " + showResponse);
-      navigate("/"); // auto-navigate to homepage (After successful sign-in)
+      navigate("/sign-in"); // auto-navigate to sign-in (After successful reset-password)
     } catch (error) {
       setShowResponse(true);
       setResponseSeverity("error");
       setResponseMsg(error.message);
       console.log(error);
-    } // after done with sign-in.
+    } // after done with password-reset.
     setIsLoading(false);
   };
 
@@ -113,7 +109,10 @@ export default function SignIn() {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Sign in
+            Forgot Password
+          </Typography>
+          <Typography variant="p" align="center">
+            Please enter your email to get password reset link to your mail.
           </Typography>
           <Box
             component="form"
@@ -131,16 +130,6 @@ export default function SignIn() {
               autoComplete="email"
               autoFocus
             />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-            />
 
             <Button
               type="submit"
@@ -148,21 +137,13 @@ export default function SignIn() {
               variant="contained"
               sx={{ mt: 3, mb: 0.5 }}
             >
-              Sign In
+              Reset Password
             </Button>
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              onClick={signInWithGooglePopup}
-              sx={{ mt: 0.5, mb: 2 }}
-            >
-              Sign In with Google
-            </Button>
+
             <Grid container>
               <Grid item xs>
-                <Link href="/forgot-password" variant="body2">
-                  Forgot password?
+                <Link href="/sign-in" variant="body2">
+                  Back to sign-in
                 </Link>
               </Grid>
               <Grid item>

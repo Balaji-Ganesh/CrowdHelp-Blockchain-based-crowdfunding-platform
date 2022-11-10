@@ -16,6 +16,7 @@ import Profile from "./pages/Profile";
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import AuthProtectedRoute from "./components/AuthProtectedRoute";
+import ForgotPassword from "./pages/ForgotPassword";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           <Route index element={<HomePage />} />
           <Route path="/sign-up" element={<SignUp />} />
           <Route path="/sign-in" element={<SignIn />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route
             path="/profile"
             element={

@@ -61,6 +61,12 @@ export function AuthProvider({ children }) {
     return auth.signOut();
   };
 
+  const resetPassword = (email) => {
+    const promise = auth.sendPasswordResetEmail(email);
+    console.log("Password reset email sent");
+    return promise;
+  };
+
   // context value thats going to be used in other pages..
   const value = {
     currentUserCredentials,
@@ -68,6 +74,7 @@ export function AuthProvider({ children }) {
     signInWithGooglePopup,
     signInWithEmailAndPassword,
     signout,
+    resetPassword,
   };
 
   return (
