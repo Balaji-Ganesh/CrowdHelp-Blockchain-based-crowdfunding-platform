@@ -96,21 +96,26 @@
       - Funds Withdraw
       - Ending campaigns
 - @BalajiGanesh - Campaigns and Smart contract
-  1.  Creating campaigns _-- Need help of others_
+  1.  Project Setup & initial deploy
+      - [x] Project Setup with vitejs and MUI - done
+      - [x] Basic home-page with authentication: {`Sign-In`, `Sign-Up`, `Forgot-Password`, `Update Profile`}
+      - [x] Skeleton of Campaign creation - _(pending: milestones - this needs discussion)_.
+      - [ ] Deploy the project - UI in Netlify, API in heroku _- This is not fully ready_.
+  2.  Creating campaigns _-- Need help of others_
       - [ ] Taking details from fundraiser
       - [ ] Taking milestones details
       - [ ] Deploying in blockchain
-  2.  Displaying campaigns
+  3.  Displaying campaigns
       - [ ] Displaying _few_ active campaigns in homepage
       - [ ] [separate] campaigns page - which lists all the active campaigns
       - [ ] Viewing particular campaign - which shows the transactions, option to fund, option to raise withdraw request and milestones set.
-  3.  Funds withdraw _-- Need help of others_
+  4.  Funds withdraw _-- Need help of others_
       - [ ] Taking withdraw request -
       - [ ] Notifying the contributors, reg. withdraw request.
       - [ ] Taking the acceptance decision of them.
       - [ ] Approving withdraw request based on the count.
       - [ ] Updating the acceptance % to fundraiser.
-  4.  Ending campaigns
+  5.  Ending campaigns
       - How to sub-divide?
 - @Manan - Integration of whole application with Solidity and back-end
 - @GautamGupta - Designing test cases.
