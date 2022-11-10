@@ -100,7 +100,7 @@
       - [x] Project Setup with vitejs and MUI - done
       - [x] Basic home-page with authentication: {`Sign-In`, `Sign-Up`, `Forgot-Password`, `Update Profile`}
       - [x] Skeleton of Campaign creation - _(pending: milestones - this needs discussion)_.
-      - [ ] Deploy the project - UI in Netlify, API in heroku _- This is not fully ready_.
+      - [x] Deploy the project - UI in Netlify - checkout at [here](https://crowdhelp.netlify.app/)
   2.  Creating campaigns _-- Need help of others_
       - [ ] Taking details from fundraiser
       - [ ] Taking milestones details
