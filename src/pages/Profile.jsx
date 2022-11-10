@@ -176,7 +176,7 @@ export default function Profile() {
                     id="email"
                     label="Email Address"
                     name="email"
-                    placeholder={currentUserCredentials.email}
+                    defaultValue={currentUserCredentials.email}
                   />
                 </Grid>
                 <Grid item xs={12}>
