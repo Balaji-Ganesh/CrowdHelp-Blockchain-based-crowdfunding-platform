@@ -57,12 +57,17 @@ export function AuthProvider({ children }) {
     return auth.signInWithEmailAndPassword(email, password);
   };
 
+  const signout = (email, password) => {
+    return auth.signOut();
+  };
+
   // context value thats going to be used in other pages..
   const value = {
     currentUserCredentials,
     signUpWithEmailAndPassword,
     signInWithGooglePopup,
     signInWithEmailAndPassword,
+    signout,
   };
 
   return (

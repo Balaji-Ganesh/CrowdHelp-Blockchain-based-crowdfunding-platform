@@ -1,4 +1,5 @@
-// import { Book, Pets } from "@mui/icons-material";
+import * as React from "react";
+// UI imports..
 import {
   AppBar,
   Toolbar,
@@ -12,13 +13,15 @@ import {
   Menu,
   MenuItem,
 } from "@mui/material";
-import React from "react";
 import StorefrontIcon from "@mui/icons-material/Storefront";
 import EmailIcon from "@mui/icons-material/Email";
 import BadgeUnstyled from "@mui/base/BadgeUnstyled";
 import NotificationsIcon from "@mui/icons-material/Notifications";
-import { useState } from "react";
+
+// service imports..
+import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 // Custom styling to components
 const StyledToolbar = styled(Toolbar)({
@@ -57,10 +60,33 @@ const UserProfile = styled("div")(({ theme }) => ({
 }));
 
 function NavBar() {
+  // hooks ..
   const [profileMenuDisplayStatus, setProfileMenuDisplayStatus] =
     useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  // hooks..
+  const [responseMsg, setResponseMsg] = React.useState(""); // to display error messages.
+  const [showResponse, setShowResponse] = React.useState(false); // To know whether error occured. ⁉ why not use length of error message
+  const [responseSeverity, setResponseSeverity] = React.useState("error");
   const navigate = useNavigate();
+
+  const { currentUserCredentials, signout } = useAuth();
+
+  const handleSignout = async () => {
+    // set the response activations to default.
+    setShowResponse(false);
+    setResponseMsg("");
+    setResponseSeverity("error"); // doesn't allowing to have empty, so kept this. Anyway, as showing is false, no worries.
+
+    // do signout.
+    try {
+      await signout();
+      navigate("/sign-in"); // navigate to sign-in page, after successful logout.
+    } catch (error) {
+      setShowResponse(true);
+      setResponseMsg(error.message);
+      setResponseSeverity("error");
+    }
+  };
 
   return (
     <AppBar position="sticky" sx={{ bgcolor: "#EFEFEF" }}>
@@ -101,7 +127,7 @@ function NavBar() {
               Create Campaign
             </Button>
           </Box>
-          {isLoggedIn ? (
+          {currentUserCredentials.email ? (
             <>
               <Badge badgeContent={9} color="error">
                 <EmailIcon />
@@ -147,9 +173,9 @@ function NavBar() {
           horizontal: "right",
         }}
       >
-        <MenuItem>Profile</MenuItem>
+        <MenuItem onClick={() => navigate("/profile")}>Profile</MenuItem>
         <MenuItem>My account</MenuItem>
-        <MenuItem>Logout</MenuItem>
+        <MenuItem onClick={() => handleSignout()}>Sign out</MenuItem>
       </Menu>
     </AppBar>
   );

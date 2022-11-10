@@ -22,7 +22,7 @@ function App() {
     <Router>
       <AuthProvider>
         <Routes>
-          <Route exact path="/" element={<HomePage />} />
+          <Route index element={<HomePage />} />
           <Route path="/sign-up" element={<SignUp />} />
           <Route path="/sign-in" element={<SignIn />} />
           <Route
