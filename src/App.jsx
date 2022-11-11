@@ -43,6 +43,7 @@ function App() {
               </AuthProtectedRoute>
             }
           />
+          <Route path="/active-campaigns" element={<ActiveCampaigns />} />
         </Routes>
       </AuthProvider>
     </Router>
