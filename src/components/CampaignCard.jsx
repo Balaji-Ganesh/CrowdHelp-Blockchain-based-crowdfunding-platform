@@ -16,7 +16,19 @@ import FavoriteBorderRoundedIcon from "@mui/icons-material/FavoriteBorderRounded
 import AccessTimeRoundedIcon from "@mui/icons-material/AccessTimeRounded";
 import ShareIcon from "@mui/icons-material/Share";
 
-function CampaignCard() {
+function CampaignCard(props) {
+  // extract the details..
+  const {
+    bannerUrl,
+    campaignStatus,
+    isFavoriteCampaign,
+    campaignTitle,
+    campaignDescription,
+    ethRaised,
+    ethFunded,
+    daysLeft,
+  } = props.details;
+
   // helpers ..
   function LinearProgressWithLabel(props) {
     return (
@@ -51,8 +63,7 @@ function CampaignCard() {
               // pt: "56.25%", -- by this, takes large space for card.
             }
           }
-          image="https://source.unsplash.com/random"
-          alt="random"
+          image={bannerUrl}
         />
         <CardActionArea>
           <CardContent sx={{ flexGrow: 1 }}>
@@ -62,12 +73,15 @@ function CampaignCard() {
               alignItems="center"
             >
               <Typography component="p" fontSize={12} color="green">
-                FUNDING IN PROGRESS
+                {campaignStatus}
               </Typography>
               <Stack direction="row">
                 <IconButton color="secondary">
-                  <FavoriteRoundedIcon size="small" />
-                  {/* <FavoriteBorderRoundedIcon size="small" /> */}
+                  {isFavoriteCampaign ? (
+                    <FavoriteRoundedIcon size="small" />
+                  ) : (
+                    <FavoriteBorderRoundedIcon size="small" />
+                  )}
                 </IconButton>
                 <IconButton>
                   <ShareIcon size="small" />
@@ -76,10 +90,10 @@ function CampaignCard() {
             </Stack>
 
             <Typography gutterBottom variant="h5" component="h2">
-              Campaign Title
+              {campaignTitle}
             </Typography>
             <Typography gutterBottom fontSize={15}>
-              Short description of the campaign or motto of the campaign raise.
+              {campaignDescription}
             </Typography>
             <Stack
               direction="row"
@@ -88,26 +102,26 @@ function CampaignCard() {
             >
               <Stack direction="row" alignItems={"flex-end"}>
                 <Typography component="p" fontSize={15}>
-                  {`Ξ 35 `}
+                  {`Ξ ${ethFunded} `}
+                </Typography>
+                <Typography component="p" fontSize={10} color="grey">
+                  &nbsp; ETH funded
+                </Typography>
+              </Stack>
+              <Stack direction="row" alignItems={"flex-end"}>
+                <Typography component="p" fontSize={15}>
+                  {`Ξ ${ethRaised} `}
                 </Typography>
                 <Typography component="p" fontSize={10} color="grey">
                   &nbsp; ETH raised
                 </Typography>
               </Stack>
-              <Stack direction="row" alignItems={"flex-end"}>
-                <Typography component="p" fontSize={15}>
-                  {`Ξ 100 `}
-                </Typography>
-                <Typography component="p" fontSize={10} color="grey">
-                  &nbsp; ETH pledged
-                </Typography>
-              </Stack>
             </Stack>
-            <LinearProgressWithLabel value={15} />
+            <LinearProgressWithLabel value={(ethFunded/ethRaised)*100} />
             <Stack direction="row" alignItems={"center"}>
               <AccessTimeRoundedIcon />
               <Typography gutterBottom fontSize={14} color="grey">
-                &nbsp; 9 days left
+                &nbsp; {daysLeft} days left
               </Typography>
             </Stack>
           </CardContent>
