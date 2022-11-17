@@ -186,6 +186,12 @@ export default function SignUp() {
           <Typography component="h1" variant="h5">
             Sign up
           </Typography>
+          <Typography variant="p" align="center">
+            Welcome to the community, dear friend.
+          </Typography>
+          <Typography variant="p" align="center">
+            Please introduce yourself.
+          </Typography>
           <Box
             component="form"
             noValidate
