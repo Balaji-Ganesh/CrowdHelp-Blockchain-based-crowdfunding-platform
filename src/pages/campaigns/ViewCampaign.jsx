@@ -134,7 +134,7 @@ function ViewCampaign() {
             </Typography>
             <Container
               maxWidth="sm"
-              sx={{ padding: 0.5, backgroundColor: "#f1faee", borderRadius: 3 }}
+              sx={{ padding: 0.5, backgroundColor: "#fae588", borderRadius: 3 }}
             >
               <Typography variant="h6">Campaign balance</Typography>
               <Typography variant="caption">
