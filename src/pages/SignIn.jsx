@@ -181,6 +181,10 @@ export default function SignIn() {
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
+          <Typography variant="p" align="center">
+            We know, you'll be back. Please enter your credentials to recognize
+            you.
+          </Typography>
           <Box
             component="form"
             onSubmit={handleSubmit}
