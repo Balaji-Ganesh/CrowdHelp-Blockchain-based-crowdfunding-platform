@@ -13,6 +13,7 @@ import HomePage from "./pages/HomePage";
 import ActiveCampaigns from "./pages/campaigns/ActiveCampaigns";
 import AuthProvider from "./contexts/AuthContext";
 import Profile from "./pages/Profile";
+import ViewCampaign from "./pages/campaigns/ViewCampaign";
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import AuthProtectedRoute from "./components/AuthProtectedRoute";
@@ -44,6 +45,7 @@ function App() {
             }
           />
           <Route path="/active-campaigns" element={<ActiveCampaigns />} />
+          <Route path="/view-campaign" element={<ViewCampaign />} />
         </Routes>
       </AuthProvider>
     </Router>
