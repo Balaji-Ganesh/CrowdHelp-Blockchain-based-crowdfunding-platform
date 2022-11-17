@@ -45,7 +45,7 @@ function App() {
             }
           />
           <Route path="/active-campaigns" element={<ActiveCampaigns />} />
-          <Route path="/view-campaign" element={<ViewCampaign />} />
+          <Route path="/campaign" element={<ViewCampaign />} />
         </Routes>
       </AuthProvider>
     </Router>
