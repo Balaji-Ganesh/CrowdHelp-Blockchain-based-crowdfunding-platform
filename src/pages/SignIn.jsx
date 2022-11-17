@@ -123,7 +123,11 @@ export default function SignIn() {
     console.info("Errors received");
     console.log(formErrors);
     // Proceed next, only if passed.
-    if (Object.keys(formErrors).length == 0) {
+    if (
+      Object.keys(formErrors).length == 0 &&
+      formValues.email != "" &&
+      formValues.password !== ""
+    ) {
       console.info("Validation passed");
       try {
         // set the messages to default..
@@ -228,6 +232,7 @@ export default function SignIn() {
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 0.5 }}
+              disabled={isLoading}
             >
               Sign In
             </Button>
