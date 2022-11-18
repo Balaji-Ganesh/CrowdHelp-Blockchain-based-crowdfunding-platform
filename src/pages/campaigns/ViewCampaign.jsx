@@ -11,6 +11,7 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
+import Chip from "@mui/material/Chip";
 
 // local imports..
 import NavBar from "../../components/NavBar";
@@ -28,6 +29,8 @@ const StyledModal = styled(Modal)({
 const api_url = "http://localhost:4000/api/";
 
 function ViewCampaign() {
+  const campaignId = window.location.pathname.substring(10); // will get as '/campaign/xx`, trimmed to get ONLY the id.
+
   // hooks..
   const [responseMsg, setResponseMsg] = React.useState(""); // to display error messages.
   const [showResponse, setShowResponse] = React.useState(false); // To know whether error occured. ⁉ why not use length of error message
@@ -38,13 +41,13 @@ function ViewCampaign() {
   const [fundingAmount, setFundingAmount] = React.useState(0); // set this via ref's and onchange.
   const enteredAmountRef = React.useRef(0);
 
+  const [campaignData, setCampaignData] = React.useState({});
+
   // for testing purpose..
   const etherScanAddress = "0x4d496ccc28058b1d74b7a19541663e21154f9c84"; // some dummy address.
-  const minContribAmount = 1.5;
-  const fundRaiserWalletAddress = "0x4d496ccc28058b1d74b7a19541663e21154f9c84";
-  const backersCount = 15;
-  const ethFunded = 20;
-  const ethRaised = 70;
+  // these are for the -- campaignData[] -- where usage of '.' operator isn't working.
+  const minAmountKey = "minContribAmount";
+  const raisedMoneyKey = "ethRaised";
 
   // hooks..
   const [showEndCampaignConfirmation, setShowEndCampaignConfirmation] =
@@ -52,8 +55,22 @@ function ViewCampaign() {
   const [acceptanceStatus, setAcceptanceStatus] = React.useState(false);
 
   useEffect(() => {
-    console.log(fundingAmount);
-  }, [fundingAmount]);
+    console.log("useEffect called");
+    let ignore = false;
+    // fetch the campaigns..
+    const fetchData = async () => {
+      await axios.get(api_url + "campaign/" + campaignId).then((response) => {
+        console.info(response.data);
+        if (!ignore && response.status == 200) setCampaignData(response.data);
+      });
+    };
+
+    fetchData(); // call the function to fetch the data
+
+    return () => {
+      ignore = true; // to avoid rendering multiple times..
+    };
+  }, []);
 
   // helpers ..
   function LinearProgressWithLabel(props) {
@@ -78,7 +95,7 @@ function ViewCampaign() {
     // proceed further, only when valid.
     await axios({
       method: "DELETE",
-      url: api_url + "abort-campaign/1668771224096",
+      url: api_url + "abort-campaign/" + campaignId,
       data: {
         reason: abortCampaignMsg || "Not Mentioned",
       },
@@ -112,11 +129,12 @@ function ViewCampaign() {
   };
 
   const handleAmountChange = (e) => {
-    const balanceAmount = ethRaised - ethFunded;
+    const balanceAmount = campaignData.ethRaised - campaignData.ethFunded;
     const value = e.target.value;
-    if (value < minContribAmount) {
-      setFundingAmount(minContribAmount);
-      enteredAmountRef.current.value = minContribAmount;
+    const minValue = campaignData.minContribAmount;
+    if (value < minValue) {
+      setFundingAmount(minValue);
+      enteredAmountRef.current.value = minValue;
     } else if (value > balanceAmount) {
       setFundingAmount(balanceAmount);
       enteredAmountRef.current.value = balanceAmount;
@@ -127,7 +145,7 @@ function ViewCampaign() {
     console.info("handle contribute funds called");
     await axios({
       method: "POST",
-      url: api_url + "fund-campaign/1668771202052",
+      url: api_url + "fund-campaign/" + campaignId,
       data: {
         contributionAmount: fundingAmount,
       },
@@ -171,11 +189,26 @@ function ViewCampaign() {
             <Typography variant="caption">About Campaign</Typography>
             <Container>
               <Stack spacing={0.8}>
-                <Typography variant="h4" gutterBottom>
-                  Campaign Title
-                </Typography>
+                <Box
+                  display={"flex"}
+                  flexDirection="row"
+                  alignItems={"flex-start"}
+                >
+                  <Typography variant="h4" gutterBottom>
+                    {campaignData.title}
+                  </Typography>
+                  <Chip
+                    label={campaignData.campaignStatus}
+                    size="small"
+                    color={
+                      campaignData.campaignStatus == "ACTIVE"
+                        ? "success"
+                        : "error"
+                    }
+                  />
+                </Box>
                 <Typography variant="body2">
-                  Campaign Description -- short.
+                  {campaignData.description}
                 </Typography>
 
                 <Link
@@ -191,40 +224,48 @@ function ViewCampaign() {
               <Typography variant="caption">
                 Minimum Contribution amount
               </Typography>
-              <Typography>{`${minContribAmount}`} ETH</Typography>
+              <Typography>{campaignData.minContribAmount} ETH</Typography>
             </Container>
             <Container>
               <Typography variant="caption">Goal</Typography>
-              <Typography>{`${ethRaised}`} ETH</Typography>
+              <Typography>{`${campaignData.ethRaised}`} ETH</Typography>
             </Container>
             <Container>
               <Typography variant="caption">
                 Wallet Address of FundRaiser
               </Typography>
-              <Typography>{`${fundRaiserWalletAddress}`}</Typography>
+              <Typography>{`${campaignData.walletAddress}`}</Typography>
             </Container>
-            <Typography variant="caption">Danger Zone</Typography>
-            <Container
-              sx={{ backgroundColor: "#e5989b", padding: 1, borderRadius: 3 }}
-            >
-              <Stack direction="row" alignItems={"center"}>
-                <Container>
-                  <Typography variant="body1">Quit Campaign</Typography>
-                  <Typography variant="caption">
-                    Once you end a campaign, there is no going back. Please be
-                    certain.
-                  </Typography>
-                </Container>
-                <Button
-                  variant="contained"
-                  color="error"
-                  size="small"
-                  onClick={() => setShowEndCampaignConfirmation(true)}
+            {campaignData.campaignStatus === "ACTIVE" && (
+              <>
+                <Typography variant="caption">Danger Zone</Typography>
+                <Container
+                  sx={{
+                    backgroundColor: "#e5989b",
+                    padding: 1,
+                    borderRadius: 3,
+                  }}
                 >
-                  End campaign
-                </Button>
-              </Stack>
-            </Container>
+                  <Stack direction="row" alignItems={"center"}>
+                    <Container>
+                      <Typography variant="body1">Quit Campaign</Typography>
+                      <Typography variant="caption">
+                        Once you end a campaign, there is no going back. Please
+                        be certain.
+                      </Typography>
+                    </Container>
+                    <Button
+                      variant="contained"
+                      color="error"
+                      size="small"
+                      onClick={() => setShowEndCampaignConfirmation(true)}
+                    >
+                      End campaign
+                    </Button>
+                  </Stack>
+                </Container>
+              </>
+            )}
           </Stack>
         </Box>
 
@@ -239,11 +280,14 @@ function ViewCampaign() {
             >
               <Typography variant="h6">Campaign balance</Typography>
               <Typography variant="caption">
-                Amount stored in smart contract -- short text
+                Amount stored in smart contract.
               </Typography>
-              <LinearProgressWithLabel value={(ethFunded / ethRaised) * 100} />
+              <LinearProgressWithLabel
+                value={(campaignData.ethFunded / campaignData.ethRaised) * 100}
+              />
               <Typography variant="body2">
-                {`${ethFunded}`} ETH funded by {`${backersCount}`} backers.
+                {`${campaignData.ethFunded}`} ETH funded by{" "}
+                {`${campaignData.backersCount}`} backers.
               </Typography>
             </Container>
             <Typography variant="caption" sx={{ margin: 0 }}>
@@ -265,7 +309,8 @@ function ViewCampaign() {
                     variant="caption"
                     color="grey"
                   >
-                    ≥ {minContribAmount} ETH &amp; ≤ {ethRaised - ethFunded} ETH
+                    ≥ {campaignData.minContribAmount} ETH &amp; ≤{" "}
+                    {campaignData.ethRaised - campaignData.ethFunded} ETH
                   </Typography>
                 </Stack>
                 <TextField
@@ -273,8 +318,8 @@ function ViewCampaign() {
                   type={"number"}
                   inputProps={{
                     step: 0.00001,
-                    min: { minContribAmount },
-                    max: { ethRaised },
+                    min: campaignData[minAmountKey],
+                    max: campaignData[raisedMoneyKey],
                   }}
                   // value={enteredAmount}
                   onChange={handleAmountChange}
@@ -284,7 +329,7 @@ function ViewCampaign() {
                 ></TextField>
                 <Button
                   variant="contained"
-                  disabled={fundingAmount < minContribAmount}
+                  disabled={fundingAmount < campaignData.minContribAmount}
                   onClick={handleContributeFunds}
                 >
                   Contribute {fundingAmount} ETH
