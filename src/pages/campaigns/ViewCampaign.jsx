@@ -9,6 +9,8 @@ import Modal from "@mui/material/Modal";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 
 // local imports..
 import NavBar from "../../components/NavBar";
@@ -25,6 +27,14 @@ const StyledModal = styled(Modal)({
 const api_url = "http://localhost:4000/api/";
 
 function ViewCampaign() {
+  // hooks..
+  const [responseMsg, setResponseMsg] = React.useState(""); // to display error messages.
+  const [showResponse, setShowResponse] = React.useState(false); // To know whether error occured. ⁉ why not use length of error message
+  const [responseSeverity, setResponseSeverity] = React.useState("error");
+
+  const [abortCampaignMsg, setAbortCampaignMsg] =
+    React.useState("Not mentioned");
+
   // for testing purpose..
   const etherScanAddress = "0x4d496ccc28058b1d74b7a19541663e21154f9c84"; // some dummy address.
   const minContribAmount = 1.5;
@@ -56,19 +66,34 @@ function ViewCampaign() {
   }
 
   async function abortCampaign() {
+    // console.log("abort campaign called");
+
     const response = await axios.delete(
       api_url + "abort-campaign/1668771224096",
       {
-        reason: "--FRONTEND-TESTING--",
+        reason: abortCampaignMsg,
       }
     );
-    console.log(response);
+    // console.log(response);
     if (response.status == 200) {
-      console.log(response.data.msg); // SHow this in snackbar.
-      setShowEndCampaignConfirmation(false);
-      // Re-load the page
-    }
+      // console.log(response.data.msg); // SHow this in snackbar.
+      setResponseSeverity("success");
+      setTimeout(window.location.reload(true), 3000); // Re-load the page
+    } else setResponseSeverity("error");
+
+    setShowEndCampaignConfirmation(false); // close the modal
+    setShowResponse(true);
+    setResponseMsg(
+      response.data.msg + "\n Wallet balance will get effected soon."
+    );
   }
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setShowResponse(false);
+  };
 
   return (
     <>
@@ -228,13 +253,14 @@ function ViewCampaign() {
             flexDirection={"column"}
             gap={1}
             sx={{ justifyContent: "center" }}
+            component="form"
+            onSubmit={abortCampaign}
           >
             <Typography
               variant="h6"
               color="error"
               textAlign="center"
               gutterBottom
-              fullWidth
             >
               End Campaign
             </Typography>
@@ -245,6 +271,7 @@ function ViewCampaign() {
                 rows={3}
                 name="campaignEndReason"
                 variant="standard"
+                onChange={(e) => console.log(e.target.value)}
               />
               <Typography variant="caption">
                 This reason will be published in campaign page to notify viewers
@@ -262,7 +289,9 @@ function ViewCampaign() {
               <Button
                 color="error"
                 variant="contained"
-                disabled={acceptanceStatus == false}
+                disabled={
+                  acceptanceStatus == false && abortCampaignMsg.length == 0
+                }
                 onClick={() => abortCampaign()}
               >
                 End Campaign
@@ -271,6 +300,16 @@ function ViewCampaign() {
           </Box>
         </Box>
       </StyledModal>
+      <Snackbar
+        open={showResponse}
+        autoHideDuration={4000}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+      >
+        <Alert onClose={handleClose} severity={responseSeverity}>
+          {responseMsg}
+        </Alert>
+      </Snackbar>
     </>
   );
 }
