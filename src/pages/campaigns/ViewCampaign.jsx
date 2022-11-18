@@ -32,8 +32,7 @@ function ViewCampaign() {
   const [showResponse, setShowResponse] = React.useState(false); // To know whether error occured. ⁉ why not use length of error message
   const [responseSeverity, setResponseSeverity] = React.useState("error");
 
-  const [abortCampaignMsg, setAbortCampaignMsg] =
-    React.useState("Not mentioned");
+  const [abortCampaignMsg, setAbortCampaignMsg] = React.useState("");
 
   // for testing purpose..
   const etherScanAddress = "0x4d496ccc28058b1d74b7a19541663e21154f9c84"; // some dummy address.
@@ -67,13 +66,17 @@ function ViewCampaign() {
 
   async function abortCampaign() {
     // console.log("abort campaign called");
+    if (acceptanceStatus === false && abortCampaignMsg.length == 0) return;
 
-    const response = await axios.delete(
-      api_url + "abort-campaign/1668771224096",
-      {
-        reason: abortCampaignMsg,
-      }
-    );
+    // proceed further, only when valid.
+    const response = await axios({
+      method: "DELETE",
+      url: api_url + "abort-campaign/1668771224096",
+      data: {
+        reason: abortCampaignMsg || "Not Mentioned",
+      },
+    });
+
     // console.log(response);
     if (response.status == 200) {
       // console.log(response.data.msg); // SHow this in snackbar.
@@ -254,7 +257,7 @@ function ViewCampaign() {
             gap={1}
             sx={{ justifyContent: "center" }}
             component="form"
-            onSubmit={abortCampaign}
+            // onSubmit={abortCampaign}
           >
             <Typography
               variant="h6"
@@ -271,7 +274,7 @@ function ViewCampaign() {
                 rows={3}
                 name="campaignEndReason"
                 variant="standard"
-                onChange={(e) => console.log(e.target.value)}
+                onChange={(e) => setAbortCampaignMsg(e.target.value)}
               />
               <Typography variant="caption">
                 This reason will be published in campaign page to notify viewers
@@ -283,15 +286,16 @@ function ViewCampaign() {
                 <FormControlLabel
                   control={<Checkbox />}
                   label="I accept that, if I end campaign, all the raised money can be refunded back to the backers."
-                  onChange={() => setAcceptanceStatus(!acceptanceStatus)}
+                  onChange={() => {
+                    setAcceptanceStatus(!acceptanceStatus);
+                    console.log(acceptanceStatus);
+                  }}
                 />
               </FormGroup>
               <Button
                 color="error"
                 variant="contained"
-                disabled={
-                  acceptanceStatus == false && abortCampaignMsg.length == 0
-                }
+                disabled={acceptanceStatus == false}
                 onClick={() => abortCampaign()}
               >
                 End Campaign
