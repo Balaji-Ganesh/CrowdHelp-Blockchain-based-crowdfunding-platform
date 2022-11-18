@@ -16,6 +16,7 @@ import Alert from "@mui/material/Alert";
 import NavBar from "../../components/NavBar";
 // service imports..
 import axios from "axios";
+import { useEffect } from "react";
 
 // stylings..
 const StyledModal = styled(Modal)({
@@ -34,6 +35,9 @@ function ViewCampaign() {
 
   const [abortCampaignMsg, setAbortCampaignMsg] = React.useState("");
 
+  const [fundingAmount, setFundingAmount] = React.useState(0); // set this via ref's and onchange.
+  const enteredAmountRef = React.useRef(0);
+
   // for testing purpose..
   const etherScanAddress = "0x4d496ccc28058b1d74b7a19541663e21154f9c84"; // some dummy address.
   const minContribAmount = 1.5;
@@ -41,12 +45,15 @@ function ViewCampaign() {
   const backersCount = 15;
   const ethFunded = 20;
   const ethRaised = 70;
-  const enteredAmount = 0.75; // set this via ref's and onchange.
 
   // hooks..
   const [showEndCampaignConfirmation, setShowEndCampaignConfirmation] =
     React.useState(false);
   const [acceptanceStatus, setAcceptanceStatus] = React.useState(false);
+
+  useEffect(() => {
+    console.log(fundingAmount);
+  }, [fundingAmount]);
 
   // helpers ..
   function LinearProgressWithLabel(props) {
@@ -96,6 +103,45 @@ function ViewCampaign() {
       return;
     }
     setShowResponse(false);
+  };
+
+  const handleAmountChange = (e) => {
+    const balanceAmount = ethRaised - ethFunded;
+    const value = e.target.value;
+    if (value < minContribAmount) {
+      setFundingAmount(minContribAmount);
+      enteredAmountRef.current.value = minContribAmount;
+    } else if (value > balanceAmount) {
+      setFundingAmount(balanceAmount);
+      enteredAmountRef.current.value = balanceAmount;
+    } else setFundingAmount(value);
+  };
+
+  const handleContributeFunds = async () => {
+    console.info("handle contribute funds called");
+    await axios({
+      method: "POST",
+      url: api_url + "fund-campaign/1668771202052",
+      data: {
+        contributionAmount: fundingAmount,
+      },
+    })
+      .then((response) => {
+        if (response.status == 200) {
+          setResponseSeverity("success");
+        } else setResponseSeverity("error");
+        setShowResponse(true);
+        setResponseMsg(response.data.msg);
+      })
+      .catch((err) => {
+        console.error(err);
+      })
+      .finally(() => {
+        // setResponseSeverity("error");
+        // setShowResponse(false);
+        // setResponseMsg("");
+        console.log("job done");
+      });
   };
 
   return (
@@ -207,23 +253,33 @@ function ViewCampaign() {
                     How much would you like to fund?
                   </Typography>
                   <Typography
-                    sx={{ fontStyle: "italic" }}
+                    sx={{ fontStyle: "italic", paddingLeft: 1 }}
                     variant="caption"
                     color="grey"
                   >
-                    above {`${minContribAmount}`} ETH.
+                    ≥ {minContribAmount} ETH &amp; ≤ {ethRaised - ethFunded} ETH
                   </Typography>
                 </Stack>
                 <TextField
                   label="Contribution amount"
-                  value={enteredAmount}
+                  type={"number"}
+                  inputProps={{
+                    step: 0.00001,
+                    min: { minContribAmount },
+                    max: { ethRaised },
+                  }}
+                  // value={enteredAmount}
+                  onChange={handleAmountChange}
+                  // onBlur={handleAmountChange}
+                  inputRef={enteredAmountRef}
                   fullWidth
                 ></TextField>
                 <Button
                   variant="contained"
-                  disabled={enteredAmount < minContribAmount}
+                  disabled={fundingAmount < minContribAmount}
+                  onClick={handleContributeFunds}
                 >
-                  Contribute {enteredAmount} ETH
+                  Contribute {fundingAmount} ETH
                 </Button>
                 <Typography variant="subtitle2" color="grey">
                   Scheme - All or Nothing.
