@@ -10,8 +10,10 @@ import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 
-// service imports..
+// local imports..
 import NavBar from "../../components/NavBar";
+// service imports..
+import axios from "axios";
 
 // stylings..
 const StyledModal = styled(Modal)({
@@ -19,6 +21,8 @@ const StyledModal = styled(Modal)({
   alignItems: "center",
   justifyContent: "center",
 });
+
+const api_url = "http://localhost:4000/api/";
 
 function ViewCampaign() {
   // for testing purpose..
@@ -49,6 +53,21 @@ function ViewCampaign() {
         </Box>
       </Box>
     );
+  }
+
+  async function abortCampaign() {
+    const response = await axios.delete(
+      api_url + "abort-campaign/1668771224096",
+      {
+        reason: "--FRONTEND-TESTING--",
+      }
+    );
+    console.log(response);
+    if (response.status == 200) {
+      console.log(response.data.msg); // SHow this in snackbar.
+      setShowEndCampaignConfirmation(false);
+      // Re-load the page
+    }
   }
 
   return (
@@ -244,7 +263,7 @@ function ViewCampaign() {
                 color="error"
                 variant="contained"
                 disabled={acceptanceStatus == false}
-                //   onClick={} -- call a function, that handles campaign ending.
+                onClick={() => abortCampaign()}
               >
                 End Campaign
               </Button>
