@@ -76,26 +76,32 @@ function ViewCampaign() {
     if (acceptanceStatus === false && abortCampaignMsg.length == 0) return;
 
     // proceed further, only when valid.
-    const response = await axios({
+    await axios({
       method: "DELETE",
       url: api_url + "abort-campaign/1668771224096",
       data: {
         reason: abortCampaignMsg || "Not Mentioned",
       },
-    });
+    })
+      .then((response) => {
+        // console.log(response);
+        if (response.status == 200) {
+          // console.log(response.data.msg); // SHow this in snackbar.
+          setResponseSeverity("success");
+          setTimeout(window.location.reload(true), 3000); // Re-load the page
+          setResponseMsg(
+            response.data.msg + "\n Wallet balance will get effected soon."
+          );
+        } else setResponseSeverity("error");
 
-    // console.log(response);
-    if (response.status == 200) {
-      // console.log(response.data.msg); // SHow this in snackbar.
-      setResponseSeverity("success");
-      setTimeout(window.location.reload(true), 3000); // Re-load the page
-    } else setResponseSeverity("error");
-
-    setShowEndCampaignConfirmation(false); // close the modal
-    setShowResponse(true);
-    setResponseMsg(
-      response.data.msg + "\n Wallet balance will get effected soon."
-    );
+        setShowEndCampaignConfirmation(false); // close the modal
+        setShowResponse(true);
+      })
+      .catch((err) => {
+        setResponseSeverity("error");
+        setShowResponse(true);
+        setResponseMsg(err);
+      });
   }
 
   const handleClose = (event, reason) => {
@@ -134,7 +140,9 @@ function ViewCampaign() {
         setResponseMsg(response.data.msg);
       })
       .catch((err) => {
-        console.error(err);
+        setResponseSeverity("error");
+        setShowResponse(true);
+        setResponseMsg(err);
       })
       .finally(() => {
         // setResponseSeverity("error");
