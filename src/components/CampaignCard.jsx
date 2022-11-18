@@ -16,7 +16,12 @@ import FavoriteBorderRoundedIcon from "@mui/icons-material/FavoriteBorderRounded
 import AccessTimeRoundedIcon from "@mui/icons-material/AccessTimeRounded";
 import ShareIcon from "@mui/icons-material/Share";
 
+// service imports..
+import { useNavigate } from "react-router-dom";
+
 function CampaignCard(props) {
+  const navigate = useNavigate();
+
   // extract the details..
   const {
     bannerUrl,
@@ -27,6 +32,7 @@ function CampaignCard(props) {
     ethRaised,
     ethFunded,
     deadline,
+    id,
   } = props.details;
 
   // Find the no. of days left..
@@ -74,7 +80,10 @@ function CampaignCard(props) {
           image={bannerUrl}
         />
         <CardActionArea>
-          <CardContent sx={{ flexGrow: 1 }}>
+          <CardContent
+            sx={{ flexGrow: 1 }}
+            onClick={() => navigate(`/../campaign/${id}`)}
+          >
             <Stack
               flexDirection="row"
               justifyContent="space-between"
