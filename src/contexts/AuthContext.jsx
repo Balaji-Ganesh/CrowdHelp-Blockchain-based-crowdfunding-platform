@@ -2,6 +2,9 @@ import React, { useContext, useState, useEffect } from "react";
 import { auth } from "../config/firebase-config";
 import firebase from "firebase/compat/app";
 
+// service imports..
+import { useNavigate } from "react-router-dom";
+
 // to maintain the status of the authentication across the application
 const AuthContext = React.createContext();
 
@@ -20,6 +23,8 @@ export function AuthProvider({ children }) {
   );
   const [token, setToken] = React.useState("");
 
+  const navigate = useNavigate();
+
   // hooks..handle whenever refreshed..
   useEffect(() => {
     // set the credentials, whenver sign-up/sign-in happens.
@@ -33,6 +38,7 @@ export function AuthProvider({ children }) {
         // get token..
         userCredentials.getIdToken().then((token) => {
           setToken(token);
+          navigate("/");  // navigate to home page
           // console.log(token);
         });
       }
