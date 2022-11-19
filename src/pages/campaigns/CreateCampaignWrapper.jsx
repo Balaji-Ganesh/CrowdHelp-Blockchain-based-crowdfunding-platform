@@ -32,7 +32,7 @@ function Copyright() {
 const steps = [
   "Campaign Details",
   // "Set Milestones", -- next iteration feature
-  "Review campaign details",
+  // "Review campaign details", --- this feature needs milestones to be set, else meaning-less.
 ];
 
 function getStepContent(step) {
@@ -104,13 +104,6 @@ function CreateCampaignWrapper() {
             <Typography component="h1" variant="h4" align="center">
               Create Campaign
             </Typography>
-            <StyledStepper activeStep={activeStep}>
-              {steps.map((label) => (
-                <Step key={label}>
-                  <StepLabel>{label}</StepLabel>
-                </Step>
-              ))}
-            </StyledStepper>
             <>
               {activeStep == steps.length ? (
                 <>

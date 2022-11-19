@@ -40,7 +40,7 @@ function App() {
             path="/create-campaign"
             element={
               <AuthProtectedRoute>
-                <CreateCampaignWrapper />
+                <FillCampaignDetails />
               </AuthProtectedRoute>
             }
           />
