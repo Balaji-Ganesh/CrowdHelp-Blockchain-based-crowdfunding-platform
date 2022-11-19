@@ -103,21 +103,21 @@
       - [x] Deploy the project - UI in Netlify - checkout at [here](https://crowdhelp.netlify.app/)
   2.  Creating campaigns _-- Need help of others_
       - [x] Taking details from fundraiser -- **without milestones**
-      - [ ] ~Taking milestones details~ _-- feature shifted next iteration._.
+      - ~Taking milestones details~ _-- feature shifted next iteration._.
       - [ ] Deploying in blockchain
   3.  Displaying campaigns
       - [x] Displaying _few_ active campaigns in homepage
       - [x] [separate] campaigns page - which lists all the active campaigns
-      - [ ] Viewing particular campaign - which shows the transactions, option to fund, ~option to raise withdraw request and milestones set~.
+      - [x] Viewing particular campaign - which shows the transactions, option to fund, ~option to raise withdraw request and milestones set~.
   4.  ~Funds withdraw _-- Need help of others_~ -- _Feature shifted to next iteration_
-      - [ ] Taking withdraw request -
-      - [ ] Notifying the contributors, reg. withdraw request.
-      - [ ] Taking the acceptance decision of them.
-      - [ ] Approving withdraw request based on the count.
-      - [ ] Updating the acceptance % to fundraiser.
+      - Taking withdraw request -
+      - Notifying the contributors, reg. withdraw request.
+      - Taking the acceptance decision of them.
+      - Approving withdraw request based on the count.
+      - Updating the acceptance % to fundraiser.
   5.  Ending campaigns
       - [ ] Normal ending -- i.e., as the deadline completes.
-      - [ ] Abrupt ending -- i.e., ending in-between.
+      - [x] Abrupt ending -- i.e., ending in-between.
 - @Manan - Integration of whole application with Solidity and back-end
 - @GautamGupta - Designing test cases.
   - Lacking specificity -- Only _Designing_..? Who will take testing then?
