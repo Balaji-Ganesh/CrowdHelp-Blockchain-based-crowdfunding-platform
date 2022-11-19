@@ -100,7 +100,16 @@ function CampaignCard(props) {
             <Typography gutterBottom variant="h5" component="h2">
               {title}
             </Typography>
-            <Typography gutterBottom fontSize={15}>
+            <Typography
+              gutterBottom
+              fontSize={15}
+              sx={{
+                display: "-webkit-box",
+                overflow: "hidden",
+                WebkitBoxOrient: "vertical",
+                WebkitLineClamp: 3,
+              }}
+            >
               {description}
             </Typography>
             <Stack
