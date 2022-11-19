@@ -13,18 +13,20 @@ import {
   Checkbox,
 } from "@mui/material";
 import React, { useEffect } from "react";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
+// local imports...
 import NavBar from "../../components/NavBar";
-function FillCampaignDetails() {
-  // hooks ..
-  // figure out why this way is failing..
-  // const [title, setTitle] = React.useState("");
-  // const [description, setDescription] = React.useState("");
-  // const [minContribAmount, setMinContribAmount] = React.useState(0.0);
-  // const [ethRaised, setEthRaised] = React.useState("");
-  // const [bannerUrl, setBannerUrl] = React.useState("");
-  // const [deadlineDate, setDeadlineDate] = React.useState("");
-  // const [deadlineTime, setDeadlineTime] = React.useState("");
 
+// service imports..
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+
+const api_url = "http://localhost:4000/api/";
+
+function FillCampaignDetails() {
+  const navigate = useNavigate();
+  // hooks for getting form data..
   const titleRef = React.useRef("");
   const descriptionRef = React.useRef("");
   const minContribAmountRef = React.useRef(0.0);
@@ -33,21 +35,49 @@ function FillCampaignDetails() {
   const deadlineDateRef = React.useRef("");
   const deadlineTimeRef = React.useRef("");
 
-  const handleChange = (name, value) => {
-    // const { name, value } = e.target;
-    console.log(name + ":" + value);
-    // let prevValue = formValues[name];
-    // console.log(formValues);
-    // setFormValues({ [name]: value });
-    setFormValues({ ...formValues, [name]: value });
-    console.log(formValues);
-  };
+  // hooks to handle acknowledgements..
+  // hooks..
+  const [responseMsg, setResponseMsg] = React.useState(""); // to display error messages.
+  const [showResponse, setShowResponse] = React.useState(false); // To know whether error occured. ⁉ why not use length of error message
+  const [responseSeverity, setResponseSeverity] = React.useState("error");
 
   // helpers..
-  function handleFilledCampaignDetails(e) {
+  async function handleFilledCampaignDetails(e) {
     e.preventDefault();
     console.info("submit called");
     // console.log(title + ", " + deadlineDate);
+
+    await axios({
+      method: "POST",
+      url: api_url + "create-campaign/",
+      data: {
+        title: titleRef.current.value,
+        description: descriptionRef.current.value,
+        minContribAmount: minContribAmountRef.current.value,
+        ethRaised: ethRaisedRef.current.value,
+        bannerUrl: bannerUrlRef.current.value,
+        deadline:
+          deadlineDateRef.current.value + "T" + deadlineTimeRef.current.value,
+        walletAddress: "In testing...",
+      },
+    })
+      .then((response) => {
+        console.log(response);
+        if (response.status == 200)
+          // on successful creation..
+          navigate("/../campaign/" + response.data.campaignId); //  navigate to campaign page.
+        throw Error("testing");
+      })
+      .catch((err) => {
+        // upon error.. be on the same page and show the error.
+        setResponseSeverity("error");
+        setShowResponse(true);
+        setResponseMsg(err);
+      })
+      .finally(() => {
+        console.log("job done");
+      });
+
     const data = {
       title: titleRef.current.value,
       description: descriptionRef.current.value,
@@ -90,6 +120,13 @@ function FillCampaignDetails() {
       width: "40%",
     },
   }));
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setShowResponse(false);
+  };
 
   return (
     <>
@@ -287,6 +324,16 @@ function FillCampaignDetails() {
           </StyledDivPaper>
         </StyledDivLayout>
       </StyledContainer>
+      <Snackbar
+        open={showResponse}
+        autoHideDuration={4000}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+      >
+        <Alert onClose={handleClose} severity={responseSeverity}>
+          {responseMsg}
+        </Alert>
+      </Snackbar>
     </>
   );
 }
