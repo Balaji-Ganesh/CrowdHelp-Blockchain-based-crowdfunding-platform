@@ -11,15 +11,38 @@ import {
   FormControlLabel,
   Checkbox,
 } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
 import NavBar from "../../components/NavBar";
 function FillCampaignDetails() {
+  // hooks ..
+  // figure out why this way is failing..
+  const [formValues, setFormValues] = React.useState({
+    title: "",
+    description: "",
+    // minContribAmount: 0.0,
+    // ethRaised: 0.0,
+    // bannerUrl: "",
+    // deadlineDate: "",
+    // deadlineTime: "",
+    // walletAddress: "0x.. set from useAuth",
+  });
+
+  const handleChange = (name, value) => {
+    // const { name, value } = e.target;
+    console.log(name + ":" + value);
+    // let prevValue = formValues[name];
+    // console.log(formValues);
+    // setFormValues({ [name]: value });
+    setFormValues({ ...formValues, [name]: value });
+    console.log(formValues);
+  };
+
   // helpers..
   function handleFilledCampaignDetails(e) {
     e.preventDefault();
     console.info("submit called");
-    const data = new FormData(event.currentTarget);
-    console.log(data.getAll());
+
+    console.log(formValues);
   }
 
   const StyledDivLayout = styled("div")(({ theme }) => ({
@@ -83,13 +106,16 @@ function FillCampaignDetails() {
                   <Box display={"flex"} flexDirection="column" gap={2}>
                     <TextField
                       required
-                      id="campaignTitle"
-                      name="campaignTitle"
+                      id="title"
+                      name="title"
                       label="Campaign Title"
                       size="small"
                       fullWidth
                       variant="outlined"
                       helperText="About this campaign in 2-3 words"
+                      onChange={(e) =>
+                        handleChange(e.target.name + " : " + e.target.value)
+                      }
                     />
                     <TextField
                       required={true}
@@ -105,14 +131,15 @@ function FillCampaignDetails() {
                       fullWidth
                       variant="outlined"
                       helperText="How much minimum amount you are expecting from backers?"
+                      onChange={(e) => handleChange(e)}
                     />
                   </Box>
                 </Grid>
                 <Grid item xs={6}>
                   <Grid styl={{ height: "70%" }}>
                     <TextField
-                      id="campaignDescription"
-                      name="campaignDescription"
+                      id="description"
+                      name="description"
                       label="Campaign Description"
                       size="small"
                       multiline
@@ -120,14 +147,15 @@ function FillCampaignDetails() {
                       fullWidth
                       required
                       helperText="Help people know about this campaign. Keep it simple and short."
+                      onChange={handleChange}
                     />
                   </Grid>
                 </Grid>
                 <Grid item xs={12} sm={6}>
                   <TextField
                     required
-                    id="amountToBeRaised"
-                    name="amountToBeRaised"
+                    id="ethRaised"
+                    name="ethRaised"
                     label="Goal (ETH)"
                     fullWidth
                     size="small"
@@ -137,6 +165,7 @@ function FillCampaignDetails() {
                       min: 1,
                       step: 0.00001,
                     }}
+                    onChange={handleChange}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -153,6 +182,7 @@ function FillCampaignDetails() {
                     }}
                     title="This image will be shown as a banner"
                     helperText="Preferably from unsplash.com, flaticon.com, pexels.com."
+                    onChange={handleChange}
                   />
                 </Grid>
 
@@ -164,33 +194,26 @@ function FillCampaignDetails() {
                     <Box display={"flex"} flexDirection="row" gap={2}>
                       <TextField
                         required
-                        id="deadline"
-                        name="deadline"
-                        // label="'Deadline'"
-                        // fullWidth
+                        id="deadlineDate"
+                        name="deadlineDate"
                         type={"date"}
-                        // placeholder={new Date(new Date().getTime() + 5 * 24 * 60 * 60 * 1000).toJSON().slice(0, 10)}
                         inputProps={{
                           min: `${new Date(
                             new Date().getTime() + 1 * 24 * 60 * 60 * 1000 // +1 day
                           )
                             .toJSON()
                             .slice(0, 10)}`,
-                          s,
                         }}
                         size="small"
-                        // helperText="Set a reasonable range, neither too short nor too long."
+                        onChange={handleChange}
                       />
                       <TextField
                         required
-                        id="deadline"
-                        name="deadline"
-                        // label="'Deadline'"
-                        // fullWidth
+                        id="deadlineTime"
+                        name="deadlineTime"
                         type={"time"}
-                        // placeholder={new Date(new Date().getTime() + 5 * 24 * 60 * 60 * 1000).toJSON().slice(11, 16)}
                         size="small"
-                        // helperText="Set a reasonable range, neither too short nor too long."
+                        onChange={handleChange}
                       />
                     </Box>
                     <Typography variant="caption" color="GrayText">
@@ -205,11 +228,11 @@ function FillCampaignDetails() {
                   <Typography variant="caption">&nbsp;</Typography>
                   <TextField
                     required
-                    id="campaignEndDate"
-                    name="campaignEndDate"
+                    id="walletAddress"
+                    name="walletAddress"
                     label="Wallet Address"
                     fullWidth
-                    value={"0x123123123"}
+                    value={"0x123123123 - set from credentials"}
                     inputProps={{
                       readOnly: "read-only",
                     }}
