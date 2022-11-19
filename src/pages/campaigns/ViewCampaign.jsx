@@ -156,6 +156,7 @@ function ViewCampaign() {
         } else setResponseSeverity("error");
         setShowResponse(true);
         setResponseMsg(response.data.msg);
+        window.location.reload(); // re-load to see the status.
       })
       .catch((err) => {
         setResponseSeverity("error");
