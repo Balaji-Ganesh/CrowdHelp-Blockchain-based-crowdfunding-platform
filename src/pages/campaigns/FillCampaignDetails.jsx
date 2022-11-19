@@ -1,3 +1,4 @@
+import { LocalConvenienceStoreOutlined } from "@mui/icons-material";
 import {
   Button,
   Container,
@@ -16,13 +17,21 @@ import NavBar from "../../components/NavBar";
 function FillCampaignDetails() {
   // hooks ..
   // figure out why this way is failing..
-  const [title, setTitle] = React.useState("");
-  const [description, setDescription] = React.useState("");
-  const [minContribAmount, setMinContribAmount] = React.useState(0.0);
-  const [ethRaised, setEthRaised] = React.useState("");
-  const [bannerUrl, setBannerUrl] = React.useState("");
-  const [deadlineDate, setDeadlineDate] = React.useState("");
-  const [deadlineTime, setDeadlineTime] = React.useState("");
+  // const [title, setTitle] = React.useState("");
+  // const [description, setDescription] = React.useState("");
+  // const [minContribAmount, setMinContribAmount] = React.useState(0.0);
+  // const [ethRaised, setEthRaised] = React.useState("");
+  // const [bannerUrl, setBannerUrl] = React.useState("");
+  // const [deadlineDate, setDeadlineDate] = React.useState("");
+  // const [deadlineTime, setDeadlineTime] = React.useState("");
+
+  const titleRef = React.useRef("");
+  const descriptionRef = React.useRef("");
+  const minContribAmountRef = React.useRef(0.0);
+  const ethRaisedRef = React.useRef(0.0);
+  const bannerUrlRef = React.useRef("");
+  const deadlineDateRef = React.useRef("");
+  const deadlineTimeRef = React.useRef("");
 
   const handleChange = (name, value) => {
     // const { name, value } = e.target;
@@ -38,7 +47,17 @@ function FillCampaignDetails() {
   function handleFilledCampaignDetails(e) {
     e.preventDefault();
     console.info("submit called");
-    console.log(title + ", " + deadlineDate);
+    // console.log(title + ", " + deadlineDate);
+    const data = {
+      title: titleRef.current.value,
+      description: descriptionRef.current.value,
+      minContribAmount: minContribAmountRef.current.value,
+      ethRaised: ethRaisedRef.current.value,
+      bannerUrl: bannerUrlRef.current.value,
+      deadlineDate: deadlineDateRef.current.value,
+      deadlineTime: deadlineTimeRef.current.value,
+    };
+    console.log(data);
   }
 
   const StyledDivLayout = styled("div")(({ theme }) => ({
@@ -90,7 +109,7 @@ function FillCampaignDetails() {
             >
               Campaign Details
             </Typography>
-            <form autoComplete="off" onSubmit={handleFilledCampaignDetails}>
+            <form autoComplete="on" onSubmit={handleFilledCampaignDetails}>
               <Grid
                 container
                 spacing={1.5}
@@ -109,11 +128,13 @@ function FillCampaignDetails() {
                       fullWidth
                       variant="outlined"
                       helperText="About this campaign in 2-3 words"
-                      onChange={(e) =>
-                        // setTitle(e.target.value)
-                        console.log(e.target.value)
-                      }
-                    />
+                      //// onChange={(e) =>
+                      //   // setTitle(e.target.value)
+                      //   console.log(e.target.value)
+                      // }
+
+                      inputRef={titleRef}
+                    ></TextField>
                     <TextField
                       required={true}
                       id="minContribAmount"
@@ -128,9 +149,8 @@ function FillCampaignDetails() {
                       fullWidth
                       variant="outlined"
                       helperText="How much minimum amount you are expecting from backers?"
-                      onChange={(e) =>
-                        setMinContribAmount(e.target.valueAsNumber)
-                      }
+                      //onChange={(e) =>setMinContribAmount(e.target.valueAsNumber) }
+                      inputRef={minContribAmountRef}
                     />
                   </Box>
                 </Grid>
@@ -146,7 +166,8 @@ function FillCampaignDetails() {
                       fullWidth
                       required
                       helperText="Help people know about this campaign. Keep it simple and short."
-                      onChange={(e) => setDescription(e.target.value)}
+                      //onChange={(e) => setDescription(e.target.value)}
+                      inputRef={descriptionRef}
                     />
                   </Grid>
                 </Grid>
@@ -164,7 +185,8 @@ function FillCampaignDetails() {
                       min: 1,
                       step: 0.00001,
                     }}
-                    onChange={(e) => setEthRaised(e.target.valueAsNumber)}
+                    //onChange={(e) => setEthRaised(e.target.valueAsNumber)}
+                    inputRef={ethRaisedRef}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -181,7 +203,8 @@ function FillCampaignDetails() {
                     }}
                     title="This image will be shown as a banner"
                     helperText="Preferably from unsplash.com, flaticon.com, pexels.com."
-                    onChange={(e) => setBannerUrl(e.target.value)}
+                    //onChange={(e) => setBannerUrl(e.target.value)}
+                    inputRef={bannerUrlRef}
                   />
                 </Grid>
 
@@ -204,7 +227,8 @@ function FillCampaignDetails() {
                             .slice(0, 10)}`,
                         }}
                         size="small"
-                        onChange={(e) => setDeadlineDate(e.target.valueAsDate)}
+                        //onChange={(e) => setDeadlineDate(e.target.valueAsDate)}
+                        inputRef={deadlineDateRef}
                       />
                       <TextField
                         required
@@ -212,7 +236,8 @@ function FillCampaignDetails() {
                         name="deadlineTime"
                         type={"time"}
                         size="small"
-                        onChange={(e) => setDeadlineTime(e.target.value)}
+                        //onChange={(e) => setDeadlineTime(e.target.value)}
+                        inputRef={deadlineTimeRef}
                       />
                     </Box>
                     <Typography variant="caption" color="GrayText">
