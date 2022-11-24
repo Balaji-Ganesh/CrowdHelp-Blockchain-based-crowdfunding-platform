@@ -33,7 +33,7 @@ function HomePage() {
   const navigate = useNavigate();
 
   // hooks..
-  const [activeCampaigns, setActiveCampaigns] = React.useState([]);
+  const [campaignsList, setCampaignsList] = React.useState([]);
 
   useEffect(() => {
     // console.log("useEffect called");
@@ -42,9 +42,9 @@ function HomePage() {
     const fetchData = async () => {
       const deployedCampaignsList = await getDeployedCampaigns(); // call the function to fetch the data
       // console.log(deployedCampaignsList);
-      console.log(await getCampaignsSummary(deployedCampaignsList));
-
-      // if (!ignore) setActiveCampaigns(response.data);
+      setCampaignsList(await getCampaignsSummary(deployedCampaignsList));
+      console.log("fetched campaigns");
+      console.log(campaignsList);
     };
 
     // fetch the data..
@@ -89,7 +89,7 @@ function HomePage() {
                   Take part in active campaigns..
                 </Typography>
                 <Typography variant="caption">
-                  Top {activeCampaigns.length} recent active campaigns..
+                  Top {campaignsList.length} recent active campaigns..
                 </Typography>
               </Box>
               <Button onClick={() => navigate("/active-campaigns")}>
@@ -99,11 +99,11 @@ function HomePage() {
             <Container sx={{ py: 2 }} maxWidth="md">
               {/* End hero unit */}
               {/* load as long as data is not fetched. */}
-              {activeCampaigns.length == 0 && (
+              {campaignsList.length == 0 && (
                 <CircularProgress color="success" />
               )}
               <Grid container spacing={4}>
-                {activeCampaigns.map((activeCampaign, idx) => (
+                {campaignsList.map((activeCampaign, idx) => (
                   <Grid item key={idx} xs={12} sm={6} md={4}>
                     <CampaignCard details={activeCampaign} />
                   </Grid>
