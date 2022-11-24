@@ -13,7 +13,10 @@ import Grid from "@mui/material/Grid";
 import CircularProgress from "@mui/material/CircularProgress";
 
 // [block-chain] smart-contract related imports..
-import { getDeployedCampaigns } from "../../lib/getCampaigns";
+import {
+  getDeployedCampaigns,
+  getCampaignsSummary,
+} from "../../lib/getCampaigns";
 
 // local imports..
 import NavBar from "../components/NavBar";
@@ -37,14 +40,15 @@ function HomePage() {
     let ignore = false;
     // fetch the campaigns..
     const fetchData = async () => {
-      const response = await axios.get(api_url + "active-campaigns/3");
-      console.info(response.data);
-      if (!ignore && response.status == 200) setActiveCampaigns(response.data);
+      const deployedCampaignsList = await getDeployedCampaigns(); // call the function to fetch the data
+      // console.log(deployedCampaignsList);
+      console.log(await getCampaignsSummary(deployedCampaignsList));
+
+      // if (!ignore) setActiveCampaigns(response.data);
     };
 
-    const deployedCampaignsList = getDeployedCampaigns(); // call the function to fetch the data
-    
-
+    // fetch the data..
+    fetchData();
     return () => {
       ignore = true; // to avoid rendering multiple times..
     };
