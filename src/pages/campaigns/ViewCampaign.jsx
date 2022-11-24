@@ -19,6 +19,9 @@ import NavBar from "../../components/NavBar";
 import axios from "axios";
 import { useEffect } from "react";
 
+// [block-chain] smart-contract related imports..
+import { getCampaignDetails } from "../../../lib/getCampaigns";
+
 // stylings..
 const StyledModal = styled(Modal)({
   display: "flex",
@@ -59,9 +62,9 @@ function ViewCampaign() {
     let ignore = false;
     // fetch the campaigns..
     const fetchData = async () => {
-      await axios.get(api_url + "campaign/" + campaignId).then((response) => {
-        console.info(response.data);
-        if (!ignore && response.status == 200) setCampaignData(response.data);
+      await getCampaignDetails(campaignId).then((data) => {
+        console.info(data);
+        if (!ignore && data != undefined) setCampaignData(data);
       });
     };
 
@@ -214,7 +217,7 @@ function ViewCampaign() {
 
                 <Link
                   variant="body2"
-                  href={`https://goerli.etherscan.io/address/${etherScanAddress}`}
+                  href={`https://goerli.etherscan.io/address/${campaignData.id}`}
                 >
                   View on Goerli Etherscan
                 </Link>
@@ -235,7 +238,7 @@ function ViewCampaign() {
               <Typography variant="caption">
                 Wallet Address of FundRaiser
               </Typography>
-              <Typography>{`${campaignData.walletAddress}`}</Typography>
+              <Typography>{`${campaignData.createdBy}`}</Typography>
             </Container>
             {campaignData.campaignStatus === "ACTIVE" && (
               <>
