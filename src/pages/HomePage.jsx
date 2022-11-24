@@ -12,6 +12,11 @@ import { useNavigate } from "react-router-dom";
 import Grid from "@mui/material/Grid";
 import CircularProgress from "@mui/material/CircularProgress";
 
+// [block-chain] smart-contract related imports..
+import factory from "../../smart-contract/factory";
+import web3 from "../../smart-contract/web3";
+import Campaign from "../../smart-contract/campaign";
+
 // local imports..
 import NavBar from "../components/NavBar";
 import Footer from "../components/Footer";
@@ -29,6 +34,17 @@ function HomePage() {
   // hooks..
   const [activeCampaigns, setActiveCampaigns] = React.useState([]);
 
+  // fetch the deployed campaigns addresses.
+  const fetchCampaigns = async () => {
+    // get the addresses of the deployed campaigns..
+    const deployedCampaignsList = await factory.methods
+      .getDeployedCampaigns()
+      .call();
+
+    // console.log("deployed: " + deployedCampaignsList);
+    return deployedCampaignsList;
+  };
+
   useEffect(() => {
     // console.log("useEffect called");
     let ignore = false;
@@ -39,7 +55,7 @@ function HomePage() {
       if (!ignore && response.status == 200) setActiveCampaigns(response.data);
     };
 
-    fetchData(); // call the function to fetch the data
+    const deployedCampaignsList = fetchCampaigns(); // call the function to fetch the data
 
     return () => {
       ignore = true; // to avoid rendering multiple times..
