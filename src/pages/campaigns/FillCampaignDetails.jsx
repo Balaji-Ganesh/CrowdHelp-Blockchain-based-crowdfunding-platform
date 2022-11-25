@@ -1,4 +1,7 @@
-import { LocalConvenienceStoreOutlined } from "@mui/icons-material";
+import {
+  ErrorRounded,
+  LocalConvenienceStoreOutlined,
+} from "@mui/icons-material";
 import {
   Button,
   Container,
@@ -15,6 +18,7 @@ import {
 import React, { useEffect } from "react";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
+import { LoadingButton } from "@mui/lab";
 // local imports...
 import NavBar from "../../components/NavBar";
 
@@ -25,6 +29,10 @@ import { useForm } from "react-hook-form";
 
 // Wallet connection..
 import { useWallet } from "use-wallet";
+
+// smart-contract interaction -- for campaign creation..
+import factory from "../../../smart-contract/factory";
+import web3 from "../../../smart-contract/web3";
 
 const api_url = "http://localhost:4000/api/";
 
@@ -50,40 +58,34 @@ function FillCampaignDetails() {
   const [responseSeverity, setResponseSeverity] = React.useState("error");
 
   // helpers..
-  async function handleFilledCampaignDetails(e) {
-    e.preventDefault();
-    console.info("submit called");
-    // console.log(title + ", " + deadlineDate);
+  async function handleFilledCampaignDetails(data) {
+    console.log(data);
 
-    await axios({
-      method: "POST",
-      url: api_url + "create-campaign/",
-      data: {
-        title: "",
-        description: "",
-        minContribAmount: "",
-        ethRaised: "",
-        bannerUrl: "",
-        deadline: "" + "T" + "",
-        walletAddress: "In testing...",
-      },
-    })
-      .then((response) => {
-        console.log(response);
-        if (response.status == 200)
-          // on successful creation..
-          navigate("/../campaign/" + response.data.campaignId); //  navigate to campaign page.
-        throw Error("testing");
-      })
-      .catch((err) => {
-        // upon error.. be on the same page and show the error.
-        setResponseSeverity("error");
-        setShowResponse(true);
-        setResponseMsg(err);
-      })
-      .finally(() => {
-        console.log("job done");
-      });
+    try {
+      const accounts = await web3.eth.getAccounts();
+      // Create campaign by taking all the details..
+      await factory.methods
+        .createCampaign(
+          web3.utils.toWei(data.minContribAmount, "ether"),
+          data.title,
+          data.description,
+          data.bannerUrl,
+          web3.utils.toWei(data.ethRaised, "ether")
+        )
+        .send({
+          from: accounts[0],
+        });
+
+      // After successful creation..
+      ///// REQUIRED: Find way to get the created campaign address, so that, can navigate to that page.
+      navigate("/"); // navigate to home page
+    } catch (err) {
+      // upon error.. be on the same page and show the error.
+      setError(err.message);
+      console.log(err);
+    } finally {
+      console.log("job done");
+    }
   }
 
   const StyledDivLayout = styled("div")(({ theme }) => ({
@@ -142,6 +144,7 @@ function FillCampaignDetails() {
             >
               Campaign Details
             </Typography>
+            {/* Handle wallet connection here.. */}
             {wallet.status !== "connected" ? (
               <Alert
                 sx={{ marginBottom: 2 }}
@@ -178,12 +181,28 @@ function FillCampaignDetails() {
               )
             )}
 
+            {/* For displaying errors.. */}
+            {error && (
+              <Alert sx={{ marginBottom: 2, marginTop: 2 }} severity="error">
+                {error}
+              </Alert>
+            )}
+            {errors.title ||
+            errors.description ||
+            errors.bannerUrl ||
+            errors.minContribAmount ||
+            errors.ethRaised ||
+            errors.walletAddress ||
+            errors.deadlineDate ||
+            errors.deadlineTime ? (
+              <Alert sx={{ marginBottom: 2, marginTop: 2 }} severity="error">
+                All fields are required
+              </Alert>
+            ) : null}
+
             <form
               autoComplete="on"
-              onSubmit={
-                handleSubmit((data) => console.log(JSON.stringify(data)))
-                // setData(JSON.stringify(data)))
-              }
+              onSubmit={handleSubmit(handleFilledCampaignDetails)}
             >
               <Grid
                 container
@@ -330,29 +349,25 @@ function FillCampaignDetails() {
                   <FormControlLabel
                     control={
                       <Checkbox
+                        required
                         color="secondary"
                         name="acceptConditions"
                         value="yes"
-                        required
                       />
                     }
                     label="I/We understand that, once these fields are set cannot be updated."
                   />
                 </Grid>
               </Grid>
-              {error && (
-                <Alert sx={{ marginBottom: 2, marginTop: 2 }} severity="error">
-                  All fields are required
-                </Alert>
-              )}
-              <Button
+              <LoadingButton
                 type="submit"
+                loading={isSubmitting}
                 variant="contained"
                 color="success"
                 disabled={isSubmitting}
               >
                 Create Campaign
-              </Button>
+              </LoadingButton>
             </form>
           </StyledDivPaper>
         </StyledDivLayout>
