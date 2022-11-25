@@ -11,7 +11,9 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
+import AlertTitle from "@mui/material/AlertTitle";
 import Chip from "@mui/material/Chip";
+import { LoadingButton } from "@mui/lab";
 
 // local imports..
 import NavBar from "../../components/NavBar";
@@ -24,6 +26,10 @@ import { useWallet } from "use-wallet";
 import { useForm } from "react-hook-form";
 // [block-chain] smart-contract related imports..
 import { getCampaignDetails } from "../../../lib/getCampaigns";
+
+// smart-contract interaction -- for contribution of funds, withdrawing money & ending campaign.
+import Campaign from "../../../smart-contract/campaign";
+import web3 from "../../../smart-contract/web3";
 
 // stylings..
 const StyledModal = styled(Modal)({
@@ -54,8 +60,9 @@ function ViewCampaign() {
   const { handleSubmit, register, formState, reset, getValues } = useForm({
     mode: "onChange",
   });
-  const [isSubmitted, setIsSubmitted] = React.useState(false);
-  const [error, setError] = React.useState("");
+  const [isContributionSuccess, setIsContributionSuccess] =
+    React.useState(false);
+  const [contributionError, setContributionError] = React.useState("");
 
   // for testing purpose..
   const etherScanAddress = "0x4d496ccc28058b1d74b7a19541663e21154f9c84"; // some dummy address.
@@ -158,32 +165,29 @@ function ViewCampaign() {
   const handleContributedFunds = async (data) => {
     console.info("handle contribute funds called");
     console.log(data);
-    // await axios({
-    //   method: "POST",
-    //   url: api_url + "fund-campaign/" + campaignId,
-    //   data: {
-    //     contributionAmount: fundingAmount,
-    //   },
-    // })
-    //   .then((response) => {
-    //     if (response.status == 200) {
-    //       setResponseSeverity("success");
-    //     } else setResponseSeverity("error");
-    //     setShowResponse(true);
-    //     setResponseMsg(response.data.msg);
-    //     window.location.reload(); // re-load to see the status.
-    //   })
-    //   .catch((err) => {
-    //     setResponseSeverity("error");
-    //     setShowResponse(true);
-    //     setResponseMsg(err);
-    //   })
-    //   .finally(() => {
-    //     // setResponseSeverity("error");
-    //     // setShowResponse(false);
-    //     // setResponseMsg("");
-    //     console.log("job done");
-    //   });
+
+    try {
+      if (data.contribAmount < campaignData.minContribAmount)
+        throw {
+          name: "Invalid contribution amount. Transaction aborted",
+          message: `Contribution cannot be < ${campaignData.minContribAmount}.`,
+        };
+
+      const campaign = Campaign(campaignData.id); // get the campaign
+      const accounts = await web3.eth.getAccounts(); // backer account..
+      await campaign.methods.contibute().send({
+        // register contribution..
+        from: accounts[0],
+        value: web3.utils.toWei(data.contribAmount, "ether"),
+      });
+
+      // after successful contribution..
+      reset("", { keepValues: false }); // clear the values entered.
+      setIsContributionSuccess(true);
+    } catch (err) {
+      console.log(err);
+      setContributionError(err);
+    }
   };
 
   // components..
@@ -301,49 +305,73 @@ function ViewCampaign() {
               {campaignData.ethRaised - campaignData.ethFunded} ETH
             </Typography>
           </Stack>
-          <form onSubmit={handleSubmit(handleContributedFunds)}>
-            <TextField
-              label="Contribution amount"
-              type={"number"}
-              inputProps={{
-                step: 0.00001,
-                min: campaignData[minAmountKey],
-                max: campaignData[raisedMoneyKey],
-              }}
-              // value={enteredAmount}
-              {...register("contribAmount", { required: true })}
-              helperText="Enter amount in Ether you want to contribute."
-              fullWidth
-              size="small"
-            ></TextField>
-            {wallet.status === "connected" ? (
-              <Button
-                variant="contained"
-                type="submit"
-                disabled={fundingAmount < campaignData.minContribAmount}
+          {isContributionSuccess == true ? (
+            <Alert
+              severity="success"
+              sx={{ marginTop: 2, marginBottom: 2 }}
+              onClose={() => setIsContributionSuccess(false)}
+            >
+              <AlertTitle>Funded successfully</AlertTitle>
+              Thanks for your valuable contributions.
+            </Alert>
+          ) : (
+            <form onSubmit={handleSubmit(handleContributedFunds)}>
+              <TextField
+                label="Contribution amount"
+                type={"number"}
+                inputProps={{
+                  step: 0.00001,
+                  min: campaignData[minAmountKey],
+                  max: campaignData[raisedMoneyKey],
+                }}
+                disabled={formState.isSubmitting}
+                {...register("contribAmount", { required: true })}
+                helperText="Enter amount in Ether you want to contribute."
                 fullWidth
-                sx={{ marginTop: 1 }}
-              >
-                Contribute Funds
-              </Button>
-            ) : (
-              <Alert
-                severity="error"
-                sx={{ margin: 2 }}
-                action={
-                  <Button
-                    color="inherit"
-                    size="small"
-                    onClick={() => wallet.connect()}
-                  >
-                    Connect
-                  </Button>
-                }
-              >
-                Please connect your wallet to proceed.
-              </Alert>
-            )}
-          </form>
+                size="small"
+              />
+              {contributionError && (
+                <Alert
+                  severity="error"
+                  sx={{ marginTop: 2, marginBottom: 2 }}
+                  onClose={() => {
+                    setContributionError(""); // erase the error msg.
+                    window.location.reload(); // re-load the page to get the updated status
+                  }}
+                >
+                  <AlertTitle>{contributionError.name}</AlertTitle>
+                  {contributionError.message}
+                </Alert>
+              )}
+              {wallet.status === "connected" ? (
+                <LoadingButton
+                  variant="contained"
+                  type="submit"
+                  fullWidth
+                  loading={formState.isSubmitting}
+                  sx={{ marginTop: 1 }}
+                >
+                  Contribute Funds
+                </LoadingButton>
+              ) : (
+                <Alert
+                  severity="error"
+                  sx={{ margin: 2 }}
+                  action={
+                    <Button
+                      color="inherit"
+                      size="small"
+                      onClick={() => wallet.connect()}
+                    >
+                      Connect
+                    </Button>
+                  }
+                >
+                  Please connect your wallet to proceed.
+                </Alert>
+              )}
+            </form>
+          )}
 
           <Typography variant="subtitle2" color="grey">
             Scheme - All or Nothing.
