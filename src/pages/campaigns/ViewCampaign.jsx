@@ -18,6 +18,8 @@ import NavBar from "../../components/NavBar";
 // service imports..
 import axios from "axios";
 import { useEffect } from "react";
+// Wallet connection..
+import { useWallet } from "use-wallet";
 
 // [block-chain] smart-contract related imports..
 import { getCampaignDetails } from "../../../lib/getCampaigns";
@@ -45,6 +47,7 @@ function ViewCampaign() {
   const enteredAmountRef = React.useRef(0);
 
   const [campaignData, setCampaignData] = React.useState({});
+  const wallet = useWallet();
 
   // for testing purpose..
   const etherScanAddress = "0x4d496ccc28058b1d74b7a19541663e21154f9c84"; // some dummy address.
@@ -301,15 +304,37 @@ function ViewCampaign() {
             onChange={handleAmountChange}
             // onBlur={handleAmountChange}
             inputRef={enteredAmountRef}
+            helperText="Enter amount in Ether you want to contribute."
             fullWidth
+            size="small"
           ></TextField>
-          <Button
-            variant="contained"
-            disabled={fundingAmount < campaignData.minContribAmount}
-            onClick={handleContributeFunds}
-          >
-            Contribute {fundingAmount} ETH
-          </Button>
+          {wallet.status === "connected" ? (
+            <>
+              <Button
+                variant="contained"
+                disabled={fundingAmount < campaignData.minContribAmount}
+                onClick={handleContributeFunds}
+              >
+                Contribute {fundingAmount} ETH
+              </Button>
+            </>
+          ) : (
+            <Alert
+              severity="error"
+              sx={{ margin: 2 }}
+              action={
+                <Button
+                  color="inherit"
+                  size="small"
+                  onClick={() => wallet.connect()}
+                >
+                  Connect
+                </Button>
+              }
+            >
+              Please connect your wallet to proceed.
+            </Alert>
+          )}
           <Typography variant="subtitle2" color="grey">
             Scheme - All or Nothing.
           </Typography>
