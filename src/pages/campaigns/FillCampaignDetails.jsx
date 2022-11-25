@@ -22,10 +22,15 @@ import NavBar from "../../components/NavBar";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+// Wallet connection..
+import { useWallet } from "use-wallet";
+
 const api_url = "http://localhost:4000/api/";
 
 function FillCampaignDetails() {
+  const wallet = useWallet();
   const navigate = useNavigate();
+
   // hooks for getting form data..
   const titleRef = React.useRef("");
   const descriptionRef = React.useRef("");
@@ -146,6 +151,42 @@ function FillCampaignDetails() {
             >
               Campaign Details
             </Typography>
+            {wallet.status !== "connected" ? (
+              <Alert
+                sx={{ marginBottom: 2 }}
+                severity="warning"
+                action={
+                  <Button
+                    color="inherit"
+                    size="small"
+                    onClick={() => wallet.connect()}
+                  >
+                    Connect
+                  </Button>
+                }
+              >
+                Please connect your wallet to proceed.
+              </Alert>
+            ) : (
+              wallet.status === "error" && (
+                <Alert
+                  sx={{ marginBottom: 2 }}
+                  severity="error"
+                  action={
+                    <Button
+                      color="inherit"
+                      size="small"
+                      onClick={() => wallet.connect()}
+                    >
+                      Try again
+                    </Button>
+                  }
+                >
+                  Error connecting to wallet.
+                </Alert>
+              )
+            )}
+
             <form autoComplete="on" onSubmit={handleFilledCampaignDetails}>
               <Grid
                 container
@@ -293,13 +334,17 @@ function FillCampaignDetails() {
                     name="walletAddress"
                     label="Wallet Address"
                     fullWidth
-                    value={"0x123123123 - set from credentials"}
+                    value={wallet.account}
                     inputProps={{
                       readOnly: "read-only",
                     }}
                     title="Read-only value"
                     size="small"
-                    helperText="This is connected wallet's address. To switch please re-login with required wallet."
+                    helperText={
+                      wallet.status === "connected"
+                        ? "This is connected wallet's address. To switch please re-login with required wallet."
+                        : "Please connect to the wallet"
+                    }
                   />
                 </Grid>
 

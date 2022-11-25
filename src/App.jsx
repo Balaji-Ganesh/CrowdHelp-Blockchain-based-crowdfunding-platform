@@ -51,9 +51,9 @@ function App() {
             <Route
               path="/create-campaign"
               element={
-                <AuthProtectedRoute>
+                // <AuthProtectedRoute>
                   <FillCampaignDetails />
-                </AuthProtectedRoute>
+                // {/* </AuthProtectedRoute> */}
               }
             />
             <Route path="/active-campaigns" element={<ActiveCampaigns />} />
