@@ -21,6 +21,8 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import PersonIcon from "@mui/icons-material/Person";
+import CreateIcon from "@mui/icons-material/Create";
+import { LoadingButton } from "@mui/lab";
 
 // service imports..
 import { useAuth } from "../contexts/AuthContext";
@@ -132,6 +134,7 @@ function NavBar() {
               fullWidth
               variant="outlined"
               sx={{ mt: 3, mb: 2 }}
+              startIcon={<CreateIcon />}
               onClick={() => navigate("/create-campaign")}
             >
               Create Campaign
@@ -150,16 +153,16 @@ function NavBar() {
             </>
           ) : (
             <>
-              <Button
-                type="submit"
-                // fullWidth
+              <LoadingButton
                 variant="text"
+                loading={wallet.status === "connecting"}
+                loadingIndicator="Connecting..."
                 // sx={{ mt: 3, mb: 2 }}
                 endIcon={<AccountBalanceWalletIcon />}
                 onClick={() => wallet.connect()}
               >
                 Connect Wallet
-              </Button>
+              </LoadingButton>
             </>
           )}
         </UserActions>
