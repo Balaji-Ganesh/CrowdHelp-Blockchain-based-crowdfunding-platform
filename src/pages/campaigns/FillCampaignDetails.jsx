@@ -21,6 +21,7 @@ import NavBar from "../../components/NavBar";
 // service imports..
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
 
 // Wallet connection..
 import { useWallet } from "use-wallet";
@@ -32,13 +33,15 @@ function FillCampaignDetails() {
   const navigate = useNavigate();
 
   // hooks for getting form data..
-  const titleRef = React.useRef("");
-  const descriptionRef = React.useRef("");
-  const minContribAmountRef = React.useRef(0.0);
-  const ethRaisedRef = React.useRef(0.0);
-  const bannerUrlRef = React.useRef("");
-  const deadlineDateRef = React.useRef("");
-  const deadlineTimeRef = React.useRef("");
+  const {
+    handleSubmit,
+    register,
+    formState: { isSubmitting, errors },
+  } = useForm({
+    mode: "onChange",
+  });
+  const [data, setData] = React.useState("");
+  const [error, setError] = React.useState("");
 
   // hooks to handle acknowledgements..
   // hooks..
@@ -56,13 +59,12 @@ function FillCampaignDetails() {
       method: "POST",
       url: api_url + "create-campaign/",
       data: {
-        title: titleRef.current.value,
-        description: descriptionRef.current.value,
-        minContribAmount: minContribAmountRef.current.value,
-        ethRaised: ethRaisedRef.current.value,
-        bannerUrl: bannerUrlRef.current.value,
-        deadline:
-          deadlineDateRef.current.value + "T" + deadlineTimeRef.current.value,
+        title: "",
+        description: "",
+        minContribAmount: "",
+        ethRaised: "",
+        bannerUrl: "",
+        deadline: "" + "T" + "",
         walletAddress: "In testing...",
       },
     })
@@ -82,17 +84,6 @@ function FillCampaignDetails() {
       .finally(() => {
         console.log("job done");
       });
-
-    const data = {
-      title: titleRef.current.value,
-      description: descriptionRef.current.value,
-      minContribAmount: minContribAmountRef.current.value,
-      ethRaised: ethRaisedRef.current.value,
-      bannerUrl: bannerUrlRef.current.value,
-      deadlineDate: deadlineDateRef.current.value,
-      deadlineTime: deadlineTimeRef.current.value,
-    };
-    console.log(data);
   }
 
   const StyledDivLayout = styled("div")(({ theme }) => ({
@@ -187,7 +178,13 @@ function FillCampaignDetails() {
               )
             )}
 
-            <form autoComplete="on" onSubmit={handleFilledCampaignDetails}>
+            <form
+              autoComplete="on"
+              onSubmit={
+                handleSubmit((data) => console.log(JSON.stringify(data)))
+                // setData(JSON.stringify(data)))
+              }
+            >
               <Grid
                 container
                 spacing={1.5}
@@ -198,25 +195,18 @@ function FillCampaignDetails() {
                 <Grid item xs={6} spacing={0}>
                   <Box display={"flex"} flexDirection="column" gap={2}>
                     <TextField
-                      required
                       id="title"
-                      name="title"
+                      {...register("title", { required: true })}
                       label="Campaign Title"
                       size="small"
                       fullWidth
+                      disabled={isSubmitting}
                       variant="outlined"
                       helperText="About this campaign in 2-3 words"
-                      //// onChange={(e) =>
-                      //   // setTitle(e.target.value)
-                      //   console.log(e.target.value)
-                      // }
-
-                      inputRef={titleRef}
-                    ></TextField>
+                    />
                     <TextField
-                      required={true}
                       id="minContribAmount"
-                      name="minContribAmount"
+                      {...register("minContribAmount", { required: true })}
                       label="Minimum contribution amount"
                       size="small"
                       type="number"
@@ -227,8 +217,7 @@ function FillCampaignDetails() {
                       fullWidth
                       variant="outlined"
                       helperText="How much minimum amount you are expecting from backers?"
-                      //onChange={(e) =>setMinContribAmount(e.target.valueAsNumber) }
-                      inputRef={minContribAmountRef}
+                      disabled={isSubmitting}
                     />
                   </Box>
                 </Grid>
@@ -237,23 +226,21 @@ function FillCampaignDetails() {
                     <TextField
                       id="description"
                       name="description"
+                      {...register("description", { required: true })}
                       label="Campaign Description"
                       size="small"
                       multiline
                       rows={4.3}
                       fullWidth
-                      required
                       helperText="Help people know about this campaign. Keep it simple and short."
-                      //onChange={(e) => setDescription(e.target.value)}
-                      inputRef={descriptionRef}
+                      disabled={isSubmitting}
                     />
                   </Grid>
                 </Grid>
                 <Grid item xs={12} sm={6}>
                   <TextField
-                    required
                     id="ethRaised"
-                    name="ethRaised"
+                    {...register("ethRaised", { required: true })}
                     label="Goal (ETH)"
                     fullWidth
                     size="small"
@@ -263,26 +250,20 @@ function FillCampaignDetails() {
                       min: 1,
                       step: 0.00001,
                     }}
-                    //onChange={(e) => setEthRaised(e.target.valueAsNumber)}
-                    inputRef={ethRaisedRef}
+                    disabled={isSubmitting}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
                   <TextField
-                    required
                     id="bannerUrl"
-                    name="bannerUrl"
+                    {...register("bannerUrl", { required: true })}
                     label="Banner Image URL"
+                    type="url"
                     size="small"
                     fullWidth
-                    inputProps={{
-                      pattern:
-                        "http(s?)(://)((www.)?)(([^.]+).)?([a-zA-z0-9-_]+)(.com|.net|.gov|.org|.in)(/[^s]*)?",
-                    }}
                     title="This image will be shown as a banner"
                     helperText="Preferably from unsplash.com, flaticon.com, pexels.com."
-                    //onChange={(e) => setBannerUrl(e.target.value)}
-                    inputRef={bannerUrlRef}
+                    disabled={isSubmitting}
                   />
                 </Grid>
 
@@ -293,9 +274,8 @@ function FillCampaignDetails() {
                     </Typography>
                     <Box display={"flex"} flexDirection="row" gap={2}>
                       <TextField
-                        required
                         id="deadlineDate"
-                        name="deadlineDate"
+                        {...register("deadlineDate", { required: true })}
                         type={"date"}
                         inputProps={{
                           min: `${new Date(
@@ -305,17 +285,14 @@ function FillCampaignDetails() {
                             .slice(0, 10)}`,
                         }}
                         size="small"
-                        //onChange={(e) => setDeadlineDate(e.target.valueAsDate)}
-                        inputRef={deadlineDateRef}
+                        disabled={isSubmitting}
                       />
                       <TextField
-                        required
                         id="deadlineTime"
-                        name="deadlineTime"
+                        {...register("deadlineTime", { required: true })}
                         type={"time"}
                         size="small"
-                        //onChange={(e) => setDeadlineTime(e.target.value)}
-                        inputRef={deadlineTimeRef}
+                        disabled={isSubmitting}
                       />
                     </Box>
                     <Typography variant="caption" color="GrayText">
@@ -345,6 +322,7 @@ function FillCampaignDetails() {
                         ? "This is connected wallet's address. To switch please re-login with required wallet."
                         : "Please connect to the wallet"
                     }
+                    disabled={isSubmitting}
                   />
                 </Grid>
 
@@ -353,7 +331,7 @@ function FillCampaignDetails() {
                     control={
                       <Checkbox
                         color="secondary"
-                        name="saveAddress"
+                        name="acceptConditions"
                         value="yes"
                         required
                       />
@@ -362,7 +340,17 @@ function FillCampaignDetails() {
                   />
                 </Grid>
               </Grid>
-              <Button type="submit" variant="contained" color="success">
+              {error && (
+                <Alert sx={{ marginBottom: 2, marginTop: 2 }} severity="error">
+                  All fields are required
+                </Alert>
+              )}
+              <Button
+                type="submit"
+                variant="contained"
+                color="success"
+                disabled={isSubmitting}
+              >
                 Create Campaign
               </Button>
             </form>
