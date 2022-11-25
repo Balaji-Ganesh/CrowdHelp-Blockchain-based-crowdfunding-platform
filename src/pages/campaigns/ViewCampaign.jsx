@@ -174,21 +174,12 @@ function ViewCampaign() {
       });
   };
 
-  return (
-    <>
-      <NavBar />
-      <Stack
-        direction={"row"}
-        divider={<Divider orientation="vertical" flexItem />}
-        spacing={2}
-        justifyContent="space-around"
-        alignItems="baseline"
-      >
-        <Box
-          sx={{ margin: 5, width: "40%" }}
-
-          //   minWidth="fit-content"
-        >
+  // components..
+  // other modules..
+  function ShowCampaignDetails() {
+    return (
+      <>
+        <Box sx={{ margin: 5, width: "40%" }}>
           <Stack direction={"column"} spacing={2}>
             <Typography variant="caption">About Campaign</Typography>
             <Container>
@@ -223,200 +214,249 @@ function ViewCampaign() {
                 </Link>
               </Stack>
             </Container>
-            <Typography variant="caption">Contribution Details</Typography>
-            <Container>
-              <Typography variant="caption">
-                Minimum Contribution amount
-              </Typography>
-              <Typography>{campaignData.minContribAmount} ETH</Typography>
-            </Container>
-            <Container>
-              <Typography variant="caption">Goal</Typography>
-              <Typography>{`${campaignData.ethRaised}`} ETH</Typography>
-            </Container>
-            <Container>
-              <Typography variant="caption">
-                Wallet Address of FundRaiser
-              </Typography>
-              <Typography>{`${campaignData.createdBy}`}</Typography>
-            </Container>
-            {campaignData.campaignStatus === "ACTIVE" && (
-              <>
-                <Typography variant="caption">Danger Zone</Typography>
-                <Container
-                  sx={{
-                    backgroundColor: "#e5989b",
-                    padding: 1,
-                    borderRadius: 3,
-                  }}
-                >
-                  <Stack direction="row" alignItems={"center"}>
-                    <Container>
-                      <Typography variant="body1">Quit Campaign</Typography>
-                      <Typography variant="caption">
-                        Once you end a campaign, there is no going back. Please
-                        be certain.
-                      </Typography>
-                    </Container>
-                    <Button
-                      variant="contained"
-                      color="error"
-                      size="small"
-                      onClick={() => setShowEndCampaignConfirmation(true)}
-                    >
-                      End campaign
-                    </Button>
-                  </Stack>
-                </Container>
-              </>
-            )}
+            <ShowContributionDetails />
+            <EndCampaign />
           </Stack>
         </Box>
+      </>
+    );
+  }
 
+  function ShowContributionDetails() {
+    return (
+      <>
+        <Typography variant="caption">Contribution Details</Typography>
+        <Container>
+          <Typography variant="caption">Minimum Contribution amount</Typography>
+          <Typography>{campaignData.minContribAmount} ETH</Typography>
+        </Container>
+        <Container>
+          <Typography variant="caption">Goal</Typography>
+          <Typography>{`${campaignData.ethRaised}`} ETH</Typography>
+        </Container>
+        <Container>
+          <Typography variant="caption">
+            Wallet Address of FundRaiser
+          </Typography>
+          <Typography>{`${campaignData.createdBy}`}</Typography>
+        </Container>
+      </>
+    );
+  }
+
+  function ShowCampaignBalance() {
+    return (
+      <>
+        <Container
+          maxWidth="sm"
+          sx={{ padding: 0.5, backgroundColor: "#fae588", borderRadius: 3 }}
+        >
+          <Typography variant="h6">Campaign balance</Typography>
+          <Typography variant="caption">
+            Amount stored in smart contract.
+          </Typography>
+          <LinearProgressWithLabel
+            value={(campaignData.ethFunded / campaignData.ethRaised) * 100}
+          />
+          <Typography variant="body2">
+            {`${campaignData.ethFunded}`} ETH funded by{" "}
+            {`${campaignData.backersCount}`} backers.
+          </Typography>
+        </Container>
+      </>
+    );
+  }
+
+  function BecomeBacker() {
+    return (
+      <Container
+        sx={{ padding: 0.5, backgroundColor: "#f1faee", borderRadius: 3 }}
+        fixed
+        maxWidth="sm"
+      >
+        <Stack direction="column" spacing={1.2}>
+          <Typography variant="h6">Be a backer</Typography>
+          <Stack direction="row">
+            <Typography variant="caption">
+              How much would you like to fund?
+            </Typography>
+            <Typography
+              sx={{ fontStyle: "italic", paddingLeft: 1 }}
+              variant="caption"
+              color="grey"
+            >
+              ≥ {campaignData.minContribAmount} ETH &amp; ≤{" "}
+              {campaignData.ethRaised - campaignData.ethFunded} ETH
+            </Typography>
+          </Stack>
+          <TextField
+            label="Contribution amount"
+            type={"number"}
+            inputProps={{
+              step: 0.00001,
+              min: campaignData[minAmountKey],
+              max: campaignData[raisedMoneyKey],
+            }}
+            // value={enteredAmount}
+            onChange={handleAmountChange}
+            // onBlur={handleAmountChange}
+            inputRef={enteredAmountRef}
+            fullWidth
+          ></TextField>
+          <Button
+            variant="contained"
+            disabled={fundingAmount < campaignData.minContribAmount}
+            onClick={handleContributeFunds}
+          >
+            Contribute {fundingAmount} ETH
+          </Button>
+          <Typography variant="subtitle2" color="grey">
+            Scheme - All or Nothing.
+          </Typography>
+          <Typography variant="caption" paragraph color="grey">
+            The money you fund, will be stored in smart contract that you can
+            trust. Your money gets refunded in-case if the project doesn't reach
+            goal or cancelled in-between, and transferred if reached goal.
+          </Typography>
+        </Stack>
+      </Container>
+    );
+  }
+
+  function EndCampaign() {
+    return (
+      <>
+        {campaignData.status === "ACTIVE" && (
+          <>
+            <Typography variant="caption">Danger Zone</Typography>
+            <Container
+              sx={{
+                backgroundColor: "#e5989b",
+                padding: 1,
+                borderRadius: 3,
+              }}
+            >
+              <Stack direction="row" alignItems={"center"}>
+                <Container>
+                  <Typography variant="body1">Quit Campaign</Typography>
+                  <Typography variant="caption">
+                    Once you end a campaign, there is no going back. Please be
+                    certain.
+                  </Typography>
+                </Container>
+                <Button
+                  variant="contained"
+                  color="error"
+                  size="small"
+                  onClick={() => setShowEndCampaignConfirmation(true)}
+                >
+                  End campaign
+                </Button>
+              </Stack>
+            </Container>
+          </>
+        )}
+      </>
+    );
+  }
+
+  function EndCampaignDialog() {
+    return (
+      <>
+        <StyledModal
+          open={showEndCampaignConfirmation}
+          onClose={() => setShowEndCampaignConfirmation(false)}
+        >
+          <Box>
+            <Typography>Hello</Typography>
+            <Box
+              width={400}
+              height={280}
+              bgcolor={"background.default"}
+              color={"text.primary"}
+              p={3}
+              borderRadius={3}
+              display="flex"
+              flexDirection={"column"}
+              gap={1}
+              sx={{ justifyContent: "center" }}
+              component="form"
+              // onSubmit={abortCampaign}
+            >
+              <Typography
+                variant="h6"
+                color="error"
+                textAlign="center"
+                gutterBottom
+              >
+                End Campaign
+              </Typography>
+              <Stack direction="column">
+                <TextField
+                  label="Why would you like to end campaign?"
+                  multiline
+                  rows={3}
+                  name="campaignEndReason"
+                  variant="standard"
+                  onChange={(e) => setAbortCampaignMsg(e.target.value)}
+                />
+                <Typography variant="caption">
+                  This reason will be published in campaign page to notify
+                  viewers and backers.
+                </Typography>
+              </Stack>
+              <Stack direction={"column"}>
+                <FormGroup sx={{ marginBottom: 1.5 }}>
+                  <FormControlLabel
+                    control={<Checkbox />}
+                    label="I accept that, if I end campaign, all the raised money can be refunded back to the backers."
+                    onChange={() => {
+                      setAcceptanceStatus(!acceptanceStatus);
+                      console.log(acceptanceStatus);
+                    }}
+                  />
+                </FormGroup>
+                <Button
+                  color="error"
+                  variant="contained"
+                  disabled={acceptanceStatus == false}
+                  onClick={() => abortCampaign()}
+                >
+                  End Campaign
+                </Button>
+              </Stack>
+            </Box>
+          </Box>
+        </StyledModal>
+      </>
+    );
+  }
+
+  return (
+    <>
+      <NavBar />
+      <Stack
+        direction={"row"}
+        divider={<Divider orientation="vertical" flexItem />}
+        spacing={2}
+        justifyContent="space-around"
+        alignItems="baseline"
+      >
+        <ShowCampaignDetails />
         <Box sx={{ margin: 10, width: "60%" }}>
           <Stack direction={"column"} spacing={2}>
             <Typography variant="caption">
               Current Status of campaign
             </Typography>
-            <Container
-              maxWidth="sm"
-              sx={{ padding: 0.5, backgroundColor: "#fae588", borderRadius: 3 }}
-            >
-              <Typography variant="h6">Campaign balance</Typography>
-              <Typography variant="caption">
-                Amount stored in smart contract.
-              </Typography>
-              <LinearProgressWithLabel
-                value={(campaignData.ethFunded / campaignData.ethRaised) * 100}
-              />
-              <Typography variant="body2">
-                {`${campaignData.ethFunded}`} ETH funded by{" "}
-                {`${campaignData.backersCount}`} backers.
-              </Typography>
-            </Container>
+            <ShowCampaignBalance />
             <Typography variant="caption" sx={{ margin: 0 }}>
               Contribute
             </Typography>
-            <Container
-              sx={{ padding: 0.5, backgroundColor: "#f1faee", borderRadius: 3 }}
-              fixed
-              maxWidth="sm"
-            >
-              <Stack direction="column" spacing={1.2}>
-                <Typography variant="h6">Be a backer</Typography>
-                <Stack direction="row">
-                  <Typography variant="caption">
-                    How much would you like to fund?
-                  </Typography>
-                  <Typography
-                    sx={{ fontStyle: "italic", paddingLeft: 1 }}
-                    variant="caption"
-                    color="grey"
-                  >
-                    ≥ {campaignData.minContribAmount} ETH &amp; ≤{" "}
-                    {campaignData.ethRaised - campaignData.ethFunded} ETH
-                  </Typography>
-                </Stack>
-                <TextField
-                  label="Contribution amount"
-                  type={"number"}
-                  inputProps={{
-                    step: 0.00001,
-                    min: campaignData[minAmountKey],
-                    max: campaignData[raisedMoneyKey],
-                  }}
-                  // value={enteredAmount}
-                  onChange={handleAmountChange}
-                  // onBlur={handleAmountChange}
-                  inputRef={enteredAmountRef}
-                  fullWidth
-                ></TextField>
-                <Button
-                  variant="contained"
-                  disabled={fundingAmount < campaignData.minContribAmount}
-                  onClick={handleContributeFunds}
-                >
-                  Contribute {fundingAmount} ETH
-                </Button>
-                <Typography variant="subtitle2" color="grey">
-                  Scheme - All or Nothing.
-                </Typography>
-                <Typography variant="caption" paragraph color="grey">
-                  The money you fund, will be stored in smart contract that you
-                  can trust. Your money gets refunded in-case if the project
-                  doesn't reach goal or cancelled in-between, and transferred if
-                  reached goal.
-                </Typography>
-              </Stack>
-            </Container>
+            <BecomeBacker />
           </Stack>
         </Box>
       </Stack>
-      <StyledModal
-        open={showEndCampaignConfirmation}
-        onClose={() => setShowEndCampaignConfirmation(false)}
-      >
-        <Box>
-          <Typography>Hello</Typography>
-          <Box
-            width={400}
-            height={280}
-            bgcolor={"background.default"}
-            color={"text.primary"}
-            p={3}
-            borderRadius={3}
-            display="flex"
-            flexDirection={"column"}
-            gap={1}
-            sx={{ justifyContent: "center" }}
-            component="form"
-            // onSubmit={abortCampaign}
-          >
-            <Typography
-              variant="h6"
-              color="error"
-              textAlign="center"
-              gutterBottom
-            >
-              End Campaign
-            </Typography>
-            <Stack direction="column">
-              <TextField
-                label="Why would you like to end campaign?"
-                multiline
-                rows={3}
-                name="campaignEndReason"
-                variant="standard"
-                onChange={(e) => setAbortCampaignMsg(e.target.value)}
-              />
-              <Typography variant="caption">
-                This reason will be published in campaign page to notify viewers
-                and backers.
-              </Typography>
-            </Stack>
-            <Stack direction={"column"}>
-              <FormGroup sx={{ marginBottom: 1.5 }}>
-                <FormControlLabel
-                  control={<Checkbox />}
-                  label="I accept that, if I end campaign, all the raised money can be refunded back to the backers."
-                  onChange={() => {
-                    setAcceptanceStatus(!acceptanceStatus);
-                    console.log(acceptanceStatus);
-                  }}
-                />
-              </FormGroup>
-              <Button
-                color="error"
-                variant="contained"
-                disabled={acceptanceStatus == false}
-                onClick={() => abortCampaign()}
-              >
-                End Campaign
-              </Button>
-            </Stack>
-          </Box>
-        </Box>
-      </StyledModal>
+      <EndCampaignDialog />
       <Snackbar
         open={showResponse}
         autoHideDuration={4000}
