@@ -386,10 +386,54 @@ function ViewCampaign() {
     );
   }
 
+  function WithDrawFunds() {
+    return (
+      <Container
+        sx={{ padding: 2, backgroundColor: "#FFE8E3", borderRadius: 3 }}
+        fixed
+        maxWidth="sm"
+      >
+        <Typography variant="h6" gutterBottom>
+          Withdraw Raised Funds
+        </Typography>
+        {/* -------- Here.. based on the deadline of the campaign, validate can withdraw or not. */}
+        <Alert severity="info" sx={{ marginTop: 1 }}>
+          To withdraw raised funds, campaign has to be <strong>ended</strong>
+        </Alert>
+        <form onSubmit={handleSubmit}>
+          <Alert severity="warning" sx={{ marginTop: 1, marginBottom: 1 }}>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  required
+                  color="error"
+                  name="acceptConditions"
+                  value="yes"
+                />
+              }
+              label="I/We understand that, once campaign has ended it cannot be reversed."
+              sx={{ padding: 1 }}
+            />
+          </Alert>
+
+          <LoadingButton
+            type="submit"
+            fullWidth
+            variant="contained"
+            color="error"
+          >
+            End campaign &amp; withdraw
+          </LoadingButton>
+        </form>
+      </Container>
+    );
+  }
+
   function EndCampaign() {
     return (
       <>
-        {campaignData.status === "ACTIVE" && (
+        {wallet.account === campaignData.createdBy && (
+          // {campaignData.status === "ACTIVE" && (
           <>
             <Typography variant="caption">Danger Zone</Typography>
             <Container
@@ -512,10 +556,21 @@ function ViewCampaign() {
               Current Status of campaign
             </Typography>
             <ShowCampaignBalance />
-            <Typography variant="caption" sx={{ margin: 0 }}>
-              Contribute
-            </Typography>
-            <BecomeBacker />
+            {wallet.account !== campaignData.createdBy ? (
+              <>
+                <Typography variant="caption" sx={{ margin: 0 }}>
+                  Contribute
+                </Typography>
+                <BecomeBacker />
+              </>
+            ) : (
+              <>
+                <Typography variant="caption" sx={{ margin: 0 }}>
+                  Withdraw
+                </Typography>
+                <WithDrawFunds />
+              </>
+            )}
           </Stack>
         </Box>
       </Stack>
