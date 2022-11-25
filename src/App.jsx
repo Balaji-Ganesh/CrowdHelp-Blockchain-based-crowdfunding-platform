@@ -19,36 +19,49 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import AuthProtectedRoute from "./components/AuthProtectedRoute";
 import ForgotPassword from "./pages/ForgotPassword";
 
+// For wallet connection & usage..
+import { UseWalletProvider } from "use-wallet";
+
 function App() {
   return (
-    <Router>
-      <AuthProvider>
-        <Routes>
-          <Route index element={<HomePage />} />
-          <Route path="/sign-up" element={<SignUp />} />
-          <Route path="/sign-in" element={<SignIn />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route
-            path="/profile"
-            element={
-              <AuthProtectedRoute>
-                <Profile />
-              </AuthProtectedRoute>
-            }
-          />
-          <Route
-            path="/create-campaign"
-            element={
-              <AuthProtectedRoute>
-                <FillCampaignDetails />
-              </AuthProtectedRoute>
-            }
-          />
-          <Route path="/active-campaigns" element={<ActiveCampaigns />} />
-          <Route path="/campaign/*" element={<ViewCampaign />} />
-        </Routes>
-      </AuthProvider>
-    </Router>
+    <UseWalletProvider
+      chainId={4}
+      connectors={{
+        walletconnect: {
+          rpcUrl:
+            "https://goerli.infura.io/v3/fc153ab956004ee699034e5242c12417",
+        },
+      }}
+    >
+      <Router>
+        <AuthProvider>
+          <Routes>
+            <Route index element={<HomePage />} />
+            <Route path="/sign-up" element={<SignUp />} />
+            <Route path="/sign-in" element={<SignIn />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route
+              path="/profile"
+              element={
+                <AuthProtectedRoute>
+                  <Profile />
+                </AuthProtectedRoute>
+              }
+            />
+            <Route
+              path="/create-campaign"
+              element={
+                <AuthProtectedRoute>
+                  <FillCampaignDetails />
+                </AuthProtectedRoute>
+              }
+            />
+            <Route path="/active-campaigns" element={<ActiveCampaigns />} />
+            <Route path="/campaign/*" element={<ViewCampaign />} />
+          </Routes>
+        </AuthProvider>
+      </Router>
+    </UseWalletProvider>
   );
 }
 

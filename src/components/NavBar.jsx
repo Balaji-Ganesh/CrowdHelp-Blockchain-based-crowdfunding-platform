@@ -17,11 +17,18 @@ import StorefrontIcon from "@mui/icons-material/Storefront";
 import EmailIcon from "@mui/icons-material/Email";
 import BadgeUnstyled from "@mui/base/BadgeUnstyled";
 import NotificationsIcon from "@mui/icons-material/Notifications";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import PersonIcon from "@mui/icons-material/Person";
 
 // service imports..
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+
+// Wallet connection..
+import { useWallet } from "use-wallet";
 
 // Custom styling to components
 const StyledToolbar = styled(Toolbar)({
@@ -68,6 +75,8 @@ function NavBar() {
   const [showResponse, setShowResponse] = React.useState(false); // To know whether error occured. ⁉ why not use length of error message
   const [responseSeverity, setResponseSeverity] = React.useState("error");
   const navigate = useNavigate();
+
+  const wallet = useWallet();
 
   const { currentUserCredentials, signout } = useAuth();
 
@@ -128,20 +137,16 @@ function NavBar() {
               Create Campaign
             </Button>
           </Box>
-          {currentUserCredentials ? (
+          {wallet.status === "connected" ? (
             <>
-              <Badge badgeContent={9} color="error">
-                <EmailIcon />
-              </Badge>
-              <Badge badgeContent={3} color="error">
-                <NotificationsIcon />
-              </Badge>
-              <Avatar
+              <Button
+                variant="text"
+                endIcon={<ExpandMoreIcon />}
                 onClick={() => setProfileMenuDisplayStatus(true)}
-                sx={{ width: 30, height: 30 }}
-                alt="User"
-                src="https://cdn-icons-png.flaticon.com/512/4140/4140048.png"
-              />
+                color="primary"
+              >
+                {wallet.account.substr(0, 10) + "..."}
+              </Button>
             </>
           ) : (
             <>
@@ -150,9 +155,10 @@ function NavBar() {
                 // fullWidth
                 variant="text"
                 // sx={{ mt: 3, mb: 2 }}
-                onClick={() => navigate("/sign-in")}
+                endIcon={<AccountBalanceWalletIcon />}
+                onClick={() => wallet.connect()}
               >
-                Sign In
+                Connect Wallet
               </Button>
             </>
           )}
@@ -174,9 +180,18 @@ function NavBar() {
           horizontal: "right",
         }}
       >
-        <MenuItem onClick={() => navigate("/profile")}>Profile</MenuItem>
-        <MenuItem>My account</MenuItem>
-        <MenuItem onClick={() => handleSignout()}>Sign out</MenuItem>
+        <MenuItem onClick={() => wallet.reset()}>
+          <ListItemIcon>
+            <AccountBalanceWalletIcon fontSize="small" />
+          </ListItemIcon>
+          Disconnect Wallet
+        </MenuItem>
+        <MenuItem onClick={() => navigate("/profile")}>
+          <ListItemIcon>
+            <PersonIcon fontSize="small" />
+          </ListItemIcon>
+          Profile
+        </MenuItem>
       </Menu>
     </AppBar>
   );
