@@ -5,7 +5,8 @@ const fs = require("fs-extra");
 const buildPath = path.resolve(__dirname, "build");
 fs.removeSync(buildPath); // deleting the folder and all the content inside it
 
-const campaignPath = path.resolve(__dirname, "Contracts", "Campaigns.sol");
+const campaignPath = path.resolve(__dirname, "Contracts", "CrowdHelp.sol");
+console.log(campaignPath);
 const source = fs.readFileSync(campaignPath, "utf8");
 const output = solc.compile(source, 1).contracts;
 
