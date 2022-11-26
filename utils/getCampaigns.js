@@ -46,13 +46,14 @@ export const getCampaignsSummary = async (campaigns) => {
 export const getCampaignDetails = async (campaignId) => {
   try {
     // get details of all the campaigns
-    const summary = await Campaign(campaignId).methods.getSummary().call();
+    const summary = await Campaign(campaignId)
+      .methods.getCampaignSummary()
+      .call();
 
     // log it to check..
     console.log(summary);
 
     return formatSummary(summary, campaignId);
-
     // will be getting as array .. cvt to object.. i.e., in an understandable format
   } catch (err) {
     console.error("[ERROR] occured in getting a campaign summary");

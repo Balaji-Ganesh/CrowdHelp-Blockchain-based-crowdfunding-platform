@@ -76,7 +76,7 @@ function ViewCampaign() {
   const [acceptanceStatus, setAcceptanceStatus] = React.useState(false);
 
   useEffect(() => {
-    console.log("useEffect called");
+    console.log("fetching a campaign..");
     let ignore = false;
     // fetch the campaigns..
     const fetchData = async () => {
@@ -175,7 +175,7 @@ function ViewCampaign() {
 
       const campaign = Campaign(campaignData.id); // get the campaign
       const accounts = await web3.eth.getAccounts(); // backer account..
-      await campaign.methods.contibute().send({
+      await campaign.methods.contribute().send({
         // register contribution..
         from: accounts[0],
         value: web3.utils.toWei(data.contribAmount, "ether"),
