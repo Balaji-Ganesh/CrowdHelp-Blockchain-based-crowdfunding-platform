@@ -16,7 +16,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import {
   getDeployedCampaigns,
   getCampaignsSummary,
-} from "../../lib/getCampaigns";
+} from "../../utils/getCampaigns";
 
 // local imports..
 import NavBar from "../components/NavBar";

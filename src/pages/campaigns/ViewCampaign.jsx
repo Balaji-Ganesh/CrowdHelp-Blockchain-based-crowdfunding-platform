@@ -25,11 +25,11 @@ import { useWallet } from "use-wallet";
 // form handling
 import { useForm } from "react-hook-form";
 // [block-chain] smart-contract related imports..
-import { getCampaignDetails } from "../../../lib/getCampaigns";
+import { getCampaignDetails } from "../../../utils/getCampaigns";
 
 // smart-contract interaction -- for contribution of funds, withdrawing money & ending campaign.
-import Campaign from "../../../smart-contract/campaign";
-import web3 from "../../../smart-contract/web3";
+import Campaign from "../../../utils/contract/campaign";
+import web3 from "../../../utils/web3";
 
 // stylings..
 const StyledModal = styled(Modal)({

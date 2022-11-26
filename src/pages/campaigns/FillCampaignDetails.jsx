@@ -31,8 +31,8 @@ import { useForm } from "react-hook-form";
 import { useWallet } from "use-wallet";
 
 // smart-contract interaction -- for campaign creation..
-import factory from "../../../smart-contract/factory";
-import web3 from "../../../smart-contract/web3";
+import crowdHelp from "../../../utils/contract/crowdHelp";
+import web3 from "../../../utils/web3";
 
 const api_url = "http://localhost:4000/api/";
 
@@ -64,7 +64,7 @@ function FillCampaignDetails() {
     try {
       const accounts = await web3.eth.getAccounts();
       // Create campaign by taking all the details..
-      await factory.methods
+      await crowdHelp.methods
         .createCampaign(
           web3.utils.toWei(data.minContribAmount, "ether"),
           data.title,

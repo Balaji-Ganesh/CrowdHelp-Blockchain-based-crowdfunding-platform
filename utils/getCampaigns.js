@@ -1,13 +1,16 @@
 // [block-chain] smart-contract related imports..
 
-import factory from "../smart-contract/factory";
-import web3 from "../smart-contract/web3";
-import Campaign from "../smart-contract/campaign";
+import crowdHelp from "./contract/crowdHelp";
+import web3 from "./web3";
+import Campaign from "./contract/campaign";
 
 // fetch the deployed campaigns addresses.
 export const getDeployedCampaigns = async () => {
   // get the addresses of the deployed campaigns..
-  const campaignsList = await factory.methods.getDeployedCampaigns().call();
+  console.log("get deployed campaigns called")
+  const campaignsList = await crowdHelp.methods
+    .returnDeployedCampaigns()
+    .call();
 
   console.log("deployed: " + deployedCampaignsList);
   return campaignsList;
@@ -18,7 +21,7 @@ export const getCampaignsSummary = async (campaigns) => {
     // get details of all the campaigns
     const campaignsSummary = await Promise.all(
       campaigns.map((campaign, idx) =>
-        Campaign(campaigns[idx]).methods.getSummary().call()
+        Campaign(campaigns[idx]).methods.getCampaignsSummary().call()
       )
     );
     // log it to check..
