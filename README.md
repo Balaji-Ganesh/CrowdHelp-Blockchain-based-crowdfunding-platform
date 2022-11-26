@@ -24,6 +24,7 @@
 - Used [Vitejs](https://vitejs.dev/) toolkit to setup the project. **Not `create-react-app`**.
 - `firebase`
 - `axios` - to deal with the requests POST, GET...
+
 1. MUIv5: `yarn add @mui/material @emotion/react @emotion/styled` - to use the MUI5 components and designs
 2. MUI Icons: `yarn add @mui/icons-material` - for usage of MUI SVG icons
 
@@ -121,3 +122,41 @@
 - @Manan - Integration of whole application with Solidity and back-end
 - @GautamGupta - Designing test cases.
   - Lacking specificity -- Only _Designing_..? Who will take testing then?
+
+## Smart contract deployment errors & eployed fixes
+
+- $`npx hardhat compile` giving `Compiled 1 Solidity file successfully`.
+- But $`npx hardhat run --network localhost scripts/deploy.js ` giving ..
+
+```sh
+  TypeError: Cannot read properties of undefined (reading 'getContractFactory')
+      at main (<Project_root_path>/CrowdHelp-Blockchain-based-crowdfunding-platform/scripts/deploy.js:6:38)
+      at Object.<anonymous> (<Project_root_path>/CrowdHelp-Blockchain-based-crowdfunding-platform/scripts/deploy.js:16:1)
+      at Module._compile (node:internal/modules/cjs/loader:1105:14)
+      at Object.Module._extensions..js (node:internal/modules/cjs/loader:1159:10)
+      at Module.load (node:internal/modules/cjs/loader:981:32)
+      at Function.Module._load (node:internal/modules/cjs/loader:822:12)
+      at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:77:12)
+      at node:internal/main/run_main_module:17:47
+```
+
+- The interesting thing here is.. the same (`deploy.js` & `CrowdHelp.sol`) when ran the above commands, it went smooth -- with project-setup of `hardhat run` --- so installed all the depedencies in this one, but same story repeated.
+- So, to continue eploying the option of compiling & deploying the contract in that (hardhat configured JS project) and pasting those artifacts in this original file.
+
+### Update..
+
+- After installing few dependencies as suggested.. getting this one..
+
+```sh
+TypeError: Cannot read properties of undefined (reading 'prototype')
+at registerCustomInspection (<Project_path>/CrowdHelp-Blockchain-based-crowdfunding-platform/node_modules/@nomiclabs/hardhat-ethers/src/internal/index.ts:22:13)
+    at /run/media/krishna/WorkAndWorkResources/Work/Blockchain/IOMP-Academics/CrowdHelp-Blockchain-based-crowdfunding-platform/node_modules/@nomiclabs/hardhat-ethers/src/internal/index.ts:34:5
+    at getRealTarget (<Project_path>/CrowdHelp-Blockchain-based-crowdfunding-platform/node_modules/hardhat/src/internal/util/lazy.ts:112:22)
+    at Object.get (<Project_path>/CrowdHelp-Blockchain-based-crowdfunding-platform/node_modules/hardhat/src/internal/util/lazy.ts:185:26)
+    at main (<Project_path>/CrowdHelp-Blockchain-based-crowdfunding-platform/scripts/deploy.js:5:38)
+    at Object.<anonymous> (<Project_path>/CrowdHelp-Blockchain-based-crowdfunding-platform/scripts/deploy.js:15:1)
+    at Module._compile (node:internal/modules/cjs/loader:1105:14)
+    at Object.Module._extensions..js (node:internal/modules/cjs/loader:1159:10)
+    at Module.load (node:internal/modules/cjs/loader:981:32)
+    at Function.Module._load (node:internal/modules/cjs/loader:822:12)
+```
