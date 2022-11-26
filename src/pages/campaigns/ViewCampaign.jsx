@@ -212,7 +212,8 @@ function ViewCampaign() {
                     label={campaignData.campaignStatus}
                     size="small"
                     color={
-                      campaignData.campaignStatus == "ACTIVE"
+                      campaignData.campaignStatus == "ACTIVE" ||
+                      campaignData.campaignStatus == "SUCCESS"
                         ? "success"
                         : "error"
                     }
@@ -255,6 +256,12 @@ function ViewCampaign() {
             Wallet Address of FundRaiser
           </Typography>
           <Typography>{`${campaignData.createdBy}`}</Typography>
+        </Container>
+        <Container>
+          <Typography variant="caption">
+            Contributions are accepted till <i>(Deadline)</i>
+          </Typography>
+          <Typography>{`${new Date(campaignData.deadline)}`}</Typography>
         </Container>
       </>
     );
@@ -309,7 +316,10 @@ function ViewCampaign() {
             <Alert
               severity="success"
               sx={{ marginTop: 2, marginBottom: 2 }}
-              onClose={() => setIsContributionSuccess(false)}
+              onClose={() => {
+                setIsContributionSuccess(false);
+                window.location.reload();
+              }}
             >
               <AlertTitle>Funded successfully</AlertTitle>
               Thanks for your valuable contributions.

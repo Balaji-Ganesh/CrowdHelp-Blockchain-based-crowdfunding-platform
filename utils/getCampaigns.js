@@ -72,7 +72,7 @@ function formatSummary(summary, campaignId) {
     minContribAmount: web3.utils.fromWei(summary["minContribution"], "ether"),
     createdBy: summary["projectStarter"],
     bannerUrl: summary["imageUrl"],
-    deadline: summary["projectDeadline"],
+    deadline: parseInt(summary["projectDeadline"]),
     campaignStatus: cvtIntStatusToEnum(summary["currentState"]),
     // requestsCount: summary[2],
     backersCount: summary["numBackers"],
