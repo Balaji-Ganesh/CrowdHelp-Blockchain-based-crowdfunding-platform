@@ -133,23 +133,23 @@ contract Campaign{
     }
 
     // @dev Anyone can contribute
-    function contribute(address payable _contributor) public validateExpiry(State.ACTIVE) payable {
+    function contribute() public validateExpiry(State.ACTIVE) payable {
         // validation
         require(msg.value >= minimumContribution,'Contribution amount is too low !');
-
-        int contributionIdx = getContributorContribution(_contributor);
+        address payable contributor = payable(msg.sender);
+        int contributionIdx = getContributorContribution(contributor);
         if(contributionIdx == -1){    // if contributing for the first time..
             noOfContributors++;
-            contributions.push(Contribution(_contributor, msg.value));// store the amount of funds funded
+            contributions.push(Contribution(contributor, msg.value));// store the amount of funds funded
         }
         // if contributed already..
         else{
             contributions[uint(contributionIdx)].amount += msg.value;   // update the contribution
         }
-        // contributors[_contributor] += msg.value;    // store the amount of funds funded -- older version
+        // contributors[contributor] += msg.value;    // store the amount of funds funded -- older version
         // update the global value
         raisedAmount += msg.value;                  
-        emit FundingReceived(_contributor,msg.value,raisedAmount);
+        emit FundingReceived(contributor,msg.value,raisedAmount);
         isFundingReachedTarget();
     }
 
