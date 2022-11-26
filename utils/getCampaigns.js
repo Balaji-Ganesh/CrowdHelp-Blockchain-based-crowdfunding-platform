@@ -18,7 +18,7 @@ export const getDeployedCampaigns = async () => {
 
 export const getCampaignsSummary = async (campaigns) => {
   console.log("Called with..");
-  console.log(campaigns)
+  console.log(campaigns);
   try {
     // get details of all the campaigns
     const campaignsSummary = await Promise.all(
@@ -32,19 +32,7 @@ export const getCampaignsSummary = async (campaigns) => {
     // will be getting as array .. cvt to object.. i.e., in an understandable format
     var formattedSummaries = [];
     campaignsSummary.forEach((summary, idx) => {
-      var campaign = {
-        title: summary['title'],
-        description: summary['desc'],
-        ethRaised: web3.utils.fromWei(summary['goalAmount'], "ether"),
-        ethFunded: web3.utils.fromWei(summary['currentAmount'], "ether"),
-        createdBy: summary['projectStarter'],
-        bannerUrl: summary['imageUrl'],
-        id: campaigns[idx],
-        deadline: summary['projectDeadline'],
-        campaignStatus: summary['currentState'],
-      };
-      formattedSummaries.push(campaign);
-      console.log(campaign);
+      formattedSummaries.push(formatSummary(summary, campaigns[idx]));
     });
 
     // return the work did..
@@ -63,35 +51,53 @@ export const getCampaignDetails = async (campaignId) => {
     // log it to check..
     console.log(summary);
 
+    return formatSummary(summary, campaignId);
+
     // will be getting as array .. cvt to object.. i.e., in an understandable format
-    const formattedSummary = {
-      id: campaignId,
-
-      title: summary["title"],
-      description: summary["desc"],
-      ethRaised: web3.utils.fromWei(summary["goalAmount"], "ether"),
-      ethFunded: web3.utils.fromWei(summary["currentAmount"], "ether"),
-      createdBy: summary["projectStarter"],
-      bannerUrl: summary["imageUrl"],
-      id: campaigns[idx],
-      deadline: summary["projectDeadline"],
-      campaignStatus: summary["currentState"],
-
-      minContribAmount: web3.utils.fromWei(summary['minContribution'], "ether"),
-      
-      requestsCount: summary[2],
-      backersCount: summary[3],
-      
-      
-      
-      
-      
-    };
-
-    // return the work did..
-    return formattedSummary;
   } catch (err) {
     console.error("[ERROR] occured in getting a campaign summary");
     console.error(err);
   }
 };
+
+// helpers..
+function formatSummary(summary, campaignId) {
+  const formattedSummary = {
+    id: campaignId,
+    title: summary["title"],
+    description: summary["desc"],
+    ethRaised: web3.utils.fromWei(summary["goalAmount"], "ether"),
+    ethFunded: web3.utils.fromWei(summary["currentAmount"], "ether"),
+    minContribAmount: web3.utils.fromWei(summary["minContribution"], "ether"),
+    createdBy: summary["projectStarter"],
+    bannerUrl: summary["imageUrl"],
+    deadline: summary["projectDeadline"],
+    campaignStatus: cvtIntStatusToEnum(summary["currentState"]),
+    // requestsCount: summary[2],
+    backersCount: summary["numBackers"],
+  };
+
+  // return the work did..
+  return formattedSummary;
+}
+
+function cvtIntStatusToEnum(status) {
+  var str = "";
+  switch (status) {
+    case "0":
+      str = "ACTIVE";
+      break;
+    case "1":
+      str = "SUCCESS";
+      break;
+    case "2":
+      str = "EXPIRED";
+      break;
+    case "3":
+      str = "ABORTED";
+      break;
+    default:
+      str = "UNKNOWN";
+  }
+  return str;
+}
