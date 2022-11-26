@@ -455,7 +455,9 @@ function ViewCampaign() {
             >
               <Stack direction="row" alignItems={"center"}>
                 <Container>
-                  <Typography variant="body1">Quit Campaign</Typography>
+                  <Typography variant="body1">
+                    <strong>Quit</strong> &amp; <strong>Refund</strong>
+                  </Typography>
                   <Typography variant="caption">
                     Once you end a campaign, there is no going back. Please be
                     certain.
@@ -467,7 +469,7 @@ function ViewCampaign() {
                   size="small"
                   onClick={() => setShowEndCampaignConfirmation(true)}
                 >
-                  End campaign
+                  Abort campaign
                 </Button>
               </Stack>
             </Container>
@@ -506,11 +508,11 @@ function ViewCampaign() {
                 textAlign="center"
                 gutterBottom
               >
-                End Campaign
+                Abort Campaign
               </Typography>
               <Stack direction="column">
                 <TextField
-                  label="Why would you like to end campaign?"
+                  label="Why would you like to abort campaign?"
                   multiline
                   rows={3}
                   name="campaignEndReason"
@@ -523,24 +525,24 @@ function ViewCampaign() {
                 </Typography>
               </Stack>
               <Stack direction={"column"}>
-                <FormGroup sx={{ marginBottom: 1.5 }}>
-                  <FormControlLabel
-                    control={<Checkbox />}
-                    label="I accept that, if I end campaign, all the raised money can be refunded back to the backers."
-                    onChange={() => {
-                      setAcceptanceStatus(!acceptanceStatus);
-                      console.log(acceptanceStatus);
-                    }}
-                  />
-                </FormGroup>
-                <Button
-                  color="error"
-                  variant="contained"
-                  disabled={acceptanceStatus == false}
-                  onClick={() => abortCampaign()}
-                >
-                  End Campaign
-                </Button>
+                <form>
+                  <FormGroup sx={{ marginBottom: 1.5 }}>
+                    <FormControlLabel
+                      control={<Checkbox />}
+                      label="I accept that, if I abort campaign, all the raised money can be refunded back to the backers."
+                      required
+                    />
+                  </FormGroup>
+                  <Button
+                    color="error"
+                    variant="contained"
+                    type="submit"
+                    fullWidth
+                    onClick={() => abortCampaign()}
+                  >
+                    End Campaign
+                  </Button>
+                </form>
               </Stack>
             </Box>
           </Box>
