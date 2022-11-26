@@ -7,21 +7,23 @@ import Campaign from "./contract/campaign";
 // fetch the deployed campaigns addresses.
 export const getDeployedCampaigns = async () => {
   // get the addresses of the deployed campaigns..
-  console.log("get deployed campaigns called")
+  console.log("get deployed campaigns called");
   const campaignsList = await crowdHelp.methods
     .returnDeployedCampaigns()
     .call();
 
-  console.log("deployed: " + deployedCampaignsList);
+  console.log("deployed: " + campaignsList);
   return campaignsList;
 };
 
 export const getCampaignsSummary = async (campaigns) => {
+  console.log("Called with..");
+  console.log(campaigns)
   try {
     // get details of all the campaigns
     const campaignsSummary = await Promise.all(
       campaigns.map((campaign, idx) =>
-        Campaign(campaigns[idx]).methods.getCampaignsSummary().call()
+        Campaign(campaigns[idx]).methods.getCampaignSummary().call()
       )
     );
     // log it to check..
@@ -31,15 +33,15 @@ export const getCampaignsSummary = async (campaigns) => {
     var formattedSummaries = [];
     campaignsSummary.forEach((summary, idx) => {
       var campaign = {
-        title: summary[5],
-        description: summary[6],
-        createdBy: summary[4],
-        bannerUrl: summary[7],
-        ethRaised: web3.utils.fromWei(summary[8], "ether"),
-        ethFunded: web3.utils.fromWei(summary[1], "ether"),
+        title: summary['title'],
+        description: summary['desc'],
+        ethRaised: web3.utils.fromWei(summary['goalAmount'], "ether"),
+        ethFunded: web3.utils.fromWei(summary['currentAmount'], "ether"),
+        createdBy: summary['projectStarter'],
+        bannerUrl: summary['imageUrl'],
         id: campaigns[idx],
-        campaignStatus: "IN DEVELOPMENT",
-        deadline: "24-11-2022T13:13:58",
+        deadline: summary['projectDeadline'],
+        campaignStatus: summary['currentState'],
       };
       formattedSummaries.push(campaign);
       console.log(campaign);
@@ -64,17 +66,26 @@ export const getCampaignDetails = async (campaignId) => {
     // will be getting as array .. cvt to object.. i.e., in an understandable format
     const formattedSummary = {
       id: campaignId,
-      minContribAmount: web3.utils.fromWei(summary[0], "ether"),
-      ethFunded: web3.utils.fromWei(summary[1], "ether"),
+
+      title: summary["title"],
+      description: summary["desc"],
+      ethRaised: web3.utils.fromWei(summary["goalAmount"], "ether"),
+      ethFunded: web3.utils.fromWei(summary["currentAmount"], "ether"),
+      createdBy: summary["projectStarter"],
+      bannerUrl: summary["imageUrl"],
+      id: campaigns[idx],
+      deadline: summary["projectDeadline"],
+      campaignStatus: summary["currentState"],
+
+      minContribAmount: web3.utils.fromWei(summary['minContribution'], "ether"),
+      
       requestsCount: summary[2],
       backersCount: summary[3],
-      createdBy: summary[4],
-      title: summary[5],
-      description: summary[6],
-      bannerUrl: summary[7],
-      ethRaised: web3.utils.fromWei(summary[8], "ether"),
-      campaignStatus: "IN DEVELOPMENT",
-      deadline: "24-11-2022T13:13:58",
+      
+      
+      
+      
+      
     };
 
     // return the work did..

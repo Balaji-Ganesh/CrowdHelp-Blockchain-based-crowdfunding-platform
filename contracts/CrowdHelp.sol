@@ -28,12 +28,12 @@ event ContributionReceived(
   // @dev Anyone can start a fund rising
  // @return null
 
-    function createProject(
-        uint256 minimumContribution,
-        uint256 deadline,
-        uint256 targetContribution,
+    function createCampaign(
         string memory projectTitle,
         string memory projectDesc,
+        uint256 minimumContribution,
+        uint256 targetContribution,
+        uint256 deadline,
         string memory bannerUrl
     ) public {
 
@@ -72,7 +72,7 @@ contract Campaign{
     uint256 public targetContribution; // required to reach at least this much amount
     uint public reachedTargetAt; // what's the usage of this..?? -- stores when it has ended (by the fundraiser)
     uint256 public raisedAmount; // Total raised amount till now
-    uint256 public noOfContributers;
+    uint256 public noOfContributors;
     string public projectTitle;
     string public projectDes;
     string public bannerUrl;
@@ -99,7 +99,7 @@ contract Campaign{
     // Event gets emitted when amount gets credited to fund raiser - when campaign has ended
     event AmountCredited(address contributor, uint amountTotal);
     // Event gets emitted when campaign gets aborted [before deadline]
-    event AmountRefunded(uint noOfContributers, uint amountTotal);
+    event AmountRefunded(uint noOfContributors, uint amountTotal);
 
    constructor(
        address _creator,
@@ -123,7 +123,7 @@ contract Campaign{
     function getContributorContribution(address  _contributor) internal view returns(int){
     // Takes the contributor's address and returns their contribution amount (if found) else 0.
         int contribIndex=-1;
-        for(int idx=0; idx<int(noOfContributers); idx++){
+        for(int idx=0; idx<int(noOfContributors); idx++){
             if(_contributor == contributions[uint(idx)].contributor){
                 contribIndex =  idx;
                 break;
@@ -139,7 +139,7 @@ contract Campaign{
 
         int contributionIdx = getContributorContribution(_contributor);
         if(contributionIdx == -1){    // if contributing for the first time..
-            noOfContributers++;
+            noOfContributors++;
             contributions.push(Contribution(_contributor, msg.value));// store the amount of funds funded
         }
         // if contributed already..
@@ -178,21 +178,21 @@ contract Campaign{
         require(deadline < block.timestamp, 'Campaign cannot be aborted, deadline passed.');
         require(state == State.ACTIVE, 'Invalid state. Cannot abort campaign.');
         // refund money to backers
-        for(uint idx=0; idx<noOfContributers; idx++){ // iterate through all addresses of contrdibutors
+        for(uint idx=0; idx<noOfContributors; idx++){ // iterate through all addresses of contrdibutors
             contributions[idx].contributor.transfer(contributions[idx].amount);
             delete contributions[idx];
         } 
         // update the state..
         state = State.ABORTED;
         // emit the event..
-        emit AmountRefunded(noOfContributers, raisedAmount);
+        emit AmountRefunded(noOfContributors, raisedAmount);
     }
 
        function getContractBalance() public view returns(uint256){
         return address(this).balance;
     }
 
-    function getCampaignsSummary() public view returns(
+    function getCampaignSummary() public view returns(
     address payable projectStarter,
     uint256 minContribution,
     uint256  projectDeadline,
@@ -203,7 +203,8 @@ contract Campaign{
     string memory desc,
     State currentState,
     uint256 balance,
-    string memory imageUrl
+    string memory imageUrl,
+    uint256 numBackers
     ){
         projectStarter=creator;
         minContribution=minimumContribution;
@@ -216,5 +217,6 @@ contract Campaign{
         currentState=state;
         balance=address(this).balance;
         imageUrl=bannerUrl;
+        numBackers=noOfContributors;
     }
 }

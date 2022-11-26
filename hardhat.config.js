@@ -2,8 +2,8 @@ require("dotenv").config({ path: __dirname + "/.env.local" }); // When deploying
 require("@nomiclabs/hardhat-ethers");
 require("hardhat-deploy");
 
-// console.log(process.env.INFURA_API_KEY);
-// console.log(process.env.PRIVATE_KEY);
+console.log(process.env.INFURA_API_KEY);
+console.log(process.env.PRIVATE_KEY);
 
 module.exports = {
   solidity: "0.8.17",
@@ -20,6 +20,7 @@ module.exports = {
     hardhat: {
       initialBaseFeePerGas: 0,
       blockGasLimit: 18800000,
+      chainId: 31337,
     },
     goerli_testnet: {
       url: `https://goerli.infura.io/v3/${process.env.INFURA_API_KEY}`,
@@ -41,4 +42,11 @@ module.exports = {
 Nothing to compile
 Contract deployed to address: 0xB2B305a50121d6acC8c0F8951a6cdb41d3bB0C6D
 deploying "CrowdHelp" (tx: 0xe7a0301eae21ef759c24c188d2554d538cbe5e11d3ea1b9c6c385862d38df927)...: deployed at 0x5a61c16165e797bb770887F339f9DCb6608dce02 with 2316759 gas
- */
+ 
+  new deploy..
+  eaf842956c36444c8aaf54163a47e0d2
+367d65fef68348fd92b6ba50e22b9bd63d45c7cf8c72072cedb6b8ae6ba7f8fc
+Nothing to compile
+Contract deployed to address: 0xB2B305a50121d6acC8c0F8951a6cdb41d3bB0C6D
+reusing "CrowdHelp" at 0x5a61c16165e797bb770887F339f9DCb6608dce02
+*/

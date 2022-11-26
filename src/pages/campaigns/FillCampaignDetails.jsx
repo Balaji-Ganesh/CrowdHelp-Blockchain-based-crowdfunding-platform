@@ -26,6 +26,7 @@ import NavBar from "../../components/NavBar";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import moment from "moment";
 
 // Wallet connection..
 import { useWallet } from "use-wallet";
@@ -59,18 +60,27 @@ function FillCampaignDetails() {
 
   // helpers..
   async function handleFilledCampaignDetails(data) {
+    console.log("ABout to print data");
     console.log(data);
+    console.log("deadline: " + data.deadlineDate + " " + data.deadlineTime);
+    const timestamp = moment(
+      data.deadlineDate + " " + data.deadlineTime,
+      "YYYY-MM-DD HH:mm"
+    ).valueOf();
+    console.log(timestamp);
+    console.log("timestamp printed");
 
     try {
       const accounts = await web3.eth.getAccounts();
       // Create campaign by taking all the details..
       await crowdHelp.methods
         .createCampaign(
-          web3.utils.toWei(data.minContribAmount, "ether"),
           data.title,
           data.description,
-          data.bannerUrl,
-          web3.utils.toWei(data.ethRaised, "ether")
+          web3.utils.toWei(data.minContribAmount, "ether"),
+          web3.utils.toWei(data.ethRaised, "ether"),
+          timestamp,
+          data.bannerUrl
         )
         .send({
           from: accounts[0],

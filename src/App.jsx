@@ -29,7 +29,7 @@ function App() {
       connectors={{
         walletconnect: {
           rpcUrl:
-            "https://goerli.infura.io/v3/fc153ab956004ee699034e5242c12417",
+            "https://goerli.infura.io/v3/eaf842956c36444c8aaf54163a47e0d2",
         },
       }}
     >
@@ -52,7 +52,7 @@ function App() {
               path="/create-campaign"
               element={
                 // <AuthProtectedRoute>
-                  <FillCampaignDetails />
+                <FillCampaignDetails />
                 // {/* </AuthProtectedRoute> */}
               }
             />
