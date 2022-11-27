@@ -209,6 +209,24 @@ function ViewCampaign() {
     }
   };
 
+  const handleEndAndWithdraw = async (data) => {
+    console.log("Withdraw called");
+    try {
+      const campaign = Campaign(campaignData.id); // get the campaign
+      const accounts = await web3.eth.getAccounts(); // backer account..
+      await campaign.methods.endCampaignAndCredit().send({
+        from: accounts[0],
+      });
+
+      // after successful end & credit..
+      console.log("Funds credited successfully to fundraiser's wallet.");
+      window.location.reload();
+    } catch (err) {
+      console.log(err);
+      // setContributionError(err);
+    }
+  };
+
   // components..
   // other modules..
   function ShowCampaignDetails() {
@@ -429,7 +447,7 @@ function ViewCampaign() {
         <Alert severity="info" sx={{ marginTop: 1 }}>
           To withdraw raised funds, campaign has to be <strong>ended</strong>
         </Alert>
-        <form onSubmit={withdrawHandleSubmit}>
+        <form onSubmit={withdrawHandleSubmit(handleEndAndWithdraw)}>
           <Alert severity="warning" sx={{ marginTop: 1, marginBottom: 1 }}>
             <FormControlLabel
               control={
