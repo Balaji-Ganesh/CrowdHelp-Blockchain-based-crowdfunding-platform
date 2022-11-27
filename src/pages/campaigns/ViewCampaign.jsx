@@ -89,6 +89,8 @@ function ViewCampaign() {
   const [isContributionSuccess, setIsContributionSuccess] =
     React.useState(false);
   const [contributionError, setContributionError] = React.useState("");
+  const [abortingError, setAbortingError] = React.useState("");
+  const [endAndWithdrawError, setEndAndWithdrawError] = React.useState("");
 
   // for testing purpose..
   const etherScanAddress = "0x4d496ccc28058b1d74b7a19541663e21154f9c84"; // some dummy address.
@@ -152,12 +154,12 @@ function ViewCampaign() {
       });
 
       console.log("abort success");
+      window.location.reload();
       // after successful abort..
       abortReset("", { keepValues: false }); // clear the values entered.
-      setIsContributionSuccess(true);
     } catch (err) {
       console.log(err);
-      // setContributionError(err);
+      setAbortingError(err);
     }
   };
 
@@ -223,7 +225,7 @@ function ViewCampaign() {
       window.location.reload();
     } catch (err) {
       console.log(err);
-      // setContributionError(err);
+      setEndAndWithdrawError(err);
     }
   };
 
@@ -447,6 +449,19 @@ function ViewCampaign() {
         <Alert severity="info" sx={{ marginTop: 1 }}>
           To withdraw raised funds, campaign has to be <strong>ended</strong>
         </Alert>
+        {endAndWithdrawError && (
+          <Alert
+            severity="error"
+            sx={{ marginTop: 2, marginBottom: 2 }}
+            onClose={() => {
+              setEndAndWithdrawError(""); // erase the error msg.
+              window.location.reload(); // re-load the page to get the updated status
+            }}
+          >
+            <AlertTitle>{endAndWithdrawError.name}</AlertTitle>
+            {endAndWithdrawError.message}
+          </Alert>
+        )}
         <form onSubmit={withdrawHandleSubmit(handleEndAndWithdraw)}>
           <Alert severity="warning" sx={{ marginTop: 1, marginBottom: 1 }}>
             <FormControlLabel
@@ -546,6 +561,19 @@ function ViewCampaign() {
             >
               Abort Campaign
             </Typography>
+            {abortingError && (
+              <Alert
+                severity="error"
+                sx={{ marginTop: 2, marginBottom: 2 }}
+                onClose={() => {
+                  setAbortingError(""); // erase the error msg.
+                  window.location.reload(); // re-load the page to get the updated status
+                }}
+              >
+                <AlertTitle>{abortingError.name}</AlertTitle>
+                {abortingError.message}
+              </Alert>
+            )}
             <form onSubmit={abortHandleSubmit(handleAbortCampaign)}>
               <Stack direction="column">
                 <TextField
