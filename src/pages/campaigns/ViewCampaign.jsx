@@ -488,7 +488,9 @@ function ViewCampaign() {
             type="submit"
             fullWidth
             variant="contained"
+            loading={withdrawFormState.isSubmitting}
             color="error"
+            disabled={withdrawFormState.isSubmitting}
           >
             End campaign &amp; withdraw
           </LoadingButton>
@@ -522,14 +524,15 @@ function ViewCampaign() {
                       certain.
                     </Typography>
                   </Container>
-                  <Button
+                  <LoadingButton
                     variant="contained"
+                    loading={abortFormState.isSubmitting}
                     color="error"
                     size="small"
                     onClick={() => setShowEndCampaignConfirmation(true)}
                   >
                     Abort campaign
-                  </Button>
+                  </LoadingButton>
                 </Stack>
               </Container>
             </>
@@ -606,7 +609,7 @@ function ViewCampaign() {
                   label="I accept that, if I abort campaign, all the raised money can be refunded back to the backers."
                 />
 
-                <Button
+                <LoadingButton
                   color="error"
                   variant="contained"
                   type="submit"
@@ -615,7 +618,7 @@ function ViewCampaign() {
                   disabled={abortFormState.isSubmitting}
                 >
                   Abort Campaign &amp; Refund to backers
-                </Button>
+                </LoadingButton>
                 <Button
                   color="primary"
                   variant="contained"

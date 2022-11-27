@@ -276,7 +276,7 @@ function FillCampaignDetails() {
                     type="number"
                     helperText="Amount to be raised"
                     inputProps={{
-                      min: 1,
+                      // min: 0.00000001,
                       step: 0.00001,
                     }}
                     disabled={isSubmitting}
