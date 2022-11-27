@@ -92,9 +92,9 @@ function HomePage() {
                   Top {campaignsList.length} recent active campaigns..
                 </Typography>
               </Box>
-              <Button onClick={() => navigate("/active-campaigns")}>
+              {/* <Button onClick={() => navigate("/active-campaigns")}>
                 View more
-              </Button>
+              </Button> */}
             </Stack>
             <Container sx={{ py: 2 }} maxWidth="md">
               {/* End hero unit */}
