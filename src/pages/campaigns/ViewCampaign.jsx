@@ -493,7 +493,7 @@ function ViewCampaign() {
         >
           <Box
             width={400}
-            height={280}
+            height={300}
             bgcolor={"background.default"}
             color={"text.primary"}
             p={3}
@@ -543,8 +543,18 @@ function ViewCampaign() {
                   variant="contained"
                   type="submit"
                   fullWidth
+                  sx={{ marginTop: 1 }}
                 >
                   Abort Campaign &amp; Refund to backers
+                </Button>
+                <Button
+                  color="primary"
+                  variant="contained"
+                  onClick={() => setShowEndCampaignConfirmation(false)}
+                  fullWidth
+                  sx={{ marginTop: 1 }}
+                >
+                  Cancel
                 </Button>
               </Stack>
             </form>
