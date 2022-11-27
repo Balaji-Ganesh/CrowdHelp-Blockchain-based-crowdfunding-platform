@@ -1,6 +1,7 @@
 require("dotenv").config({ path: __dirname + "/.env.local" }); // When deploying -- be careful about this path..
 require("@nomiclabs/hardhat-ethers");
 require("hardhat-deploy");
+require("@nomicfoundation/hardhat-toolbox");
 
 console.log(process.env.INFURA_API_KEY);
 console.log(process.env.PRIVATE_KEY);
@@ -23,15 +24,13 @@ module.exports = {
       chainId: 31337,
     },
     goerli_testnet: {
-      url: `https://goerli.infura.io/v3/${process.env.INFURA_API_KEY}`,
-      accounts: [`0x` + process.env.PRIVATE_KEY],
+      // url: `https://goerli.infura.io/v3/${process.env.INFURA_API_KEY}`, // https://goerli.infura.io/v3/eaf842956c36444c8aaf54163a47e0d2
+      url: "https://goerli.infura.io/v3/eaf842956c36444c8aaf54163a47e0d2", // https://goerli.infura.io/v3/eaf842956c36444c8aaf54163a47e0d2
+      accounts: [process.env.PRIVATE_KEY],
       gasPrice: 1000,
       saveDeployments: true,
       deploy: ["scripts/"],
     },
-  },
-  namedAccounts: {
-    deployer: 0,
   },
 };
 
