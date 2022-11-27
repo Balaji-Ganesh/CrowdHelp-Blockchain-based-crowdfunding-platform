@@ -89,7 +89,7 @@ function HomePage() {
                   Take part in active campaigns..
                 </Typography>
                 <Typography variant="caption">
-                  Top {campaignsList.length} recent active campaigns..
+                  Top {campaignsList.length} recent campaigns..
                 </Typography>
               </Box>
               {/* <Button onClick={() => navigate("/active-campaigns")}>
