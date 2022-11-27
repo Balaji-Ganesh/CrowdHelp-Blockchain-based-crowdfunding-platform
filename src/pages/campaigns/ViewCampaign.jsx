@@ -301,6 +301,12 @@ function ViewCampaign() {
             Contributions are accepted till <i>(Deadline)</i>
           </Typography>
           <Typography>{`${new Date(campaignData.deadline)}`}</Typography>
+          {(campaignData.campaignStatus == "EXPIRED" ||
+            campaignData.campaignStatus == "ABORTED") && (
+            <Typography>
+              <i>No contributions can be accepted now.</i>
+            </Typography>
+          )}
         </Container>
       </>
     );
