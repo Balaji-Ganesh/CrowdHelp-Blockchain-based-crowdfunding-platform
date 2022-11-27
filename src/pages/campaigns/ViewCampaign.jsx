@@ -358,7 +358,7 @@ function ViewCampaign() {
                 inputProps={{
                   step: 0.00001,
                   min: campaignData[minAmountKey],
-                  max: campaignData[raisedMoneyKey],
+                  // max: campaignData[raisedMoneyKey],
                 }}
                 disabled={contributionFormState.isSubmitting}
                 {...contributionRegister("contribAmount", { required: true })}
