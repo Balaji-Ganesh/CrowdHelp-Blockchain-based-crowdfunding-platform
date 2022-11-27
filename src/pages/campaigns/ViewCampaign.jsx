@@ -468,39 +468,40 @@ function ViewCampaign() {
   function EndCampaign() {
     return (
       <>
-        {wallet.account === campaignData.createdBy && (
-          // {campaignData.status === "ACTIVE" && (
-          <>
-            <Typography variant="caption">Danger Zone</Typography>
-            <Container
-              sx={{
-                backgroundColor: "#e5989b",
-                padding: 1,
-                borderRadius: 3,
-              }}
-            >
-              <Stack direction="row" alignItems={"center"}>
-                <Container>
-                  <Typography variant="body1">
-                    <strong>Quit</strong> &amp; <strong>Refund</strong>
-                  </Typography>
-                  <Typography variant="caption">
-                    Once you end a campaign, there is no going back. Please be
-                    certain.
-                  </Typography>
-                </Container>
-                <Button
-                  variant="contained"
-                  color="error"
-                  size="small"
-                  onClick={() => setShowEndCampaignConfirmation(true)}
-                >
-                  Abort campaign
-                </Button>
-              </Stack>
-            </Container>
-          </>
-        )}
+        {wallet.account === campaignData.createdBy &&
+          (campaignData.status === "ACTIVE" ||
+            campaignData.status === "SUCCESS") && (
+            <>
+              <Typography variant="caption">Danger Zone</Typography>
+              <Container
+                sx={{
+                  backgroundColor: "#e5989b",
+                  padding: 1,
+                  borderRadius: 3,
+                }}
+              >
+                <Stack direction="row" alignItems={"center"}>
+                  <Container>
+                    <Typography variant="body1">
+                      <strong>Quit</strong> &amp; <strong>Refund</strong>
+                    </Typography>
+                    <Typography variant="caption">
+                      Once you end a campaign, there is no going back. Please be
+                      certain.
+                    </Typography>
+                  </Container>
+                  <Button
+                    variant="contained"
+                    color="error"
+                    size="small"
+                    onClick={() => setShowEndCampaignConfirmation(true)}
+                  >
+                    Abort campaign
+                  </Button>
+                </Stack>
+              </Container>
+            </>
+          )}
       </>
     );
   }
