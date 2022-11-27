@@ -135,38 +135,16 @@ function ViewCampaign() {
     );
   }
 
-  async function abortCampaign() {
+  // async function abortCampaign() {
+  const handleAbortCampaign = async (data) => {
     console.log("abort campaign called");
-    if (acceptanceStatus === false && abortCampaignMsg.length == 0) return;
+    console.log(data);
+    if (data.acceptCondition === false && data.campaignAbortReason.length == 0)
+      return;
 
     // proceed further, only when valid.
-    await axios({
-      method: "DELETE",
-      url: api_url + "abort-campaign/" + campaignId,
-      data: {
-        reason: abortCampaignMsg || "Not Mentioned",
-      },
-    })
-      .then((response) => {
-        // console.log(response);
-        if (response.status == 200) {
-          // console.log(response.data.msg); // SHow this in snackbar.
-          setResponseSeverity("success");
-          setTimeout(window.location.reload(true), 3000); // Re-load the page
-          setResponseMsg(
-            response.data.msg + "\n Wallet balance will get effected soon."
-          );
-        } else setResponseSeverity("error");
-
-        setShowEndCampaignConfirmation(false); // close the modal
-        setShowResponse(true);
-      })
-      .catch((err) => {
-        setResponseSeverity("error");
-        setShowResponse(true);
-        setResponseMsg(err);
-      });
-  }
+    console.log("about to perform aborting..");
+  };
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -469,8 +447,8 @@ function ViewCampaign() {
     return (
       <>
         {wallet.account === campaignData.createdBy &&
-          (campaignData.status === "ACTIVE" ||
-            campaignData.status === "SUCCESS") && (
+          (campaignData.campaignStatus === "ACTIVE" ||
+            campaignData.campaignStatus === "SUCCESS") && (
             <>
               <Typography variant="caption">Danger Zone</Typography>
               <Container
@@ -513,65 +491,63 @@ function ViewCampaign() {
           open={showEndCampaignConfirmation}
           onClose={() => setShowEndCampaignConfirmation(false)}
         >
-          <Box>
-            <Typography>Hello</Typography>
-            <Box
-              width={400}
-              height={280}
-              bgcolor={"background.default"}
-              color={"text.primary"}
-              p={3}
-              borderRadius={3}
-              display="flex"
-              flexDirection={"column"}
-              gap={1}
-              sx={{ justifyContent: "center" }}
-              component="form"
-              // onSubmit={abortCampaign}
+          <Box
+            width={400}
+            height={280}
+            bgcolor={"background.default"}
+            color={"text.primary"}
+            p={3}
+            borderRadius={3}
+            display="flex"
+            flexDirection={"column"}
+            gap={1}
+            sx={{ justifyContent: "center" }}
+            // component="form"
+            // onSubmit={abortCampaign}
+          >
+            <Typography
+              variant="h6"
+              color="error"
+              textAlign="center"
+              gutterBottom
             >
-              <Typography
-                variant="h6"
-                color="error"
-                textAlign="center"
-                gutterBottom
-              >
-                Abort Campaign
-              </Typography>
-              <form onSubmit={abortHandleSubmit(abortCampaign)}>
-                <Stack direction="column">
-                  <TextField
-                    label="Why would you like to abort campaign?"
-                    multiline
-                    rows={3}
-                    {...abortRegister("campaignAbortReason", {
-                      required: true,
-                    })}
-                    variant="standard"
-                  />
-                  <Typography variant="caption">
-                    This reason will be published in campaign page to notify
-                    viewers and backers.
-                  </Typography>
-                </Stack>
-                <Stack direction={"column"}>
-                  <FormGroup sx={{ marginBottom: 1.5 }}>
-                    <FormControlLabel
-                      control={<Checkbox />}
-                      label="I accept that, if I abort campaign, all the raised money can be refunded back to the backers."
-                      {...abortRegister("acceptCondition", { required: true })}
-                    />
-                  </FormGroup>
-                  <Button
-                    color="error"
-                    variant="contained"
-                    type="submit"
-                    fullWidth
-                  >
-                    Abort Campaign &amp; Refund to backers
-                  </Button>
-                </Stack>
-              </form>
-            </Box>
+              Abort Campaign
+            </Typography>
+            <form onSubmit={abortHandleSubmit(handleAbortCampaign)}>
+              <Stack direction="column">
+                <TextField
+                  label="Why would you like to abort campaign?"
+                  multiline
+                  required
+                  rows={3}
+                  {...abortRegister("campaignAbortReason", {
+                    required: true,
+                  })}
+                  variant="standard"
+                />
+                <Typography variant="caption">
+                  This reason will be published in campaign page to notify
+                  viewers and backers.
+                </Typography>
+              </Stack>
+              <Stack direction={"column"}>
+                <FormControlLabel
+                  control={
+                    <Checkbox required {...abortRegister("acceptCondition")} />
+                  }
+                  label="I accept that, if I abort campaign, all the raised money can be refunded back to the backers."
+                />
+
+                <Button
+                  color="error"
+                  variant="contained"
+                  type="submit"
+                  fullWidth
+                >
+                  Abort Campaign &amp; Refund to backers
+                </Button>
+              </Stack>
+            </form>
           </Box>
         </StyledModal>
       </>
