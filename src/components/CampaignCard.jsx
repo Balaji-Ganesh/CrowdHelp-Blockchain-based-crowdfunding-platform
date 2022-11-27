@@ -89,7 +89,15 @@ function CampaignCard(props) {
               justifyContent="space-between"
               alignItems="center"
             >
-              <Typography component="p" fontSize={12} color="green">
+              <Typography
+                component="p"
+                fontSize={12}
+                color={
+                  campaignStatus == "ACTIVE" || campaignStatus == "SUCCESS"
+                    ? "green"
+                    : "red"
+                }
+              >
                 {campaignStatus}
               </Typography>
               <IconButton>
