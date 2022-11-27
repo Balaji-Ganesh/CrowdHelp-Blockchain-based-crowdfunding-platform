@@ -30,7 +30,7 @@ export default function Footer() {
       >
         <Container maxWidth="sm">
           <Typography variant="body1">
-            CrowdHelp platform - development in progress 🚧.
+            CrowdHelp platform - [ONLY] Core functionalities done. 🚧.
           </Typography>
           <Copyright />
         </Container>

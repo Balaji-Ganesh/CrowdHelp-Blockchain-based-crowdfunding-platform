@@ -74,7 +74,7 @@ function HomePage() {
             {" Raise a campaign to help the needy."}
           </Typography>
           <Typography variant="body1">Welcome 👋 to the community.</Typography>
-          <Typography variant="body1">Development in progress 🚧.</Typography>
+          <Typography variant="body1">[ONLY] Core functionalities done 🚧. More features on the way..!! 🏃 </Typography>
         </Box>
         <Box sx={{ mt: 4, mb: 2 }}>
           <Stack>
