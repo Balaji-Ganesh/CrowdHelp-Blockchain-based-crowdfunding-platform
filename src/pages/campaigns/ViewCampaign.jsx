@@ -57,9 +57,35 @@ function ViewCampaign() {
   const wallet = useWallet();
 
   // for dealing with form values -- at contribution..
-  const { handleSubmit, register, formState, reset, getValues } = useForm({
+  const {
+    handleSubmit: contributionHandleSubmit,
+    register: contributionRegister,
+    formState: contributionFormState,
+    reset: contributionReset,
+  } = useForm({
     mode: "onChange",
   });
+
+  // for dealing with form values -- at abort campaign..
+  const {
+    handleSubmit: abortHandleSubmit,
+    register: abortRegister,
+    formState: abortFormState,
+    reset: abortReset,
+  } = useForm({
+    mode: "onChange",
+  });
+
+  // for dealing with form values -- at withdraw raised funds..
+  const {
+    handleSubmit: withdrawHandleSubmit,
+    register: withdrawRegister,
+    formState: withdrawFormState,
+    reset: withdrawReset,
+  } = useForm({
+    mode: "onChange",
+  });
+
   const [isContributionSuccess, setIsContributionSuccess] =
     React.useState(false);
   const [contributionError, setContributionError] = React.useState("");
@@ -110,7 +136,7 @@ function ViewCampaign() {
   }
 
   async function abortCampaign() {
-    // console.log("abort campaign called");
+    console.log("abort campaign called");
     if (acceptanceStatus === false && abortCampaignMsg.length == 0) return;
 
     // proceed further, only when valid.
@@ -182,7 +208,7 @@ function ViewCampaign() {
       });
 
       // after successful contribution..
-      reset("", { keepValues: false }); // clear the values entered.
+      contributionReset("", { keepValues: false }); // clear the values entered.
       setIsContributionSuccess(true);
     } catch (err) {
       console.log(err);
@@ -325,7 +351,7 @@ function ViewCampaign() {
               Thanks for your valuable contributions.
             </Alert>
           ) : (
-            <form onSubmit={handleSubmit(handleContributedFunds)}>
+            <form onSubmit={contributionHandleSubmit(handleContributedFunds)}>
               <TextField
                 label="Contribution amount"
                 type={"number"}
@@ -334,8 +360,8 @@ function ViewCampaign() {
                   min: campaignData[minAmountKey],
                   max: campaignData[raisedMoneyKey],
                 }}
-                disabled={formState.isSubmitting}
-                {...register("contribAmount", { required: true })}
+                disabled={contributionFormState.isSubmitting}
+                {...contributionRegister("contribAmount", { required: true })}
                 helperText="Enter amount in Ether you want to contribute."
                 fullWidth
                 size="small"
@@ -358,7 +384,7 @@ function ViewCampaign() {
                   variant="contained"
                   type="submit"
                   fullWidth
-                  loading={formState.isSubmitting}
+                  loading={contributionFormState.isSubmitting}
                   sx={{ marginTop: 1 }}
                 >
                   Contribute Funds
@@ -410,7 +436,7 @@ function ViewCampaign() {
         <Alert severity="info" sx={{ marginTop: 1 }}>
           To withdraw raised funds, campaign has to be <strong>ended</strong>
         </Alert>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={withdrawHandleSubmit}>
           <Alert severity="warning" sx={{ marginTop: 1, marginBottom: 1 }}>
             <FormControlLabel
               control={
@@ -510,27 +536,28 @@ function ViewCampaign() {
               >
                 Abort Campaign
               </Typography>
-              <Stack direction="column">
-                <TextField
-                  label="Why would you like to abort campaign?"
-                  multiline
-                  rows={3}
-                  name="campaignEndReason"
-                  variant="standard"
-                  onChange={(e) => setAbortCampaignMsg(e.target.value)}
-                />
-                <Typography variant="caption">
-                  This reason will be published in campaign page to notify
-                  viewers and backers.
-                </Typography>
-              </Stack>
-              <Stack direction={"column"}>
-                <form>
+              <form onSubmit={abortHandleSubmit(abortCampaign)}>
+                <Stack direction="column">
+                  <TextField
+                    label="Why would you like to abort campaign?"
+                    multiline
+                    rows={3}
+                    {...abortRegister("campaignAbortReason", {
+                      required: true,
+                    })}
+                    variant="standard"
+                  />
+                  <Typography variant="caption">
+                    This reason will be published in campaign page to notify
+                    viewers and backers.
+                  </Typography>
+                </Stack>
+                <Stack direction={"column"}>
                   <FormGroup sx={{ marginBottom: 1.5 }}>
                     <FormControlLabel
                       control={<Checkbox />}
                       label="I accept that, if I abort campaign, all the raised money can be refunded back to the backers."
-                      required
+                      {...abortRegister("acceptCondition", { required: true })}
                     />
                   </FormGroup>
                   <Button
@@ -538,12 +565,11 @@ function ViewCampaign() {
                     variant="contained"
                     type="submit"
                     fullWidth
-                    onClick={() => abortCampaign()}
                   >
-                    End Campaign
+                    Abort Campaign &amp; Refund to backers
                   </Button>
-                </form>
-              </Stack>
+                </Stack>
+              </form>
             </Box>
           </Box>
         </StyledModal>
