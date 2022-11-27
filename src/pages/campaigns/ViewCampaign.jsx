@@ -144,6 +144,21 @@ function ViewCampaign() {
 
     // proceed further, only when valid.
     console.log("about to perform aborting..");
+    try {
+      const campaign = Campaign(campaignData.id); // get the campaign
+      const accounts = await web3.eth.getAccounts(); // backer account..
+      await campaign.methods.abortCampaignAndRefund().send({
+        from: accounts[0],
+      });
+
+      console.log("abort success");
+      // after successful abort..
+      abortReset("", { keepValues: false }); // clear the values entered.
+      setIsContributionSuccess(true);
+    } catch (err) {
+      console.log(err);
+      // setContributionError(err);
+    }
   };
 
   const handleClose = (event, reason) => {
@@ -524,6 +539,7 @@ function ViewCampaign() {
                     required: true,
                   })}
                   variant="standard"
+                  disabled={abortFormState.isSubmitting}
                 />
                 <Typography variant="caption">
                   This reason will be published in campaign page to notify
@@ -544,6 +560,7 @@ function ViewCampaign() {
                   type="submit"
                   fullWidth
                   sx={{ marginTop: 1 }}
+                  disabled={abortFormState.isSubmitting}
                 >
                   Abort Campaign &amp; Refund to backers
                 </Button>
@@ -553,6 +570,7 @@ function ViewCampaign() {
                   onClick={() => setShowEndCampaignConfirmation(false)}
                   fullWidth
                   sx={{ marginTop: 1 }}
+                  disabled={abortFormState.isSubmitting}
                 >
                   Cancel
                 </Button>
@@ -581,19 +599,37 @@ function ViewCampaign() {
               Current Status of campaign
             </Typography>
             <ShowCampaignBalance />
-            {wallet.account !== campaignData.createdBy ? (
+            {campaignData.campaignStatus === "ACTIVE" ||
+            campaignData.campaignStatus == "SUCCESS" ? (
               <>
-                <Typography variant="caption" sx={{ margin: 0 }}>
-                  Contribute
-                </Typography>
-                <BecomeBacker />
+                {wallet.account !== campaignData.createdBy ? (
+                  <>
+                    <Typography variant="caption" sx={{ margin: 0 }}>
+                      Contribute
+                    </Typography>
+                    <BecomeBacker />
+                  </>
+                ) : (
+                  <>
+                    <Typography variant="caption" sx={{ margin: 0 }}>
+                      Withdraw
+                    </Typography>
+                    <WithDrawFunds />
+                  </>
+                )}
               </>
             ) : (
               <>
                 <Typography variant="caption" sx={{ margin: 0 }}>
-                  Withdraw
+                  End status
                 </Typography>
-                <WithDrawFunds />
+                <Container>
+                  <Typography>
+                    {campaignData.campaignStatus == "EXPIRED"
+                      ? "Campaign has ended successfully..!!"
+                      : "Campign has aborted in between.  <fund raiser's reason here (In next version)>"}
+                  </Typography>
+                </Container>
               </>
             )}
           </Stack>

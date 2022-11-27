@@ -308,7 +308,7 @@ function FillCampaignDetails() {
                         type={"date"}
                         inputProps={{
                           min: `${new Date(
-                            new Date().getTime() + 1 * 24 * 60 * 60 * 1000 // +1 day
+                            new Date().getTime() + 1 * 1 * 60 * 60 * 1000 // +1 day
                           )
                             .toJSON()
                             .slice(0, 10)}`,

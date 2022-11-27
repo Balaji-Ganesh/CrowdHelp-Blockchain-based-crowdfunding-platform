@@ -87,9 +87,9 @@ contract Campaign{
         _;
     }
 
-    modifier validateExpiry(State _state){
-        require(state == _state,'Invalid state');
-        require(block.timestamp < deadline,'Deadline has passed !');
+    modifier canContribute(){
+        require(state == State.ACTIVE || state  == State.SUCCESS ,'Invalid state');
+        require(block.timestamp < deadline,'Sorry backer, deadline has passed! No contributions can be accepted now.');
         _;
     }
 
@@ -133,7 +133,7 @@ contract Campaign{
     }
 
     // @dev Anyone can contribute
-    function contribute() public validateExpiry(State.ACTIVE) payable {
+    function contribute() public canContribute() payable {
         // validation
         require(msg.value >= minimumContribution,'Contribution amount is too low !');
         address payable contributor = payable(msg.sender);
@@ -160,10 +160,10 @@ contract Campaign{
         }
     }
 
-     function endCampaign() public isCreator() payable {
+     function endCampaignAndCredit() public isCreator() payable {
         // perform validation..
-        require(deadline >= block.timestamp, 'Campaign cannot be ended, deadline not reached.');
-        require(state == State.ACTIVE, 'Invalid state. Cannot end campaign.');
+        require(state == State.SUCCESS, 'Goal not reached, amount cannot be withdrawn. Please abort to refund to backers');
+        require(block.timestamp < deadline, 'Campaign cannot be ended, deadline not reached.');
         // transfer the WHOLE amount raised to fund raiser
         creator.transfer(raisedAmount);  
         
@@ -173,10 +173,10 @@ contract Campaign{
         emit AmountCredited(creator, raisedAmount); 
     }
     
-    function abortCampaign() public isCreator() payable{
+    function abortCampaignAndRefund() public isCreator() payable{
         // perform validation..
-        require(deadline < block.timestamp, 'Campaign cannot be aborted, deadline passed.');
-        require(state == State.ACTIVE, 'Invalid state. Cannot abort campaign.');
+        require(block.timestamp < deadline, 'Campaign cannot be aborted, deadline passed.');
+        require(state == State.ACTIVE || state == State.SUCCESS, 'Invalid state. Cannot abort campaign.');
         // refund money to backers
         for(uint idx=0; idx<noOfContributors; idx++){ // iterate through all addresses of contrdibutors
             contributions[idx].contributor.transfer(contributions[idx].amount);
