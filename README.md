@@ -105,7 +105,7 @@
   2.  Creating campaigns _-- Need help of others_
       - [x] Taking details from fundraiser -- **without milestones**
       - ~Taking milestones details~ _-- feature shifted next iteration._.
-      - [ ] Deploying in blockchain
+      - [X] Deploying in blockchain
   3.  Displaying campaigns
       - [x] Displaying _few_ active campaigns in homepage
       - [x] [separate] campaigns page - which lists all the active campaigns
@@ -117,13 +117,13 @@
       - Approving withdraw request based on the count.
       - Updating the acceptance % to fundraiser.
   5.  Ending campaigns
-      - [ ] Normal ending -- i.e., as the deadline completes.
+      - [X] Normal ending -- i.e., as the deadline completes.
       - [x] Abrupt ending -- i.e., ending in-between.
 - @Manan - Integration of whole application with Solidity and back-end
 - @GautamGupta - Designing test cases.
   - Lacking specificity -- Only _Designing_..? Who will take testing then?
 
-## Smart contract deployment errors & eployed fixes
+## Smart contract deployment errors & employed fixes
 
 - $`npx hardhat compile` giving `Compiled 1 Solidity file successfully`.
 - But $`npx hardhat run --network localhost scripts/deploy.js ` giving ..
@@ -160,3 +160,7 @@ at registerCustomInspection (<Project_path>/CrowdHelp-Blockchain-based-crowdfund
     at Module.load (node:internal/modules/cjs/loader:981:32)
     at Function.Module._load (node:internal/modules/cjs/loader:822:12)
 ```
+
+### Employed fix
+- Finally [hardhat docs solution](https://hardhat.org/tutorial/deploying-to-a-live-network#deploying-to-remote-networks) worked.
+- This one employed earlier too, but used `0x` before PRIVATE_KEY -- came to here from [Palm.io docs - _referenced by Infura_](https://docs.palm.io/HowTo/Deploy-using-Hardhat/).
