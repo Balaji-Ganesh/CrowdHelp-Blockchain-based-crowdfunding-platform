@@ -19,51 +19,82 @@
   - [Task Division](#tasks-division)
 
 # Current Status of the project
+
 - Application is deployed on Netlify _(for frontend)_ and Infura _(Goerli test network)_ with essential features _(listed below)_.
 - Please checkout at [here](https://crowdhelp.netlify.app). Found any bugs? or felt like need some features -- please feel free to raise a new issue or submit your pull request.
 
-# Guidelines
+# How to run _(locally & remotely)_?
 
-## Packages Installed (purpose)
+## Pre-requisites
 
-- Used [Vitejs](https://vitejs.dev/) toolkit to setup the project. **Not `create-react-app`**.
-- `firebase`
-- `axios` - to deal with the requests POST, GET...
+- Metamask wallet with some `GoerliETH`, fine even if had < 0.5 ETH _(for testing purposes)_.
+  - Lacking GoerliETH ? -- get it free of 0.2 ETH/day at [Alchemy's Goerli faucet](https://goerlifaucet.com/) -- note that, this needs sign-up.
+- Clone this repo.
 
-1. MUIv5: `yarn add @mui/material @emotion/react @emotion/styled` - to use the MUI5 components and designs
-2. MUI Icons: `yarn add @mui/icons-material` - for usage of MUI SVG icons
+_(ONLY for running remotely)_
 
-## How to run?
+- Create an account on [Infura](https://infura.io), can also be on [Alchemy](https://www.alchemy.com/). \_(This project used Infura with `goerli-testnet`)
+- Create a new project & get an end-point of it.
+- Create a new file with name `.env.local` in project's root directory.
+- Store the API key as ..
 
-- Clone the repository.
-- Make sure the `yarn` has installed. If not installed already use: `npm install --global yarn`.
-- Then use `yarn` to install all the necessary packages and `yarn dev` to run the local server.
+  ````.env
+  INFURA_API_KEY=<Your API_key here>
+  PRIVATE_KEY=<Your private key>
 
-## How to make contributions?
+      ```
 
-- Follow the above step.
+  **How to get Private key?** _(In metamask wallet)_
+  ````
 
-### For development (New Features)
+1. Open your metamask wallet and choose the account of which you need the private key.
+2. Goto **Account Options** _(3 dots at top-right)_ → **Account Details**.
+3. Now click on **Export private Key** and enter your metamask password.
+4. Get this and paste in `.env.local` file as `PRIVATE_KEY`.
 
-- create a separate branch - may be of your name, then develop.
-- Perform tests, if working fine - make a Merge request.
+## Running locally _(with **hardhat**)_
 
-### For Development (Fixing bugs raised as Issues)
+_(Run these commands by being in project root directory)_
 
-- solve the issue - use the issues page to discuss.
-- At last, make commit with the issue no. and make merge request.
+- Install the project dependencies
+  ```sh
+  yarn dev
+  ```
+- Run local hardhat network
+  ```sh
+  npx hardhat node
+  ```
+  _Make changes to the smart-contract if needed._
+- Compile the smart contract via
+  ```sh
+  npx hardhat compile
+  ```
+- Deploy the smart contract
+  ```sh
+  npx hardhat run scripts/deploy.js --network localhost
+  ```
+- This outputs the message as..
+  ```
+  Contract deployed to address: <Hex_address>
+  ```
+- Paste this address at `utils/contract/crowdHelp.js` as value for `crowdHelpContractAddress` variable.
 
-### For testing
+- Run the frontend
+  ```sh
+   yarn dev
+  ```
+  - This will run server on `127.0.0.1:5173`
 
-- Run the project, and try to find the bugs or any component not working in the way it should then raise an issue (from the **Issues** tab).
-- Please raise the issue, with appropriate explanation or screenshots -- so that, can reproduce the issue and solve it.
+## Running remotely
 
-### Tools
+- Follow the above steps. Now just change the network as `goerli_testnet` while deploying.
+  ```
+   npx hardhat run scripts/deploy.js --network goerli_testnet
+  ```
+- To run on different test-net..
+  - Use different URL in `hardhat.config.js`.
 
-- **Backend**
-  - Postman & Thunderclient (available as VS code extension)
-- **Frontend**
-  - React developer tools (available as browser extension)
+## Tech stack used
 
 ## Feature Updations Ideas :idea: (For next iterative versions)
 
@@ -79,18 +110,18 @@
 
 ## Milestones of the project _- Total Modules_
 
-1. [X] Landing page, ~Login, Sign-in, Sign-up~ _(These are made, but later removed)_
-2. [X] Campaign Creation
-3. [X] Funding Campaign
-4. [X] Withdrawl of funds
+1. [x] Landing page, ~Login, Sign-in, Sign-up~ _(These are made, but later removed)_
+2. [x] Campaign Creation
+3. [x] Funding Campaign
+4. [x] Withdrawl of funds
    - ~Withdraw request raise - by fundraiser~ _(Next update feature)_
    - ~Withdraw request acceptance decision - by backer~ _(Next update feature)_
    - [x] Fund raiser can make a withdraw call after the deadline - (**constraint**: campaign has reached a SUCCESS stage ) -- then all the funds, which are funded, will be credited to fundraiser's account address _(Which is taken at the time of campaign creation)_.
-5. [X] Ending campaign
+5. [x] Ending campaign
    - [x] Normal ending - _(i.e., ending after deadline)_
    - [x] Ending in-between - termed as **Aborting Campaign**.
-      - Fund raiser can make a abort call (before deadline) - when called, all the amount _(if funded partially / SUCCESS)_ will be payed back to backers.
-6. [X] Blockchain smartcontract -- currently fulfills only essential features.
+     - Fund raiser can make a abort call (before deadline) - when called, all the amount _(if funded partially / SUCCESS)_ will be payed back to backers.
+6. [x] Blockchain smartcontract -- currently fulfills only essential features.
 
 - Regarding each milestone
 
@@ -111,7 +142,7 @@
   2.  Creating campaigns _-- Need help of others_
       - [x] Taking details from fundraiser -- **without milestones**
       - ~Taking milestones details~ _-- feature shifted next iteration._.
-      - [X] Deploying in blockchain
+      - [x] Deploying in blockchain
   3.  Displaying campaigns
       - [x] Displaying _few_ active campaigns in homepage
       - [x] [separate] campaigns page - which lists all the active campaigns
@@ -123,7 +154,7 @@
       - Approving withdraw request based on the count.
       - Updating the acceptance % to fundraiser.
   5.  Ending campaigns
-      - [X] Normal ending -- i.e., as the deadline completes.
+      - [x] Normal ending -- i.e., as the deadline completes.
       - [x] Abrupt ending -- i.e., ending in-between.
 - @Manan - Integration of whole application with Solidity and back-end
 - @GautamGupta - Designing test cases.
@@ -168,5 +199,6 @@ at registerCustomInspection (<Project_path>/CrowdHelp-Blockchain-based-crowdfund
 ```
 
 ### Employed fix
+
 - Finally [hardhat docs solution](https://hardhat.org/tutorial/deploying-to-a-live-network#deploying-to-remote-networks) worked.
-- This one employed earlier too, but used `0x` before PRIVATE_KEY -- came to here from [Palm.io docs - _referenced by Infura_](https://docs.palm.io/HowTo/Deploy-using-Hardhat/).
+- This one employed earlier too, but used `0x` before PRIVATE*KEY -- came to here from [Palm.io docs - \_referenced by Infura*](https://docs.palm.io/HowTo/Deploy-using-Hardhat/).
