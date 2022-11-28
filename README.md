@@ -70,21 +70,22 @@
 1. [Inspired from MUI templates](https://v4.mui.com/getting-started/templates/)
    - Pages like `Campaign Creation`, `SignIn`, `SignUp` are inspired from the templates - infact, few are taken directly _(Attributions to the authors)_.
 
-# Work Division
+# ~Work Division~ -> Work Status
 
 ## Milestones of the project _- Total Modules_
 
-1. [ ] Landing page, Login, Sign-in, Sign-up
-   - UI & back-end connection.
-2. [ ] Campaign Creation
-3. [ ] Funding Campaign
-4. [ ] Withdrawl of funds
-   - Withdraw request raise - by fundraiser
-   - Withdraw request acceptance decision - by backer
-5. [ ] Ending campaign
-   - Normal ending - _(i.e., ending after deadline)_
-   - Ending in-between - _as next version feature_
-6. ### Blockchain smartcontract << -- **Core** of all
+1. [X] Landing page, ~Login, Sign-in, Sign-up~ _(These are made, but later removed)_
+2. [X] Campaign Creation
+3. [X] Funding Campaign
+4. [X] Withdrawl of funds
+   - ~Withdraw request raise - by fundraiser~ _(Next update feature)_
+   - ~Withdraw request acceptance decision - by backer~ _(Next update feature)_
+   - [x] Fund raiser can make a withdraw call after the deadline - (**constraint**: campaign has reached a SUCCESS stage ) -- then all the funds, which are funded, will be credited to fundraiser's account address _(Which is taken at the time of campaign creation)_.
+5. [X] Ending campaign
+   - [x] Normal ending - _(i.e., ending after deadline)_
+   - [x] Ending in-between - termed as **Aborting Campaign**.
+      - Fund raiser can make a abort call (before deadline) - when called, all the amount _(if funded partially / SUCCESS)_ will be payed back to backers.
+6. [X] Blockchain smartcontract -- currently fulfills only essential features.
 
 - Regarding each milestone
 
