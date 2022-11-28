@@ -1,5 +1,6 @@
 # Index - _What's in this?_
 
+- [Current status of Project](#current-status-of-the-project)
 - [**Guidelines**](#guidelines)
   - [Packages Installed (purpose)](#packages-installed-purpose)
   - [How to run?](#how-to-run)
@@ -16,6 +17,10 @@
 - [**Work Division**](#work-division)
   - [Milestones](#milestones-of-the-project---total-modules)
   - [Task Division](#tasks-division)
+
+# Current Status of the project
+- Application is deployed on Netlify _(for frontend)_ and Infura _(Goerli test network)_ with essential features _(listed below)_.
+- Please checkout at [here](https://crowdhelp.netlify.app). Found any bugs? or felt like need some features -- please feel free to raise a new issue or submit your pull request.
 
 # Guidelines
 
