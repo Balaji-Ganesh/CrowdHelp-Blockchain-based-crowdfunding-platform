@@ -1,12 +1,18 @@
 # Index - _What's in this?_
 
 - [Current status of Project](#current-status-of-the-project-📃)
-- [**Application Features**](#✨-application-features-✨)
-  - [Currently implemented](#currently-implemented-💡)
-  - [Planned in next versions](#kept-for-next-version-💼)
+- [**Application Features**](#-application-features-)
+  - [Currently implemented](#currently-implemented-)
+  - [Planned in next versions](#kept-for-next-version-)
 - [**How the application works?**](#understanding-application-flow)
   - [Terminology used](#understanding-the-terminology-used)
-  - [How the application works?](#understanding-the-flow-of-application-with-screenshots-📸)
+  - [How the application works?](#understanding-the-flow-of-application-with-screenshots-)
+    1. Wallet connection
+    2. Campaign Creation & Display
+    3. Contributing funds
+    4. Ending Campaign
+    5. Aborting Campaign
+    6. Viewing campaign's transaction on etherscan.io
 - [**Ingredients of recipe**]() _(here, recipe refers to application)_
   - [Key ingredients](#packages-used-📦)
   - [Tools to prepare](#tools-used-⚒️)
@@ -14,10 +20,10 @@
   - [Pre-requisites to run](#pre-requisites-🛠️)
   - [Running locally](#running-locally-with-hardhat-🏃‍♂️)
   - [Running remotely](#running-remotely-🏃‍♂️)
-- [**Crucial components of implementation - References**](#references-taken-⚓)
+- [**Crucial components of implementation - References**](#references-taken-)
   - [Getting the gist](#for-understanding-of-crowdfunding-idea-with-blockchain--developing-smart-contract)
-  - [Making the recipe](#for-implementation-🎬)
-- [Resources you can use](#docs--reports-📘)
+  - [Making the recipe](#for-implementation-)
+- [Resources you can use](#docs--reports-)
 - [Acknowledgements](#acknowledgements)
 
 ## Current Status of the project 📃
@@ -78,6 +84,78 @@ Ready with understanding and basic setup.
 
 ## Understanding the flow of application (with screenshots) 📸
 
+**Home page**
+![](docs/HomePage.png)
+
+### **1. Wallet connection**
+
+1. Click on **Connect Wallet** at top-right in navbar.
+2. Select the accounts you would like to connect with the site.
+   ![](docs/WalletConnection/1_WalletConnection.png)
+   ![](docs/WalletConnection/2_WalletConnection_1.png)
+3. Click on **Connect**
+   ![Click on **Connect**](docs/WalletConnection/3_WalletConnected.png)
+
+### **2. Campaign Creation & displaying**
+
+1. Click on **Create campaign** button at top-right in navbar.
+2. Fill the details.
+   ![](docs/CampaignCreation/1_CampaignCreation.png)
+3. Authenticate with wallet.
+   ![](docs/CampaignCreation/2_ApproveWalletForCreation.png)
+4. After successful creation, navigates to the homepage that shows the newly created campaign.
+   ![](docs/CampaignCreation/3_NewCampaignCreated.png)
+5. [Page Appearance] When fundraiser clicks on the campaign which they had created.
+   ![](docs/CampaignCreation/4_CampaignPageToFundRaiser.png)
+6. [Page Appearance] When public/backer clicks on the campaign which others had created.
+   ![](docs/CampaignCreation/5_CampaignPageToPublic.png)
+
+### **3. Contributing to campaigns**
+
+1. Select the campaign you would like to fund/contribute.
+2. Enter the amount >= minimum amount and click on **Contribute funds**.
+   ![](docs/Contributing/1_ContributingMinimumAmount.png)
+3. Status of contribution
+
+- showing Success message after funding.
+  ![](docs/Contributing/2_ContributionSuccess.png)
+- Showing updated status (after closing the message, page gets reloaded).
+  ![](docs/Contributing/3_ContributionUpdatedStatus.png)
+
+### **4. Ending Campaign**
+
+0. FundRaiser's wallet balance before ending the campaign.
+   ![](docs/EndingCampaign/1_BeforeEndCampaignWalletBalance.png)
+
+1. After fundraiser clicks on **End Campaign & withdraw**, asking for wallet authentication.
+   ![](docs/EndingCampaign/2_ApproveEndCampaignWalletConfirmation.png)
+2. Fundraiser's wallet after successful end.
+   ![](docs/EndingCampaign/3_WalletBalanceAfterSuccessfulEnd.png)
+
+### **5. Aborting Campaign**
+
+0. Backer's wallet balance before the fundraiser aborting the campaign.
+   ![](docs/AbortingCampaign/0_Aborting_Backer'sWalletAfterContribution.png)3
+1. Fund raiser clicking on Aborting campaign.
+   ![](docs/AbortingCampaign/1_Aborting_fundraiser.png)
+2. Fund raiser filling the reason for aborting and accepting the condition of refund to backers.
+   ![](docs/AbortingCampaign/2_Aborting_clickAfterReason.png)
+3. Fund raiser authenticating the transaction with the wallet.
+   ![](docs/AbortingCampaign/3_Aborting_acceptingConfirmation.png)
+4. Backer's wallet balance after fund raiser aborting the campaign.
+   ![](docs/AbortingCampaign/4_Aborting_Backer'sWallet_After.png)
+
+### \*\*6. Viewing [any] campaign's transactions
+
+1. Any user can view the campaign's transactions in [etherscan.io](https://goerli.etherscan.io) -- By clicking on **View on Goerli therscan** link on any campaign page.
+   ![](docs/ViewingTransactionHistoryInEtherScan_0.png)
+2. This opens up a new page of `goerli.etherscan.io`, showing the transactions.
+   ![](docs/ViewingTransactionHistoryInEtherScan.png)
+
+- This provides transparency and trust that,
+  - When backer has funded, with what amount..
+  - When did the campaign has ended, aborted...
+
 # Ingredients of recipe
 
 ## Packages used 📦
@@ -120,14 +198,12 @@ _(ONLY for running remotely)_
 - Create a new file with name `.env.local` in project's root directory.
 - Store the API key as ..
 
-  ````.env
+  ```.env
   INFURA_API_KEY=<Your API_key here>
   PRIVATE_KEY=<Your private key>
+  ```
 
-      ```
-
-  **How to get Private key?** _(In metamask wallet)_
-  ````
+**How to get Private key?** _(In metamask wallet)_
 
 1. Open your metamask wallet and choose the account of which you need the private key.
 2. Goto **Account Options** _(3 dots at top-right)_ → **Account Details**.
