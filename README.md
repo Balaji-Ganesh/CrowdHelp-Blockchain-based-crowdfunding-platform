@@ -1,31 +1,113 @@
 # Index - _What's in this?_
 
-- [Current status of Project](#current-status-of-the-project)
-- [**Guidelines**](#guidelines)
-  - [Packages Installed (purpose)](#packages-installed-purpose)
-  - [How to run?](#how-to-run)
-  - [How to make contributions?](#how-to-make-contributions)
-  - Development
-    - [of required features](#for-development-new-features)
-    - [fixing raised bugs](#for-development-fixing-bugs-raised-as-issues)
-  - Testing
-    - [For testing](#for-testing)
-    - [Handy tools](#tools)
-  - Miscellaneous
-    - [New feature Ideas](#feature-updations-ideas-idea-for-next-iterative-versions)
-    - [Resources used](#resources-used-for-implementation)
-- [**Work Division**](#work-division)
-  - [Milestones](#milestones-of-the-project---total-modules)
-  - [Task Division](#tasks-division)
+- [Current status of Project](#current-status-of-the-project-📃)
+- [**Application Features**](#✨-application-features-✨)
+  - [Currently implemented](#currently-implemented-💡)
+  - [Planned in next versions](#kept-for-next-version-💼)
+- [**How the application works?**](#understanding-application-flow)
+  - [Terminology used](#understanding-the-terminology-used)
+  - [How the application works?](#understanding-the-flow-of-application-with-screenshots-📸)
+- [**Ingredients of recipe**]() _(here, recipe refers to application)_
+  - [Key ingredients](#packages-used-📦)
+  - [Tools to prepare](#tools-used-⚒️)
+- [**Running on your own**](#how-to-run-locally--remotely-🏃‍♂️)
+  - [Pre-requisites to run](#pre-requisites-🛠️)
+  - [Running locally](#running-locally-with-hardhat-🏃‍♂️)
+  - [Running remotely](#running-remotely-🏃‍♂️)
+- [**Crucial components of implementation - References**](#references-taken-⚓)
+  - [Getting the gist](#for-understanding-of-crowdfunding-idea-with-blockchain--developing-smart-contract)
+  - [Making the recipe](#for-implementation-🎬)
+- [Resources you can use](#docs--reports-📘)
+- [Acknowledgements](#acknowledgements)
 
-# Current Status of the project
+## Current Status of the project 📃
 
 - Application is deployed on Netlify _(for frontend)_ and Infura _(Goerli test network)_ with essential features _(listed below)_.
 - Please checkout at [here](https://crowdhelp.netlify.app). Found any bugs? or felt like need some features -- please feel free to raise a new issue or submit your pull request.
+- **Thanks** for your time in looking into this project.
 
-# How to run _(locally & remotely)_?
+# ✨ Application features ✨
 
-## Pre-requisites
+## Currently implemented 💡
+
+|              **Feature** | **User**             | **Explanation**                                                                                                                                                                                                                   |
+| -----------------------: | -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|    **Wallet connection** | Fund raiser / backer | Whether campaign creation / contributing funds or any action related (except viewing) needs wallet connection & authorization at each crucial step for providing strong security.                                                 |
+|    **Campaign Creation** | Fund Raiser          | A campaign to raise funds for a cause. Creator has to fill few mandatory details like `title`, `description`, `image-URL` (for displaying as a banner), `minimum contribution amount`, `target amount`, `deadline` (date & time). |
+| **Displaying campaigns** | Any user             | Displays list of campaigns in the home page, where each campaign will be displayed as a card & current status is displayed as a progress bar. Upon clicking campaign-specific page will be displayed.                             |
+|         **Fund raising** | Backers              | A backer can support to a campaign by raising atleast minimum amount _(as set at the time of campaign creation)_. Contributed amount will be stored in the smart contract until the project end.                                  |
+|       **Abort campaign** | Fund raiser          | Fund raiser can abort campaign (before deadline) - with whatsoever may be the reason. In this case, all the raised funds (if any) will be payed back to backers.                                                                  |
+| **Ending & withdrawing** | Fund raiser          | Fund raiser can end the campaign [ONLY] after the deadline & campaign has reached its goal. Else they need to abort to pay back to backers.                                                                                       |
+
+## Kept for next version 💼
+
+|                          **Feature** |    **User**     | **Purpose**                                                                                                                                                                                                                                                              |
+| -----------------------------------: | :-------------: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+|               **Setting Milestones** |   Fund raiser   | Has to set at time of campaign creation. <br/> **Why?** To protect the funds of backer. The money will be distributed in chunks by showing the progress of funds usage.                                                                                                  |
+|           **Updating campaign page** |   Fund raiser   | To elaborate the cause.                                                                                                                                                                                                                                                  |
+|        **Raising Withdraw requests** |   Fund raiser   | A request with amount needed and reason. <br/> **Why?** the funds raised of backers. The request will be approved only if > 50% of contributors accept it.                                                                                                               |
+|      **Approving withdraw requests** |     Backer      | Depending on the progress achieved by campaign & amount needed, he can approve request. <br/>NOTE: Any backer who has contributed >= Minimum amount will be considered as approver.                                                                                      |
+|               **Contributions page** |     Backer      | A separate page, where backer can only view the campaigns they funded with the amount of contributions. <br/> **Why?** to facilitate how many campaigns they are supporting & to know **SPECIFIC** campaigns status to monitor how their contributed funds are in usage. |
+|                      **Funds usage** | Backer / public | A page which shows the flow of funds (_Inflow:_ from backers, _Outflow:_ by fundraiser with a reason) with all the transaction IDs which can be checked publicly via [etherscan.io](https://etherscan.io)<br/>**Why?** to provide transparency.                          |
+| **Searching campaigns with filters** |     Public      | (Mainly) to facilitate backers & public, to search for campaigns & know the status of it, usage of funds ... etc.,                                                                                                                                                       |
+|        **Backers withdrawing funds** |     Backer      | This is still in question.                                                                                                                                                                                                                                               |
+
+# Understanding application flow
+
+## Understanding the terminology used ..
+
+**Users of application**
+
+|        **User** | **Explanation**                                                          |
+| --------------: | ------------------------------------------------------------------------ |
+|      **Public** | - Can be any one. This includes fundraisers, backers and general public. |
+| **Fund Raiser** | - The one who creates the campaign to raise funds for a cause.           |
+|      **Backer** | - The one who can contribute to the campaign.                            |
+
+**of Campaign**
+
+| **Term**  | **Meaning**                                                                                                                                                                                                              |
+| --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `ACTIVE`  | - Campaign has raised & running. <br/> - Hasn't reached the goal set. <br/> - Open for contributions.                                                                                                                    |
+| `SUCCESS` | - Campaign has reached the goal set before the deadline. <br/> - Still, open to contributions.                                                                                                                           |
+| `EXPIRED` | - Campaign has achieved `SUCCESS` stage and its deadline has expired. <br/> - No contributions are accepted now.                                                                                                         |
+| `ABORTED` | - Campaign has raised, and its aborted in between, whether it might be in `SUCCESS` or `ACTIVE`. <br/> - In this case, all the raised funds will be returned back to backers. <br/> - No contributions are accepted now. |
+
+Now, good to go.
+Ready with understanding and basic setup.
+
+## Understanding the flow of application (with screenshots) 📸
+
+# Ingredients of recipe
+
+## Packages used 📦
+
+|                                                               **Packages used** | **Purpose**                                                                                       |
+| ------------------------------------------------------------------------------: | ------------------------------------------------------------------------------------------------- |
+|                                                   [Vitejs](https://vitejs.dev/) | Fronted tool for fast bundling                                                                    |
+|                                                         [MUI](https://mui.com/) | UI tool based on Google's [Material design](https://m3.material.io/) standards.                   |
+|                     [Solidity v0.8.4](https://docs.soliditylang.org/en/v0.8.4/) | For writing the smart-contracts that can interact with the ethereum & ethereum-based blockchains. |
+|                                             [hardhat](https://hardhat.org/docs) | Ethereum development environment                                                                  |
+|                                     [ether.js docs](https://docs.ethers.io/v5/) | A compact library for interacting with the Ethereum Blockchain and its ecosystem.                 |
+| [web3.js](https://www.npmjs.com/package/web3), [docs](https://docs.web3js.org/) | The ultimate JavaScript library for Ethereum                                                      |
+
+## Tools used ⚒️
+
+|                                                  **Tool** | **Used for**                                                                                         |
+| --------------------------------------------------------: | ---------------------------------------------------------------------------------------------------- |
+|                             [github](https://github.com/) | A Version control system, for managing different versions & issue tracking.                          |
+|                 [VS code](https://code.visualstudio.com/) | An IDE, for writing code.                                                                            |
+|                          [Prettier](https://prettier.io/) | A VSCode extension, for auto-formatting of code when saved.                                          |
+|                           [gitmoji](https://gitmoji.dev/) | A git commit tool, to use emojis in commits.                                                         |
+|                          [metamask](https://metamask.io/) | A digital wallet as a browser extension, to manage different test accounts & authorize transactions. |
+| [**Firefox**](https://www.mozilla.org/en-US/firefox/new/) | Browser, for inspection of code with console.                                                        |
+|                       [Netlify](https://www.netlify.com/) | For deploying frontend site.                                                                         |
+|                          [Infura](https://www.infura.io/) | To deploy smart-contract to remotely in `Goerli` test network.                                       |
+|                              [Yarn](https://yarnpkg.com/) | A package manager, to add & remove packages for the project as per need.                             |
+
+# How to run _(locally & remotely)_? 🏃‍♂️
+
+## Pre-requisites 🛠️
 
 - Metamask wallet with some `GoerliETH`, fine even if had < 0.5 ETH _(for testing purposes)_.
   - Lacking GoerliETH ? -- get it free of 0.2 ETH/day at [Alchemy's Goerli faucet](https://goerlifaucet.com/) -- note that, this needs sign-up.
@@ -52,7 +134,7 @@ _(ONLY for running remotely)_
 3. Now click on **Export private Key** and enter your metamask password.
 4. Get this and paste in `.env.local` file as `PRIVATE_KEY`.
 
-## Running locally _(with **hardhat**)_
+## Running locally _(with **hardhat**)_ 🏃‍♂️
 
 _(Run these commands by being in project root directory)_
 
@@ -85,7 +167,7 @@ _(Run these commands by being in project root directory)_
   ```
   - This will run server on `127.0.0.1:5173`
 
-## Running remotely
+## Running remotely 🏃‍♂️
 
 - Follow the above steps. Now just change the network as `goerli_testnet` while deploying.
   ```
@@ -94,111 +176,39 @@ _(Run these commands by being in project root directory)_
 - To run on different test-net..
   - Use different URL in `hardhat.config.js`.
 
-## Tech stack used
+# References taken ⚓
 
-## Feature Updations Ideas :idea: (For next iterative versions)
+## for understanding of crowdfunding idea with blockchain & developing smart-contract
 
-1. Filling campaign **tsets**
-   - Giving info labels .. to`describe why those fields are required - take ref of`kickstarter
+**Research papers** 📝
 
-## Resources used for implementation
+**Web references** 🕸️
 
-1. [Inspired from MUI templates](https://v4.mui.com/getting-started/templates/)
-   - Pages like `Campaign Creation`, `SignIn`, `SignUp` are inspired from the templates - infact, few are taken directly _(Attributions to the authors)_.
+## for implementation 🎬
 
-# ~Work Division~ -> Work Status
+_(Majorly...)_
 
-## Milestones of the project _- Total Modules_
+1. [Betterfund - @harsh242](https://github.com/harsh242/betterfund-crowdfunding-in-blockchain)
 
-1. [x] Landing page, ~Login, Sign-in, Sign-up~ _(These are made, but later removed)_
-2. [x] Campaign Creation
-3. [x] Funding Campaign
-4. [x] Withdrawl of funds
-   - ~Withdraw request raise - by fundraiser~ _(Next update feature)_
-   - ~Withdraw request acceptance decision - by backer~ _(Next update feature)_
-   - [x] Fund raiser can make a withdraw call after the deadline - (**constraint**: campaign has reached a SUCCESS stage ) -- then all the funds, which are funded, will be credited to fundraiser's account address _(Which is taken at the time of campaign creation)_.
-5. [x] Ending campaign
-   - [x] Normal ending - _(i.e., ending after deadline)_
-   - [x] Ending in-between - termed as **Aborting Campaign**.
-     - Fund raiser can make a abort call (before deadline) - when called, all the amount _(if funded partially / SUCCESS)_ will be payed back to backers.
-6. [x] Blockchain smartcontract -- currently fulfills only essential features.
+   - for UI designs, smart-contract & connection.
 
-- Regarding each milestone
+2. [Crowdfunding-DAPP - @spandan114](https://github.com/spandan114/Crowdfunding-DAPP)
 
-## Tasks Division
+   - for upgrading the smart contract with latest version - v0.8.4.
+   - running via `hardhat`, deploying locally & remotely.
 
-- @Shivrajbande - Campaigns and Smart contract
-  - Lacking specificity -- _raises ambiguity .oO What should I do? what will other do..?_
-    - Would you like to take..?
-      - Funding campaigns
-      - Funds Withdraw
-      - Ending campaigns
-- @BalajiGanesh - Campaigns and Smart contract
-  1.  Project Setup & initial deploy
-      - [x] Project Setup with vitejs and MUI - done
-      - [x] Basic home-page with authentication: {`Sign-In`, `Sign-Up`, `Forgot-Password`, `Update Profile`}
-      - [x] Skeleton of Campaign creation - _(pending: milestones - this needs discussion)_.
-      - [x] Deploy the project - UI in Netlify - checkout at [here](https://crowdhelp.netlify.app/)
-  2.  Creating campaigns _-- Need help of others_
-      - [x] Taking details from fundraiser -- **without milestones**
-      - ~Taking milestones details~ _-- feature shifted next iteration._.
-      - [x] Deploying in blockchain
-  3.  Displaying campaigns
-      - [x] Displaying _few_ active campaigns in homepage
-      - [x] [separate] campaigns page - which lists all the active campaigns
-      - [x] Viewing particular campaign - which shows the transactions, option to fund, ~option to raise withdraw request and milestones set~.
-  4.  ~Funds withdraw _-- Need help of others_~ -- _Feature shifted to next iteration_
-      - Taking withdraw request -
-      - Notifying the contributors, reg. withdraw request.
-      - Taking the acceptance decision of them.
-      - Approving withdraw request based on the count.
-      - Updating the acceptance % to fundraiser.
-  5.  Ending campaigns
-      - [x] Normal ending -- i.e., as the deadline completes.
-      - [x] Abrupt ending -- i.e., ending in-between.
-- @Manan - Integration of whole application with Solidity and back-end
-- @GautamGupta - Designing test cases.
-  - Lacking specificity -- Only _Designing_..? Who will take testing then?
+3. [MUI](https://mui.com/)
 
-## Smart contract deployment errors & employed fixes
+   - their templates, for ready use & little customization.
+   - for implementing various design components
 
-- $`npx hardhat compile` giving `Compiled 1 Solidity file successfully`.
-- But $`npx hardhat run --network localhost scripts/deploy.js ` giving ..
+# Docs & reports 📘
 
-```sh
-  TypeError: Cannot read properties of undefined (reading 'getContractFactory')
-      at main (<Project_root_path>/CrowdHelp-Blockchain-based-crowdfunding-platform/scripts/deploy.js:6:38)
-      at Object.<anonymous> (<Project_root_path>/CrowdHelp-Blockchain-based-crowdfunding-platform/scripts/deploy.js:16:1)
-      at Module._compile (node:internal/modules/cjs/loader:1105:14)
-      at Object.Module._extensions..js (node:internal/modules/cjs/loader:1159:10)
-      at Module.load (node:internal/modules/cjs/loader:981:32)
-      at Function.Module._load (node:internal/modules/cjs/loader:822:12)
-      at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:77:12)
-      at node:internal/main/run_main_module:17:47
-```
+Documentation && PPTs
 
-- The interesting thing here is.. the same (`deploy.js` & `CrowdHelp.sol`) when ran the above commands, it went smooth -- with project-setup of `hardhat run` --- so installed all the depedencies in this one, but same story repeated.
-- So, to continue eploying the option of compiling & deploying the contract in that (hardhat configured JS project) and pasting those artifacts in this original file.
+# Acknowledgements
 
-### Update..
+_(Specially)_
 
-- After installing few dependencies as suggested.. getting this one..
-
-```sh
-TypeError: Cannot read properties of undefined (reading 'prototype')
-at registerCustomInspection (<Project_path>/CrowdHelp-Blockchain-based-crowdfunding-platform/node_modules/@nomiclabs/hardhat-ethers/src/internal/index.ts:22:13)
-    at /run/media/krishna/WorkAndWorkResources/Work/Blockchain/IOMP-Academics/CrowdHelp-Blockchain-based-crowdfunding-platform/node_modules/@nomiclabs/hardhat-ethers/src/internal/index.ts:34:5
-    at getRealTarget (<Project_path>/CrowdHelp-Blockchain-based-crowdfunding-platform/node_modules/hardhat/src/internal/util/lazy.ts:112:22)
-    at Object.get (<Project_path>/CrowdHelp-Blockchain-based-crowdfunding-platform/node_modules/hardhat/src/internal/util/lazy.ts:185:26)
-    at main (<Project_path>/CrowdHelp-Blockchain-based-crowdfunding-platform/scripts/deploy.js:5:38)
-    at Object.<anonymous> (<Project_path>/CrowdHelp-Blockchain-based-crowdfunding-platform/scripts/deploy.js:15:1)
-    at Module._compile (node:internal/modules/cjs/loader:1105:14)
-    at Object.Module._extensions..js (node:internal/modules/cjs/loader:1159:10)
-    at Module.load (node:internal/modules/cjs/loader:981:32)
-    at Function.Module._load (node:internal/modules/cjs/loader:822:12)
-```
-
-### Employed fix
-
-- Finally [hardhat docs solution](https://hardhat.org/tutorial/deploying-to-a-live-network#deploying-to-remote-networks) worked.
-- This one employed earlier too, but used `0x` before PRIVATE*KEY -- came to here from [Palm.io docs - \_referenced by Infura*](https://docs.palm.io/HowTo/Deploy-using-Hardhat/).
+- To my friend [ShivRaj](https://github.com/shivrajbande) for his valuable support and ideas.
+- Finally, to Omniscient, without whom, this project doesn't even reach this stage. All are **HIS** supports.
