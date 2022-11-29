@@ -92,9 +92,11 @@ Ready with understanding and basic setup.
 1. Click on **Connect Wallet** at top-right in navbar.
 2. Select the accounts you would like to connect with the site.
    ![](docs/WalletConnection/1_WalletConnection.png)
-   ![](docs/WalletConnection/2_WalletConnection_1.png)
 3. Click on **Connect**
-   ![Click on **Connect**](docs/WalletConnection/3_WalletConnected.png)
+   ![](docs/WalletConnection/2_WalletConnection_1.png)
+
+- Notice at the top-right of navbar, that showing connnected wallet's address instead of **Connect wallet** button. The user can click on it, to get option to disconnect the wallet.
+  ![Click on **Connect**](docs/WalletConnection/3_WalletConnected.png)
 
 ### **2. Campaign Creation & displaying**
 
@@ -105,15 +107,15 @@ Ready with understanding and basic setup.
    ![](docs/CampaignCreation/2_ApproveWalletForCreation.png)
 4. After successful creation, navigates to the homepage that shows the newly created campaign.
    ![](docs/CampaignCreation/3_NewCampaignCreated.png)
-5. [Page Appearance] When fundraiser clicks on the campaign which they had created.
+5. [Page Appearance] When fundraiser clicks on the campaign which they had created. <br/> Notice that, both are of same addresses, the connected wallet address (at top-right) and in the _Wallet address of Fundraiser_.
    ![](docs/CampaignCreation/4_CampaignPageToFundRaiser.png)
-6. [Page Appearance] When public/backer clicks on the campaign which others had created.
+6. [Page Appearance] When public/backer clicks on the campaign which others had created. <br/> Notice that, both are of different addresses, the connected wallet address (at top-right) and in the _Wallet address of Fundraiser_.
    ![](docs/CampaignCreation/5_CampaignPageToPublic.png)
 
 ### **3. Contributing to campaigns**
 
 1. Select the campaign you would like to fund/contribute.
-2. Enter the amount >= minimum amount and click on **Contribute funds**.
+2. Enter the amount >= minimum amount and click on **Contribute funds**. Click on **Confirm** to finish authentication with the wallet.
    ![](docs/Contributing/1_ContributingMinimumAmount.png)
 3. Status of contribution
 
@@ -127,7 +129,7 @@ Ready with understanding and basic setup.
 0. FundRaiser's wallet balance before ending the campaign.
    ![](docs/EndingCampaign/1_BeforeEndCampaignWalletBalance.png)
 
-1. After fundraiser clicks on **End Campaign & withdraw**, asking for wallet authentication.
+1. After fundraiser clicks on **End Campaign & withdraw**, asking for wallet authentication. Noice that, the wallet balance has increased from `0.2065 ETH` to `0.2173 ETH`.
    ![](docs/EndingCampaign/2_ApproveEndCampaignWalletConfirmation.png)
 2. Fundraiser's wallet after successful end.
    ![](docs/EndingCampaign/3_WalletBalanceAfterSuccessfulEnd.png)
@@ -135,17 +137,18 @@ Ready with understanding and basic setup.
 ### **5. Aborting Campaign**
 
 0. Backer's wallet balance before the fundraiser aborting the campaign.
-   ![](docs/AbortingCampaign/0_Aborting_Backer'sWalletAfterContribution.png)3
+   ![](docs/AbortingCampaign/0_Aborting_Backer'sWalletAfterContribution.png)
 1. Fund raiser clicking on Aborting campaign.
    ![](docs/AbortingCampaign/1_Aborting_fundraiser.png)
 2. Fund raiser filling the reason for aborting and accepting the condition of refund to backers.
    ![](docs/AbortingCampaign/2_Aborting_clickAfterReason.png)
 3. Fund raiser authenticating the transaction with the wallet.
    ![](docs/AbortingCampaign/3_Aborting_acceptingConfirmation.png)
-4. Backer's wallet balance after fund raiser aborting the campaign.
+4. Backer's wallet balance after fund raiser aborting the campaign. Notice that, the balance of backer has increased from `0.4396 ETH` to `0.5396 ETH`. <br/>
+   After aborting, each backer will get their **whole** amount, even if they contribute partially multiple times.
    ![](docs/AbortingCampaign/4_Aborting_Backer'sWallet_After.png)
 
-### \*\*6. Viewing [any] campaign's transactions
+### **6. Viewing [any] campaign's transactions**
 
 1. Any user can view the campaign's transactions in [etherscan.io](https://goerli.etherscan.io) -- By clicking on **View on Goerli therscan** link on any campaign page.
    ![](docs/ViewingTransactionHistoryInEtherScan_0.png)
