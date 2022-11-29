@@ -1,25 +1,26 @@
 # Index - _What's in this?_
 
-- [Current status of Project](#current-status-of-the-project-📃)
+- [Current status of Project](#current-status-of-the-project-)
 - [**Application Features**](#-application-features-)
   - [Currently implemented](#currently-implemented-)
   - [Planned in next versions](#kept-for-next-version-)
 - [**How the application works?**](#understanding-application-flow)
-  - [Terminology used](#understanding-the-terminology-used)
+  - [Terminology used](#understanding-the-terminology-used-)
   - [How the application works?](#understanding-the-flow-of-application-with-screenshots-)
+    flow of ...
     1. Wallet connection
     2. Campaign Creation & Display
     3. Contributing funds
     4. Ending Campaign
     5. Aborting Campaign
     6. Viewing campaign's transaction on etherscan.io
-- [**Ingredients of recipe**]() _(here, recipe refers to application)_
-  - [Key ingredients](#packages-used-📦)
-  - [Tools to prepare](#tools-used-⚒️)
-- [**Running on your own**](#how-to-run-locally--remotely-🏃‍♂️)
-  - [Pre-requisites to run](#pre-requisites-🛠️)
-  - [Running locally](#running-locally-with-hardhat-🏃‍♂️)
-  - [Running remotely](#running-remotely-🏃‍♂️)
+- [**Ingredients of recipe**](#ingredients-of-recipe) _(here, recipe refers to application)_
+  - [Key ingredients](#packages-used-)
+  - [Tools to prepare](#tools-used-%EF%B8%8F)
+- [**Running on your own**](#how-to-run-locally--remotely-%EF%B8%8F)
+  - [Pre-requisites to run](#pre-requisites-%EF%B8%8F)
+  - [Running locally](#running-locally-with-hardhat-%EF%B8%8F)
+  - [Running remotely](#running-remotely-%EF%B8%8F)
 - [**Crucial components of implementation - References**](#references-taken-)
   - [Getting the gist](#for-understanding-of-crowdfunding-idea-with-blockchain--developing-smart-contract)
   - [Making the recipe](#for-implementation-)
@@ -290,4 +291,4 @@ Documentation && PPTs
 _(Specially)_
 
 - To my friend [ShivRaj](https://github.com/shivrajbande) for his valuable support and ideas.
-- Finally, to Omniscient, without whom, this project doesn't even reach this stage. All are **HIS** supports.
+- Finally, to Omniscient, without whom, this project doesn't even reach this stage. All is **HIS** grace, nothing is mine.
