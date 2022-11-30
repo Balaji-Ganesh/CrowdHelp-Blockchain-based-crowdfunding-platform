@@ -24,8 +24,8 @@ module.exports = {
       chainId: 31337,
     },
     goerli_testnet: {
-      // url: `https://goerli.infura.io/v3/${process.env.INFURA_API_KEY}`, // https://goerli.infura.io/v3/eaf842956c36444c8aaf54163a47e0d2
-      url: "https://goerli.infura.io/v3/eaf842956c36444c8aaf54163a47e0d2", // https://goerli.infura.io/v3/eaf842956c36444c8aaf54163a47e0d2
+      // url: `https://goerli.infura.io/v3/${process.env.INFURA_API_KEY}`, <<-- tried this way, its failing, so employed below way.
+      url: "https://goerli.infura.io/v3/eaf842956c36444c8aaf54163a47e0d2",
       accounts: [process.env.PRIVATE_KEY],
       gasPrice: 1000,
       saveDeployments: true,
