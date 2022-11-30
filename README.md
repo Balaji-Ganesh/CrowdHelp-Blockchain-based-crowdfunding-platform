@@ -284,11 +284,10 @@ _(Majorly...)_
 
 # Docs & reports 📘
 
-Documentation && PPTs
+ [Detailed Documentation](https://drive.google.com/file/d/1k-kUZ3tw3iFYRNsqDxP8UjEcs0CnIu1K/view?usp=sharing) && PPTs
 
 # Acknowledgements
 
 _(Specially)_
 
-- To my friend [ShivRaj](https://github.com/shivrajbande) for his valuable support and ideas.
 - Finally, to Omniscient, without whom, this project doesn't even reach this stage. All is **HIS** grace, nothing is mine.
