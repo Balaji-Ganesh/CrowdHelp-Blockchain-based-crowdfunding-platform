@@ -284,7 +284,8 @@ _(Majorly...)_
 
 # Docs & reports 📘
 
-Detailed Documentation PDF version - [_Earlier version_](https://drive.google.com/file/d/1k-kUZ3tw3iFYRNsqDxP8UjEcs0CnIu1K/view?usp=sharing), [_Latest with new changes_](https://drive.google.com/file/d/1AAaWbmMpCXoIaLle3ne3xcyUUrJ9TbNi/view?usp=sharing) && PPTs
+- Detailed Documentation PDF version - [_Earlier version_](https://drive.google.com/file/d/1k-kUZ3tw3iFYRNsqDxP8UjEcs0CnIu1K/view?usp=sharing), [_Latest with new changes_](https://drive.google.com/file/d/1AAaWbmMpCXoIaLle3ne3xcyUUrJ9TbNi/view?usp=sharing)
+- PPTs - [Review_1 - Introduction, SRS & Literature Survey](https://drive.google.com/file/d/1pClPlQjDtnnx3ibsLzgpA3nKgT4GuNIh/view?usp=sharing), [Review_2- System Design, Use cases & Sequence diagrams](https://drive.google.com/file/d/1L1RBqO5CgtdZDzJoeR5TE6tjPZieNk8L/view?usp=sharing), Review*3 - Implementation screenshots, conclusion & future upgrades *(Not prepared, but all these are available in this README.md)\_
 
 # Acknowledgements
 
