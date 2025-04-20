@@ -68,4 +68,12 @@ contract CrowdHelp {
     {
         return deployedCampaigns;
     }
+
+    function getDeployedCampaigns() public view returns (address[] memory) {
+    address[] memory campaignAddresses = new address[](deployedCampaigns.length);
+    for (uint i = 0; i < deployedCampaigns.length; i++) {
+        campaignAddresses[i] = address(deployedCampaigns[i]);
+    }
+    return campaignAddresses;
+}
 }
