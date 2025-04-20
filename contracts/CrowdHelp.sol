@@ -14,7 +14,7 @@ event CampaignStarted(
     uint256 noOfContributors,
     string title,
     string desc,
-    uint256 currentState
+    uint currentState
 );
 
 event ContributionReceived(
@@ -34,12 +34,12 @@ event ContributionReceived(
         uint256 minimumContribution,
         uint256 targetContribution,
         uint256 deadline,
-        string memory bannerUrl
+        string memory bannerUrl,
+        uint campaignSchemeId
     ) public {
 
-        // deadline = deadline;
-
-        Campaign campaign = new Campaign(msg.sender,minimumContribution,deadline,targetContribution,projectTitle,projectDesc, bannerUrl);
+        // deadline = deadline;1
+        Campaign campaign = new Campaign(msg.sender,minimumContribution,deadline,targetContribution,projectTitle,projectDesc, bannerUrl, campaignSchemeId);
         deployedCampaigns.push(campaign);
     }
 
@@ -65,6 +65,35 @@ contract Campaign{
         uint256 amount;
     }
 
+    uint constant public SCHEMES_COUNT = 2; // Make sure to modify accordingly as per items in following enum.
+    enum CampaignSchemeId {
+        ALL_OR_NOTHING,
+        HALF_GOAL_WITHDRAW
+        // MILESTONES_BASED     // upcoming..
+    }
+
+    function getSchemeTitle(uint idx) public pure returns (string memory title) {
+        require(idx >= 0 && idx < SCHEMES_COUNT, "Index out of range");
+        if (idx == uint(CampaignSchemeId.ALL_OR_NOTHING)) return "All or Nothing";
+        if (idx == uint(CampaignSchemeId.HALF_GOAL_WITHDRAW)) return "Half goal withdraw";
+        // if (idx == uint(CampaignSchemeId.MILESTONES_BASED)) return "Milestones based"; 
+        return "Invalid scheme";     // upcoming;
+    }
+
+    function getAllSchemeTitles() public pure returns (string[] memory) {
+        string[] memory allSchemeTitles = new string[](SCHEMES_COUNT);
+        for (uint i = 0; i < SCHEMES_COUNT; i++) {
+            allSchemeTitles[i] = getSchemeTitle(i);
+        }
+        return allSchemeTitles;
+    }
+
+    function getSchemeId(uint id) internal pure returns (CampaignSchemeId schemeId){
+        require(id >= 0 && id < SCHEMES_COUNT , "Index out of range");
+        if (id == uint(CampaignSchemeId.ALL_OR_NOTHING)) return CampaignSchemeId.ALL_OR_NOTHING;
+        if (id == uint(CampaignSchemeId.HALF_GOAL_WITHDRAW)) return CampaignSchemeId.HALF_GOAL_WITHDRAW;        
+    }
+
     // Variables
     address payable public creator;
     uint256 public minimumContribution;
@@ -77,6 +106,7 @@ contract Campaign{
     string public projectDes;
     string public bannerUrl;
     State public state = State.ACTIVE; 
+    CampaignSchemeId public campaignSchemeId;
 
     // mapping (uint => Contribution) public contributors;      // use indices as address with amountContributed as its values.
     Contribution [] contributions;
@@ -108,7 +138,8 @@ contract Campaign{
        uint256 _targetContribution,
        string memory _projectTitle,
        string memory _projectDes,
-       string memory _bannerUrl
+       string memory _bannerUrl,
+       uint _campaignSchemeId
    ) {
        creator = payable(_creator);
        minimumContribution = _minimumContribution;
@@ -118,9 +149,10 @@ contract Campaign{
        projectDes = _projectDes;
        raisedAmount = 0;
        bannerUrl=_bannerUrl;
+       campaignSchemeId = getSchemeId(_campaignSchemeId);
    }
 
-    function getContributorContribution(address  _contributor) internal view returns(int){
+    function getContributorContribution(address _contributor) internal view returns(int){
     // Takes the contributor's address and returns their contribution amount (if found) else 0.
         int contribIndex=-1;
         for(int idx=0; idx<int(noOfContributors); idx++){
@@ -204,7 +236,8 @@ contract Campaign{
     State currentState,
     uint256 balance,
     string memory imageUrl,
-    uint256 numBackers
+    uint256 numBackers,
+    uint schemeId
     ){
         projectStarter=creator;
         minContribution=minimumContribution;
@@ -218,5 +251,6 @@ contract Campaign{
         balance=address(this).balance;
         imageUrl=bannerUrl;
         numBackers=noOfContributors;
+        schemeId=uint(campaignSchemeId);
     }
 }
