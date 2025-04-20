@@ -8,7 +8,7 @@ console.log(process.env.PRIVATE_KEY);
 
 module.exports = {
   solidity: {
-    version: "0.8.21",
+    version: "0.8.0",
     settings: {
       optimizer: {
         enabled: true,
@@ -21,6 +21,9 @@ module.exports = {
     timeout: 90000,
   },
   networks: {
+    localhost: {
+      url: "http://127.0.0.1:8545",
+    },
     hardhat: {
       initialBaseFeePerGas: 0,
       blockGasLimit: 18800000,
