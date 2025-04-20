@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 import "./CampaignSchemeEnums.sol";
-import "hardhat/console.sol";   // for local testing only. Have to be deleted if to be deploying in remote testnets.
+import "hardhat/console.sol"; // for local testing only. Have to be deleted if to be deploying in remote testnets.
 
 contract Campaign {
     // Campaign state
@@ -63,6 +63,8 @@ contract Campaign {
     event AmountCredited(address contributor, uint amountTotal);
     // Event gets emitted when campaign gets aborted [before deadline]
     event AmountRefunded(uint noOfContributors, uint amountTotal);
+    
+    event CampaignCreated(uint deadline, uint blockTime);
 
     constructor(
         address _creator,
@@ -74,11 +76,17 @@ contract Campaign {
         string memory _bannerUrl,
         uint _campaignSchemeId
     ) {
-        console.log("Constructor reached");
+        // console.log("Constructor reached");
+        // Pre-requisites to move further..
+        emit CampaignCreated(_deadline, block.timestamp);
         require(_campaignSchemeId < SCHEMES_COUNT, "Invalid scheme id");
-        console.log("campaignSchemeId (uint)", _campaignSchemeId);
-        console.log("minimumContribution", minimumContribution);
-        emit FundingReceived(payable(msg.sender), 0, 0); // debug
+        console.log("Block timestamp:", block.timestamp); // needs `import "hardhat/console.sol";`
+        console.log("Given deadline:", _deadline);
+                require(_deadline > block.timestamp, "Deadline must be in the future");
+        require(_minimumContribution > 0, "Minimum contribution must be greater than 0");
+        require(_targetContribution > 0, "Target must be greater than 0");
+        
+        // emit FundingReceived(payable(msg.sender), 0, 0); // debug
         creator = payable(_creator);
         minimumContribution = _minimumContribution;
         deadline = _deadline;
@@ -88,7 +96,6 @@ contract Campaign {
         raisedAmount = 0;
         bannerUrl = _bannerUrl;
         campaignSchemeId = CampaignSchemeId(getSchemeId(_campaignSchemeId));
-
     }
 
     function getContributorContribution(
