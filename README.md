@@ -226,9 +226,14 @@ _(Run these commands by being in project root directory)_
   ```sh
   npx hardhat node
   ```
+**NOTE**
+  - This command alone should be run in a separate terminal and as long as this keeps running, local blockchain network stays. Once gets quit, everything gets lost. Had to repeat all the transactions made.
+  - Thus, following commands to be run in separate terminal.
+
   _Make changes to the smart-contract if needed._
 - Compile the smart contract via
   ```sh
+  npx hardhat clean    # If previously compiled and would like to discard
   npx hardhat compile
   ```
 - Deploy the smart contract
@@ -243,9 +248,15 @@ _(Run these commands by being in project root directory)_
 
 - Run the frontend
   ```sh
-   yarn dev
+   yarn dev  # or use "npm run dev"
   ```
-  - This will run server on `127.0.0.1:5173`
+  - This will run server on `http://127.0.0.1:5173`
+
+### Making transactions with metamask and hardhat
+- Please refer [ChainStack: Using MetaMask with a Hardhat node](https://support.chainstack.com/hc/en-us/articles/4408642503449-Using-MetaMask-with-a-Hardhat-node); [metamask docs](https://docs.metamask.io/wallet/how-to/run-devnet/) to connect hardhat to metamask wallet.
+- Once connected, import the private key of 20 accounts provided by hardhat in metamask. 
+- At least importing of 2 accounts is must, as the campaign creation and funding cannot happen from same account (considering the actual usecase, fund-raiser himself won't be funding his own campaign).
+- Now you are ready to test the features - Campaign creation, Funding etc.
 
 ## Running remotely 🏃‍♂️
 
