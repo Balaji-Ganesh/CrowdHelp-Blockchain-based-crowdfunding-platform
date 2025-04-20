@@ -19,6 +19,8 @@ import React, { useEffect } from "react";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import { LoadingButton } from "@mui/lab";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
 // local imports...
 import NavBar from "../../components/NavBar";
 
@@ -35,11 +37,30 @@ import { useWallet } from "use-wallet";
 import crowdHelp from "../../../utils/contract/crowdHelp";
 import web3 from "../../../utils/web3";
 
+// [block-chain] smart-contract related imports..
+import { getAllSchemeTitles } from "../../../utils/getCampaigns";
+
 const api_url = "http://localhost:4000/api/";
 
 function FillCampaignDetails() {
   const wallet = useWallet();
   const navigate = useNavigate();
+
+  const [schemeTitles, setSchemeTitles] = React.useState([]);
+
+  useEffect(() => {
+    // fetch the funding schemes...
+    const fetchData = async () => {
+      setSchemeTitles(await getAllSchemeTitles());
+      console.debug("Obtained Schemes", campaignsList);
+    };
+
+    // fetch the data..
+    fetchData();
+    return () => {
+      ignore = true; // to avoid rendering multiple times..
+    };
+  }, []);
 
   // hooks for getting form data..
   const {
@@ -328,6 +349,21 @@ function FillCampaignDetails() {
                       Please set a reasonable range, neither too short nor too
                       long.
                     </Typography>
+                  </Box>
+                  <Box sx={{ paddingtop: 0, marginTop: 2 }}>
+                    <Select
+                      required
+                      id="campaignSchemeId"
+                      name="campaignSchemeId"
+                      label="Funding scheme"
+                      size="small"
+                      fullWidth
+                      // onChange={handleChange}
+                    >
+                      {schemeTitles.map((schemeIdx, schemeTitle) => (
+                        <MenuItem value={schemeIdx}>schemeTitle</MenuItem>
+                      ))}
+                    </Select>
                   </Box>
                 </Grid>
 

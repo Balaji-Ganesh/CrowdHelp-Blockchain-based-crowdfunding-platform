@@ -7,30 +7,36 @@ console.log(process.env.INFURA_API_KEY);
 console.log(process.env.PRIVATE_KEY);
 
 module.exports = {
-  solidity: "0.8.17",
-  settings: {
-    optimizer: {
-      enabled: true,
-      runs: 1000000,
+  solidity: {
+    version: "0.8.0",
+    settings: {
+      optimizer: {
+        enabled: true,
+        runs: 200,
+      },
+      // viaIR: true,
     },
   },
   mocha: {
     timeout: 90000,
   },
   networks: {
+    localhost: {
+      url: "http://127.0.0.1:8545",
+    },
     hardhat: {
       initialBaseFeePerGas: 0,
       blockGasLimit: 18800000,
       chainId: 31337,
     },
-    goerli_testnet: {
-      // url: `https://goerli.infura.io/v3/${process.env.INFURA_API_KEY}`, <<-- tried this way, its failing, so employed below way.
-      url: "https://goerli.infura.io/v3/eaf842956c36444c8aaf54163a47e0d2",
-      accounts: [process.env.PRIVATE_KEY],
-      gasPrice: 1000,
-      saveDeployments: true,
-      deploy: ["scripts/"],
-    },
+    // goerli_testnet: {
+    //   // url: `https://goerli.infura.io/v3/${process.env.INFURA_API_KEY}`, <<-- tried this way, its failing, so employed below way.
+    //   url: "https://goerli.infura.io/v3/eaf842956c36444c8aaf54163a47e0d2",
+    //   accounts: [process.env.PRIVATE_KEY],
+    //   gasPrice: 1000,
+    //   saveDeployments: true,
+    //   deploy: ["scripts/"],
+    // },
   },
 };
 

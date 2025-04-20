@@ -1,20 +1,93 @@
 const hre = require("hardhat");
 
 async function main() {
-  // We get the contract to deploy
   const CrowdHelp = await hre.ethers.getContractFactory("CrowdHelp");
   const crowdHelp = await CrowdHelp.deploy();
+  await crowdHelp.createCampaign(
+    "Project X",
+    "Desc",
+    100,
+    1000,
+    1212124,
+    "bannerUrl",
+    0
+  ); // Assuming scheme = 0
+
+  // const [deployer] = await hre.ethers.getSigners();
+
+  // const Campaign = await hre.ethers.getContractFactory("Campaign");
+
+  // const campaign = await Campaign.deploy(
+  //   deployer.address,
+  //   100, // minimum
+  //   1713728020, // deadline timestamp
+  //   1000, // target
+  //   "Test Project", // title
+  //   "This is a test", // desc
+  //   "http://banner.url", // banner
+  //   0 // schemeId (assuming enum Basic)
+  // );
 
   await crowdHelp.deployed();
 
   console.log("CrowdHelp deployed to:", crowdHelp.address);
 }
 
-// We recommend this pattern to be able to use async/await everywhere
-// and properly handle errors.
 main()
   .then(() => process.exit(0))
   .catch((error) => {
-    console.error(error);
+    console.error("Deployment failed:", error);
     process.exit(1);
   });
+
+// const hre = require("hardhat");
+
+// async function main() {
+//   // Deploy the factory contract
+//   const CrowdHelp = await hre.ethers.getContractFactory("CrowdHelp");
+//   const crowdHelp = await CrowdHelp.deploy();
+//   await crowdHelp.deployed();
+
+//   console.log("CrowdHelp deployed to:", crowdHelp.address);
+
+//   // Now create a campaign with VALID parameters
+//   const minContribution = hre.ethers.utils.parseEther("0.01");
+//   const goal = hre.ethers.utils.parseEther("1");
+//   const deadline = Math.floor(Date.now() / 1000) + 86400; // 24 hours from now
+
+//   const tx = await crowdHelp.createCampaign(
+//     "Save the Forests", // projectTitle
+//     "Planting 10,000 trees to fight climate change", // projectDesc
+//     minContribution,
+//     goal,
+//     deadline,
+//     "https://images.unsplash.com/photo-1503785640985-f62e3aeee448", // bannerUrl
+//     0 // campaignSchemeId - ✅ must be 0 or 1 only
+//   );
+
+//   await tx.wait();
+//   console.log("Campaign created successfully!");
+
+//   // fetch the created campaign
+//   const campaigns = await crowdHelp.returnDeployedCampaigns();
+//   console.log("Deployed campaigns:", campaigns);
+
+//   console.log("Deploying campaign with:");
+//   console.log({
+//     projectTitle: "Some Title",
+//     projectDesc: "Some Description",
+//     minimumContribution: ethers.utils.parseEther("0.01").toString(),
+//     targetContribution: ethers.utils.parseEther("1").toString(),
+//     deadline: Math.floor(Date.now() / 1000) + 86400,
+//     bannerUrl: "https://someurl.com/banner.jpg",
+//     campaignSchemeId: 0, // or 1 ONLY
+//   });
+// }
+
+// // Standard error handler
+// main()
+//   .then(() => process.exit(0))
+//   .catch((error) => {
+//     console.error("Deployment failed:", error);
+//     process.exit(1);
+//   });
