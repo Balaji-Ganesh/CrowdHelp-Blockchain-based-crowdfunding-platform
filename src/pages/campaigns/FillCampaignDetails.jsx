@@ -38,9 +38,9 @@ import crowdHelp from "../../../utils/contract/crowdHelp";
 import web3 from "../../../utils/web3";
 
 // [block-chain] smart-contract related imports..
-import { getAllSchemeTitles } from "../../../utils/getCampaigns";
+import { getAvailableFundingSchemes } from "../../../utils/getCampaigns";
 
-const api_url = "http://localhost:4000/api/";
+// const api_url = "http://localhost:4000/api/";
 
 function FillCampaignDetails() {
   const wallet = useWallet();
@@ -51,7 +51,7 @@ function FillCampaignDetails() {
   useEffect(() => {
     // fetch the funding schemes...
     const fetchData = async () => {
-      setSchemeTitles(await getAllSchemeTitles());
+      setSchemeTitles(await getAvailableFundingSchemes());
       console.debug("Obtained Schemes", campaignsList);
     };
 

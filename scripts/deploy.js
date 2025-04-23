@@ -1,14 +1,33 @@
 const hre = require("hardhat");
 
 async function main() {
-  const CrowdHelp = await hre.ethers.getContractFactory("CrowdHelp");
+  const SchemeRegistry = await ethers.getContractFactory("SchemeRegistry");
+  const schemeRegistry = await SchemeRegistry.deploy();
+
+  await schemeRegistry.deployed();
+
+  console.log("SchemeRegistry deployed to:", schemeRegistry.address);
+
+  const CrowdHelp = await hre.ethers.getContractFactory("CrowdHelp", {
+    libraries: {
+      SchemeRegistry: schemeRegistry.address,
+    },
+  });
   const crowdHelp = await CrowdHelp.deploy();
+
+  // Create a test campaign to check the proper deployment of contract..
+  const blockNumBefore = await ethers.provider.getBlockNumber();
+  const blockBefore = await ethers.provider.getBlock(blockNumBefore);
+  const currentTimestamp = blockBefore.timestamp;
+
+  const deadline = currentTimestamp + 3600; // deadline 1 hour in future
+
   await crowdHelp.createCampaign(
-    "Project X",
-    "Desc",
+    "Demo Campaign",
+    "Creation of this campaign successfully indicates that, contract is successfully deployed..!!",
     100,
     1000,
-    1212124,
+    deadline,
     "bannerUrl",
     0
   ); // Assuming scheme = 0

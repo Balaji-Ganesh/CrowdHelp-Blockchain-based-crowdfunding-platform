@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "./CampaignSchemeEnums.sol";
+import "./SchemeRegistry.sol";
 import "hardhat/console.sol"; // for local testing only. Have to be deleted if to be deploying in remote testnets.
 
 contract Campaign {
@@ -30,7 +30,7 @@ contract Campaign {
     string public projectDes;
     string public bannerUrl;
     State public state = State.ACTIVE;
-    CampaignSchemeId public campaignSchemeId;
+    SchemeRegistry.SchemeType public campaignSchemeId;
 
     // mapping (uint => Contribution) public contributors;      // use indices as address with amountContributed as its values.
     Contribution[] contributions;
@@ -79,7 +79,7 @@ contract Campaign {
         // console.log("Constructor reached");
         // Pre-requisites to move further..
         emit CampaignCreated(_deadline, block.timestamp);
-        require(_campaignSchemeId < SCHEMES_COUNT, "Invalid scheme id");
+        require(_campaignSchemeId < SchemeRegistry.SCHEMES_COUNT, "Invalid scheme id");
         console.log("Block timestamp:", block.timestamp); // needs `import "hardhat/console.sol";`
         console.log("Given deadline:", _deadline);
                 require(_deadline > block.timestamp, "Deadline must be in the future");
@@ -95,7 +95,7 @@ contract Campaign {
         projectDes = _projectDes;
         raisedAmount = 0;
         bannerUrl = _bannerUrl;
-        campaignSchemeId = CampaignSchemeId(getSchemeId(_campaignSchemeId));
+        campaignSchemeId = SchemeRegistry.SchemeType(SchemeRegistry.getSchemeType(_campaignSchemeId));
     }
 
     function getContributorContribution(
