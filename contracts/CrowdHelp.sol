@@ -40,9 +40,11 @@ contract CrowdHelp {
         uint256 targetContribution,
         uint256 deadline,
         string memory bannerUrl,
-        uint campaignSchemeId
+        uint campaignSchemeTypeId
     ) public {
-        console.log("Creating campaign with scheme:", uint(campaignSchemeId));
+        require( campaignSchemeTypeId >= 0 || campaignSchemeTypeId < SCHEMES_COUNT, "Invalid scheme id");
+        console.log("Creating campaign with scheme:", uint(campaignSchemeTypeId));
+        
         Campaign campaign = new Campaign(
             msg.sender,
             minimumContribution,
@@ -51,10 +53,10 @@ contract CrowdHelp {
             projectTitle,
             projectDesc,
             bannerUrl,
-            campaignSchemeId    // passing directly like this..
+            getSchemeType(campaignSchemeTypeId)
         );
-        
-        console.log("Creating campaign with scheme:", uint(campaignSchemeId));
+
+        console.log("Creating campaign with scheme:", uint(campaignSchemeTypeId));
         deployedCampaigns.push(campaign);
     }
 
@@ -70,10 +72,36 @@ contract CrowdHelp {
     }
 
     function getDeployedCampaigns() public view returns (address[] memory) {
-    address[] memory campaignAddresses = new address[](deployedCampaigns.length);
-    for (uint i = 0; i < deployedCampaigns.length; i++) {
-        campaignAddresses[i] = address(deployedCampaigns[i]);
+        address[] memory campaignAddresses = new address[](deployedCampaigns.length);
+        for (uint i = 0; i < deployedCampaigns.length; i++) {
+            campaignAddresses[i] = address(deployedCampaigns[i]);
+        }
+        return campaignAddresses;
     }
-    return campaignAddresses;
-}
+
+    ///////////////////// Handlers of scheme types...
+    function getSchemeTitle(
+        uint idx
+    ) public pure returns (string memory title) {
+        require(idx < SCHEMES_COUNT, "Index out of range");
+        if (idx == uint(SchemeType.ALL_OR_NOTHING)) return "All or Nothing";
+        if (idx == uint(SchemeType.HALF_GOAL_WITHDRAW))
+            return "Half goal withdraw";
+        return "Invalid scheme";
+    }
+
+    function getAllSchemeTitles() public pure returns (string[] memory) {
+        string[] memory allSchemeTitles = new string[](SCHEMES_COUNT);
+        for (uint i = 0; i < SCHEMES_COUNT; i++) {
+            allSchemeTitles[i] = getSchemeTitle(i);
+        }
+        return allSchemeTitles;
+    }
+
+    function getSchemeType(uint id) public pure returns (SchemeType) {
+        require(id < SCHEMES_COUNT, "Index out of range");
+        if (id == uint(SchemeType.ALL_OR_NOTHING))
+            return SchemeType.ALL_OR_NOTHING;
+        return SchemeType.HALF_GOAL_WITHDRAW;
+    }
 }

@@ -1,18 +1,7 @@
 const hre = require("hardhat");
 
 async function main() {
-  const SchemeRegistry = await ethers.getContractFactory("SchemeRegistry");
-  const schemeRegistry = await SchemeRegistry.deploy();
-
-  await schemeRegistry.deployed();
-
-  console.log("SchemeRegistry deployed to:", schemeRegistry.address);
-
-  const CrowdHelp = await hre.ethers.getContractFactory("CrowdHelp", {
-    libraries: {
-      SchemeRegistry: schemeRegistry.address,
-    },
-  });
+  const CrowdHelp = await hre.ethers.getContractFactory("CrowdHelp");
   const crowdHelp = await CrowdHelp.deploy();
 
   // Create a test campaign to check the proper deployment of contract..

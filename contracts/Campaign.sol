@@ -30,7 +30,7 @@ contract Campaign {
     string public projectDes;
     string public bannerUrl;
     State public state = State.ACTIVE;
-    SchemeRegistry.SchemeType public campaignSchemeId;
+    SchemeType public schemeTypeId;
 
     // mapping (uint => Contribution) public contributors;      // use indices as address with amountContributed as its values.
     Contribution[] contributions;
@@ -74,12 +74,12 @@ contract Campaign {
         string memory _projectTitle,
         string memory _projectDes,
         string memory _bannerUrl,
-        uint _campaignSchemeId
+        SchemeType _schemeTypeId
     ) {
         // console.log("Constructor reached");
         // Pre-requisites to move further..
         emit CampaignCreated(_deadline, block.timestamp);
-        require(_campaignSchemeId < SchemeRegistry.SCHEMES_COUNT, "Invalid scheme id");
+        
         console.log("Block timestamp:", block.timestamp); // needs `import "hardhat/console.sol";`
         console.log("Given deadline:", _deadline);
                 require(_deadline > block.timestamp, "Deadline must be in the future");
@@ -95,7 +95,7 @@ contract Campaign {
         projectDes = _projectDes;
         raisedAmount = 0;
         bannerUrl = _bannerUrl;
-        campaignSchemeId = SchemeRegistry.SchemeType(SchemeRegistry.getSchemeType(_campaignSchemeId));
+        schemeTypeId = _schemeTypeId;
     }
 
     function getContributorContribution(
@@ -220,6 +220,6 @@ contract Campaign {
         balance = address(this).balance;
         imageUrl = bannerUrl;
         numBackers = noOfContributors;
-        schemeId = uint(campaignSchemeId);
+        schemeId = uint(schemeTypeId);
     }
 }

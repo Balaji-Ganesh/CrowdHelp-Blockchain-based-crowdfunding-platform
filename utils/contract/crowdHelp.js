@@ -1,7 +1,7 @@
 import web3 from "../web3";
 import CrowdHelp from "../../artifacts/contracts/CrowdHelp.sol/CrowdHelp.json";
 
-const crowdHelpContractAddress = "0xB7f8BC63BbcaD18155201308C8f3540b07f84F5e";
+const crowdHelpContractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 const crowdHelp = new web3.eth.Contract(
   CrowdHelp.abi,
   crowdHelpContractAddress

@@ -12,8 +12,10 @@ import {
   Link,
   Box,
   Grid,
+  FormControl,
   FormControlLabel,
   Checkbox,
+  InputLabel,
 } from "@mui/material";
 import React, { useEffect } from "react";
 import Snackbar from "@mui/material/Snackbar";
@@ -40,7 +42,7 @@ import web3 from "../../../utils/web3";
 // [block-chain] smart-contract related imports..
 import { getAvailableFundingSchemes } from "../../../utils/getCampaigns";
 
-// const api_url = "http://localhost:4000/api/";
+const api_url = "http://localhost:4000/api/";
 
 function FillCampaignDetails() {
   const wallet = useWallet();
@@ -49,13 +51,17 @@ function FillCampaignDetails() {
   const [schemeTitles, setSchemeTitles] = React.useState([]);
 
   useEffect(() => {
+    let ignore = false;
+    console.debug("useEffect called");
     // fetch the funding schemes...
     const fetchData = async () => {
-      setSchemeTitles(await getAvailableFundingSchemes());
-      console.debug("Obtained Schemes", campaignsList);
+      if (!ignore) {
+        setSchemeTitles(await getAvailableFundingSchemes());
+        console.debug("Obtained Schemes", schemeTitles);
+      }
     };
 
-    // fetch the data..
+    // // fetch the data..
     fetchData();
     return () => {
       ignore = true; // to avoid rendering multiple times..
@@ -272,7 +278,7 @@ function FillCampaignDetails() {
                   </Box>
                 </Grid>
                 <Grid item xs={6}>
-                  <Grid styl={{ height: "70%" }}>
+                  <Grid styl={{ height: "60%" }}>
                     <TextField
                       id="description"
                       name="description"
@@ -349,46 +355,63 @@ function FillCampaignDetails() {
                       Please set a reasonable range, neither too short nor too
                       long.
                     </Typography>
-                  </Box>
-                  <Box sx={{ paddingtop: 0, marginTop: 2 }}>
-                    <Select
-                      required
-                      id="campaignSchemeId"
-                      name="campaignSchemeId"
-                      label="Funding scheme"
-                      size="small"
-                      fullWidth
-                      // onChange={handleChange}
-                    >
-                      {schemeTitles.map((schemeIdx, schemeTitle) => (
-                        <MenuItem value={schemeIdx}>schemeTitle</MenuItem>
-                      ))}
-                    </Select>
+                    <Box sx={{ mt: 2 }}>
+                      <TextField
+                        required
+                        id="walletAddress"
+                        name="walletAddress"
+                        label="Wallet Address"
+                        fullWidth
+                        value={wallet.account}
+                        inputProps={{
+                          readOnly: "read-only",
+                        }}
+                        title="Read-only value"
+                        size="small"
+                        helperText={
+                          wallet.status === "connected"
+                            ? "This is connected wallet's address. To switch please re-login with required wallet."
+                            : "Please connect to the wallet to fill automatically fill (manually entering restrictred)"
+                        }
+                        disabled={isSubmitting}
+                      />
+                    </Box>
                   </Box>
                 </Grid>
-
+                <Grid item xs={10} sm={6}>
+                  <Box sx={{ paddingtop: 0, marginTop: 2 }}>
+                    <FormControl fullWidth size="small" required>
+                      <InputLabel id="campaignSchemeId">
+                        Funding Scheme
+                      </InputLabel>
+                      <Select
+                        required
+                        id="campaignSchemeId"
+                        name="campaignSchemeId"
+                        label="Funding scheme"
+                        size="small"
+                        fullWidth
+                        // onChange={handleChange}
+                      >
+                        {schemeTitles.map((schemeTitle, schemeIdx) => (
+                          <MenuItem key={schemeIdx} value={schemeIdx}>
+                            {schemeTitle}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                    <Typography variant="caption" color="GrayText">
+                      Pick a scheme to choose the funding type
+                    </Typography>
+                    <Alert severity="info" sx={{ margin: 2 }}>
+                      [TODO] If not selected show "Please select a scheme to show info"
+                      when selected any of scheme, show its info.
+                    </Alert>
+                  </Box>
+                </Grid>
                 <Grid item xs={12} sm={6}>
                   {/* Just to be aligned with the date&time. */}
                   <Typography variant="caption">&nbsp;</Typography>
-                  <TextField
-                    required
-                    id="walletAddress"
-                    name="walletAddress"
-                    label="Wallet Address"
-                    fullWidth
-                    value={wallet.account}
-                    inputProps={{
-                      readOnly: "read-only",
-                    }}
-                    title="Read-only value"
-                    size="small"
-                    helperText={
-                      wallet.status === "connected"
-                        ? "This is connected wallet's address. To switch please re-login with required wallet."
-                        : "Please connect to the wallet"
-                    }
-                    disabled={isSubmitting}
-                  />
                 </Grid>
 
                 <Grid item xs={12}>

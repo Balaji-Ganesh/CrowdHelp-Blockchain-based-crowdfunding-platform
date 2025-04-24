@@ -62,7 +62,7 @@ function HomePage() {
       <Container
         component="main"
         sx={{ mt: 8, mb: 2 }}
-        justifyContent="center"
+        justifycontent="center"
         maxWidth="md"
       >
         <Box sx={{ mb: 2 }}>
@@ -74,13 +74,15 @@ function HomePage() {
             {" Raise a campaign to help the needy."}
           </Typography>
           <Typography variant="body1">Welcome 👋 to the community.</Typography>
-          <Typography variant="body1">[ONLY] Core functionalities done 🚧. More features on the way..!! 🏃 </Typography>
+          <Typography variant="body1">
+            [ONLY] Core functionalities done 🚧. More features on the way..!! 🏃{" "}
+          </Typography>
         </Box>
         <Box sx={{ mt: 4, mb: 2 }}>
           <Stack>
             <Stack
               direction={"row"}
-              justifyContent="space-between"
+              justifycontent="space-between"
               alignItems="center"
               // width={10}
             >

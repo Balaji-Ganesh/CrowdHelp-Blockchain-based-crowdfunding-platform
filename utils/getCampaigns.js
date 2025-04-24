@@ -3,7 +3,7 @@
 import crowdHelp from "./contract/crowdHelp";
 import web3 from "./web3";
 import Campaign from "./contract/campaign";
-import SchemeRegistry from "./contract/schemeRegistry";
+// import SchemeRegistry from "./contract/schemeRegistry";
 
 // fetch the deployed campaigns addresses.
 export const getDeployedCampaigns = async () => {
@@ -12,9 +12,13 @@ export const getDeployedCampaigns = async () => {
   const campaignsList = await crowdHelp.methods
     .returnDeployedCampaigns()
     .call();
-
-  console.log("deployed: " + campaignsList);
-  return campaignsList;
+  if (campaignsList.length == 0) {
+    console.debug("Oops..!! No active campaigns to load. Create few to load.");
+    return [];
+  } else {
+    console.log("deployed: " + campaignsList);
+    return campaignsList;
+  }
 };
 
 export const getCampaignsSummary = async (campaigns) => {
@@ -106,7 +110,7 @@ function cvtIntStatusToEnum(status) {
 
 export const getAvailableFundingSchemes = async () => {
   try {
-    const fundingSchemesList = await SchemeRegistry.methods
+    const fundingSchemesList = await crowdHelp.methods
       .getAllSchemeTitles()
       .call();
     console.debug("obtained funding schemes list: ", fundingSchemesList);
