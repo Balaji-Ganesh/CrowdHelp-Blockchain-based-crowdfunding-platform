@@ -84,6 +84,7 @@ function FillCampaignDetails() {
   const [responseMsg, setResponseMsg] = React.useState(""); // to display error messages.
   const [showResponse, setShowResponse] = React.useState(false); // To know whether error occured. ⁉ why not use length of error message
   const [responseSeverity, setResponseSeverity] = React.useState("error");
+  const [selectedSchemeType, setSelectedSchemeType] = React.useState(-1);
 
   // helpers..
   async function handleFilledCampaignDetails(data) {
@@ -107,7 +108,8 @@ function FillCampaignDetails() {
           web3.utils.toWei(data.minContribAmount, "ether"),
           web3.utils.toWei(data.ethRaised, "ether"),
           timestamp,
-          data.bannerUrl
+          data.bannerUrl,
+          selectedSchemeType
         )
         .send({
           from: accounts[0],
@@ -391,7 +393,8 @@ function FillCampaignDetails() {
                         label="Funding scheme"
                         size="small"
                         fullWidth
-                        // onChange={handleChange}
+                        value={selectedSchemeType}
+                        onChange={(e) => setSelectedSchemeType(e.target.value)}
                       >
                         {schemeTitles.map((schemeTitle, schemeIdx) => (
                           <MenuItem key={schemeIdx} value={schemeIdx}>
@@ -403,17 +406,29 @@ function FillCampaignDetails() {
                     <Typography variant="caption" color="GrayText">
                       Pick a scheme to choose the funding type
                     </Typography>
-                    <Alert severity="info" sx={{ margin: 2 }}>
-                      [TODO] If not selected show "Please select a scheme to show info"
-                      when selected any of scheme, show its info.
+                    <Alert severity="info" sx={{ margin: 0.5 }}>
+                      {selectedSchemeType == -1 ? (
+                        "Please select a scheme to show info"
+                      ) : selectedSchemeType == 0 ? (
+                        <>
+                          Scheme: <b>All or nothing info</b>: <br /> Funds are
+                          released only if the campaign goal is fully reached
+                          before the deadline. <br /> No withdrawals are allowed
+                          until the goal is met and the campaign ends.
+                        </>
+                      ) : (
+                        <>
+                          Scheme: <b>Half withdraw</b> <br/>
+                          If at least 90% of backers consent, the fund-raiser
+                          can withdraw half the goal amount once halfway funded.
+                          <br />
+                          Consent is collected from backers during their
+                          contribution.
+                        </>
+                      )}
                     </Alert>
                   </Box>
                 </Grid>
-                <Grid item xs={12} sm={6}>
-                  {/* Just to be aligned with the date&time. */}
-                  <Typography variant="caption">&nbsp;</Typography>
-                </Grid>
-
                 <Grid item xs={12}>
                   <FormControlLabel
                     control={
