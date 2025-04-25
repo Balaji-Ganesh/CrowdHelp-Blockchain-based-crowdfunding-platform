@@ -84,7 +84,7 @@ function FillCampaignDetails() {
   const [responseMsg, setResponseMsg] = React.useState(""); // to display error messages.
   const [showResponse, setShowResponse] = React.useState(false); // To know whether error occured. ⁉ why not use length of error message
   const [responseSeverity, setResponseSeverity] = React.useState("error");
-  const [selectedSchemeType, setSelectedSchemeType] = React.useState(-1);
+  const [selectedSchemeType, setSelectedSchemeType] = React.useState(0);
 
   // helpers..
   async function handleFilledCampaignDetails(data) {
@@ -308,6 +308,7 @@ function FillCampaignDetails() {
                       // min: 0.00000001,
                       step: 0.00001,
                     }}
+                    InputProps={{ inputProps: { min: data.minContribAmount } }}
                     disabled={isSubmitting}
                   />
                 </Grid>
@@ -411,14 +412,14 @@ function FillCampaignDetails() {
                         "Please select a scheme to show info"
                       ) : selectedSchemeType == 0 ? (
                         <>
-                          Scheme: <b>All or nothing info</b>: <br /> Funds are
-                          released only if the campaign goal is fully reached
-                          before the deadline. <br /> No withdrawals are allowed
-                          until the goal is met and the campaign ends.
+                          Scheme: <b>All or nothing</b>: (Default) <br />
+                          Funds are released only if the campaign goal is fully
+                          reached before the deadline. <br /> No withdrawals are
+                          allowed until the goal is met and the campaign ends.
                         </>
                       ) : (
                         <>
-                          Scheme: <b>Half withdraw</b> <br/>
+                          Scheme: <b>Half withdraw</b> <br />
                           If at least 90% of backers consent, the fund-raiser
                           can withdraw half the goal amount once halfway funded.
                           <br />

@@ -13,11 +13,11 @@ async function main() {
 
   await crowdHelp.createCampaign(
     "Demo Campaign",
-    "Creation of this campaign successfully indicates that, contract is successfully deployed..!!",
+    "Creation of this campaign successfully indicates that, contract is successfully deployed..!! Do NOT fund to this campaign, all funds will be lost.",
     100,
     1000,
     deadline,
-    "bannerUrl",
+    "https://cdn-icons-png.flaticon.com/512/12236/12236679.png",
     0
   ); // Assuming scheme = 0
 
