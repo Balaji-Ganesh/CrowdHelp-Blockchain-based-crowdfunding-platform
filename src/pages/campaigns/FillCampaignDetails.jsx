@@ -396,6 +396,7 @@ function FillCampaignDetails() {
                         fullWidth
                         value={selectedSchemeType}
                         onChange={(e) => setSelectedSchemeType(e.target.value)}
+                        disabled={isSubmitting}
                       >
                         {schemeTitles.map((schemeTitle, schemeIdx) => (
                           <MenuItem key={schemeIdx} value={schemeIdx}>
@@ -438,6 +439,7 @@ function FillCampaignDetails() {
                         color="secondary"
                         name="acceptConditions"
                         value="yes"
+                        disabled={isSubmitting}
                       />
                     }
                     label="I/We understand that, once these fields are set cannot be updated."
