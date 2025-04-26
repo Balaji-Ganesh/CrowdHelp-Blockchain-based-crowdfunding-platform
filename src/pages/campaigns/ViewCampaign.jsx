@@ -14,6 +14,7 @@ import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 import Chip from "@mui/material/Chip";
 import { LoadingButton } from "@mui/lab";
+import Tooltip from "@mui/material/Tooltip";
 
 // local imports..
 import NavBar from "../../components/NavBar";
@@ -38,7 +39,9 @@ const StyledModal = styled(Modal)({
   justifyContent: "center",
 });
 
-const api_url = "http://localhost:4000/api/";
+// The following ids must match with the ids (in enum) of solidity.
+const SCHEME_ALL_OR_NOTHING_ID = 0;
+const SCHEME_HALF_WITH_DRAW_ID = 1;
 
 function ViewCampaign() {
   const campaignId = window.location.pathname.substring(10); // will get as '/campaign/xx`, trimmed to get ONLY the id.
@@ -54,6 +57,7 @@ function ViewCampaign() {
   const enteredAmountRef = React.useRef(0);
 
   const [campaignData, setCampaignData] = React.useState({});
+  const [halfWithdrawConsent, setHalfWithdrawConsent] = React.useState(false);
   const wallet = useWallet();
 
   // for dealing with form values -- at contribution..
@@ -97,6 +101,8 @@ function ViewCampaign() {
   // these are for the -- campaignData[] -- where usage of '.' operator isn't working.
   const minAmountKey = "minContribAmount";
   const raisedMoneyKey = "ethRaised";
+  const [fundingSchemeTitle, setFundingSchemeTitle] =
+    React.useState("<unknown>");
 
   // hooks..
   const [showEndCampaignConfirmation, setShowEndCampaignConfirmation] =
@@ -196,7 +202,13 @@ function ViewCampaign() {
 
       const campaign = Campaign(campaignData.id); // get the campaign
       const accounts = await web3.eth.getAccounts(); // backer account..
-      await campaign.methods.contribute().send({
+
+      // In ideal case, checking this condition is not required.
+      //  but, placing for safety.
+      if (campaignData.fundingSchemeId == SCHEME_ALL_OR_NOTHING_ID)
+        setHalfWithdrawConsent(false); // If the scheme is not halfwithdraw, set to false.
+
+      await campaign.methods.contribute(halfWithdrawConsent).send({
         // register contribution..
         from: accounts[0],
         value: web3.utils.toWei(data.contribAmount, "ether"),
@@ -289,6 +301,23 @@ function ViewCampaign() {
         <Container>
           <Typography variant="caption">Goal</Typography>
           <Typography>{`${campaignData.ethRaised}`} ETH</Typography>
+        </Container>
+        <Container>
+          <Typography variant="caption">Funding Scheme</Typography>
+          <Tooltip
+            title={
+              campaignData.fundingSchemeId == SCHEME_ALL_OR_NOTHING_ID
+                ? "Funds are released only if the campaign goal is fully \
+                    reached before the deadline. No withdrawals are \
+                    allowed until the goal is met and the campaign ends. "
+                : "If at least 90% of backers consent, the fund-raiser \
+                    can withdraw half the goal amount once halfway funded.\
+                    Consent is collected from backers during their contribution."
+            }
+            placement="top"
+          >
+            <Typography>{`${campaignData.fundingSchemeTitle}  ⓘ`}</Typography>
+          </Tooltip>
         </Container>
         <Container>
           <Typography variant="caption">
@@ -385,6 +414,22 @@ function ViewCampaign() {
                 fullWidth
                 size="small"
               />
+              {campaignData.fundingSchemeId == SCHEME_HALF_WITH_DRAW_ID && ( // consent checkbox to be shown, only when scheme is half withdraw.
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      color="secondary"
+                      name="halfWithdrawConsent"
+                      size="small"
+                      onChange={(e) => setHalfWithdrawConsent(e.target.checked)}
+                    />
+                  }
+                  label={
+                    "I give my consent to allow fund-raiser to withdraw even when half  goal amount is reached (optional)."
+                  }
+                  sx={{ fontSize: "medium", lineHeight: 1.2, marginTop: 0.5 }}
+                />
+              )}
               {contributionError && (
                 <Alert
                   severity="error"
@@ -428,9 +473,6 @@ function ViewCampaign() {
             </form>
           )}
 
-          <Typography variant="subtitle2" color="grey">
-            Scheme - All or Nothing.
-          </Typography>
           <Typography variant="caption" paragraph color="grey">
             The money you fund, will be stored in smart contract that you can
             trust. Your money gets refunded in-case if the project doesn't reach

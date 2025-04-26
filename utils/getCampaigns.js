@@ -55,8 +55,13 @@ export const getCampaignDetails = async (campaignId) => {
       .methods.getCampaignSummary()
       .call();
 
+    // Also fill the funding scheme title on the go..
+    summary.schemeTitle = await getFundingSchemeTitle(
+      parseInt(summary.schemeId)
+    );
+
     // log it to check..
-    console.log(summary);
+    console.debug(summary);
 
     return formatSummary(summary, campaignId);
     // will be getting as array .. cvt to object.. i.e., in an understandable format
@@ -81,6 +86,8 @@ function formatSummary(summary, campaignId) {
     campaignStatus: cvtIntStatusToEnum(summary["currentState"]),
     // requestsCount: summary[2],
     backersCount: summary["numBackers"],
+    fundingSchemeId: parseInt(summary["schemeId"]),
+    fundingSchemeTitle: summary["schemeTitle"]
   };
 
   // return the work did..
@@ -118,5 +125,16 @@ export const getAvailableFundingSchemes = async () => {
   } catch (error) {
     console.debug("Error fetching available schemes list. \n Error: ", error);
     return [];
+  }
+};
+
+export const getFundingSchemeTitle = async (schemeId) => {
+  console.debug("getFundingSchemeTitle got calld with id: ", schemeId, typeof(schemeId))
+  try {
+    const schemeTitle = await crowdHelp.methods.getSchemeTitle(schemeId).call();
+    return schemeTitle;
+  } catch (error) {
+    console.debug("Error fetching funding scheme title. \nError: ", error);
+    return "<funding scheme title fetch error..!>"; // some odd string, to indicate error has occured.
   }
 };

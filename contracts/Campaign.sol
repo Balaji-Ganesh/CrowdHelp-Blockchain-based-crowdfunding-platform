@@ -16,6 +16,7 @@ contract Campaign {
     struct Contribution {
         address payable contributor;
         uint256 amount;
+        bool halfWithdrawConsent;
     }
 
     // Variables
@@ -63,7 +64,7 @@ contract Campaign {
     event AmountCredited(address contributor, uint amountTotal);
     // Event gets emitted when campaign gets aborted [before deadline]
     event AmountRefunded(uint noOfContributors, uint amountTotal);
-    
+
     event CampaignCreated(uint deadline, uint blockTime);
 
     constructor(
@@ -79,13 +80,16 @@ contract Campaign {
         // console.log("Constructor reached");
         // Pre-requisites to move further..
         emit CampaignCreated(_deadline, block.timestamp);
-        
+
         console.log("Block timestamp:", block.timestamp); // needs `import "hardhat/console.sol";`
         console.log("Given deadline:", _deadline);
-                require(_deadline > block.timestamp, "Deadline must be in the future");
-        require(_minimumContribution > 0, "Minimum contribution must be greater than 0");
+        require(_deadline > block.timestamp, "Deadline must be in the future");
+        require(
+            _minimumContribution > 0,
+            "Minimum contribution must be greater than 0"
+        );
         require(_targetContribution > 0, "Target must be greater than 0");
-        
+
         // emit FundingReceived(payable(msg.sender), 0, 0); // debug
         creator = payable(_creator);
         minimumContribution = _minimumContribution;
@@ -113,7 +117,9 @@ contract Campaign {
     }
 
     // @dev Anyone can contribute
-    function contribute() public payable canContribute {
+    function contribute(
+        bool _halfWithdrawConsent
+    ) public payable canContribute {
         // validation
         require(
             msg.value >= minimumContribution,
@@ -124,11 +130,15 @@ contract Campaign {
         if (contributionIdx == -1) {
             // if contributing for the first time..
             noOfContributors++;
-            contributions.push(Contribution(contributor, msg.value)); // store the amount of funds funded
+            contributions.push(
+                Contribution(contributor, msg.value, _halfWithdrawConsent)
+            ); // store the amount of funds funded with consent (if scheme is HALF_WITHDRAW)
         }
         // if contributed already..
         else {
             contributions[uint(contributionIdx)].amount += msg.value; // update the contribution
+            contributions[uint(contributionIdx)]
+                .halfWithdrawConsent = _halfWithdrawConsent; // update the consent
         }
         // contributors[contributor] += msg.value;    // store the amount of funds funded -- older version
         // update the global value
@@ -205,7 +215,8 @@ contract Campaign {
             uint256 balance,
             string memory imageUrl,
             uint256 numBackers,
-            uint schemeId
+            uint schemeId,
+            bool isHalfWithdrawEligible
         )
     {
         projectStarter = creator;
@@ -221,5 +232,34 @@ contract Campaign {
         imageUrl = bannerUrl;
         numBackers = noOfContributors;
         schemeId = uint(schemeTypeId);
+        isHalfWithdrawEligible = getIsHalfWithdrawEligible();
+    }
+
+    function getIsHalfWithdrawEligible()
+        public
+        view
+        returns (bool halfWithdrawEligible)
+    {
+        // Validate the scheme in which this campaign is running...
+        if (schemeTypeId != SchemeType.HALF_GOAL_WITHDRAW) {
+            return false; // If got called by any other scheme.. send false.
+        }
+        // parse over all the contributors list and count #consents
+        uint backersConsentCount = 0;
+        for (uint idx = 0; idx < noOfContributors; idx++) {
+            if (contributions[idx].halfWithdrawConsent == true)
+                backersConsentCount++;
+        }
+
+        // Perform decision..
+        //  If >=90% consent and funds are (greater than or equal to) half of goal.. eligible, else not.
+        // NOTE: Here multiplying by 100, as if solidity division of integers results in integer (not fraction),
+        //       so can't use 0.9 (to valiate for 90%) and (0.5) for half. (which are float, and stored as 0, )
+        //       By multiplying by 100, the result stays in integer, not float.
+        if (
+            (backersConsentCount * 100) / noOfContributors >= 90 && // 90% consent check
+            (raisedAmount * 100) / targetContribution >= 50 // 50% of the target check
+        ) return true;
+        else return false;
     }
 }
